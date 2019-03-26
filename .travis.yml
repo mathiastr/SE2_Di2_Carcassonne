@@ -1,8 +1,3 @@
-# https://docs.travis-ci.com/user/languages/android/
-# https://medium.com/@zurfyx/android-travis-ci-with-autodeploy-api-26-efb6c1863628
-# https://developer.android.com/studio/test/command-line.html#RunTestsDevice
-# https://developer.android.com/training/testing/unit-testing/instrumented-unit-tests.html
-
 language: android
 jdk: oraclejdk8
 sudo: required
@@ -41,13 +36,7 @@ script:
 ## uncomment test exec if android integration tests are needed
 #  - ./gradlew connectedAndroidTest
 #  - ./gradlew lint
-  - sonar-scanner
-
-addons:
-  sonarcloud:
-    organization: "carcassonne" # der key der organisation auf sonarcloud.io
-    token:
-      secure: $SONAR_TOKEN       # $SONAR_TOKEN -> Umgebungsvariable auf travis-ci.org
+  ./gradlew sonarqube -Dsonar.organization=carcassonne -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dsonar.branch.name=$TRAVIS_BRANCH
 
 # benachrichtigungen per email ausschalten
 notifications:
