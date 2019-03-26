@@ -22,21 +22,11 @@ android:
     - extra
     - sys-img-armeabi-v7a-android-22
 
-## uncomment android emulator if android integration tests are needed
-#before_script:
-#  - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
-#  - emulator -avd test -no-audio -no-window &
-#  - android-wait-for-emulator
-#  - adb shell input keyevent 82 &
-  
 script:
   - yes | sdkmanager "platforms;android-28" # accept license
   - chmod +x ./gradlew                        # make executable 
   - ./gradlew test jacocoTestReport
-## uncomment test exec if android integration tests are needed
-#  - ./gradlew connectedAndroidTest
-#  - ./gradlew lint
-  ./gradlew sonarqube -Dsonar.organization=carcassonne -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dsonar.branch.name=$TRAVIS_BRANCH
+  - ./gradlew sonarqube -Dsonar.organization=carcassonne -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR_TOKEN -Dsonar.branch.name=$TRAVIS_BRANCH
 
 # benachrichtigungen per email ausschalten
 notifications:
