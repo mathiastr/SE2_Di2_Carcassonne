@@ -10,6 +10,8 @@ android:
   - addon-google_apis-google-26
   - sys-img-armeabi-v7a-android-26
 script:
+- yes | sdkmanager "platforms;android-28"
+- chmod +x gradlew
 - ./gradlew build
 - ./gradlew test
 - ./gradlew jacocoTestReport
