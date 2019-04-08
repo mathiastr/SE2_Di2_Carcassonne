@@ -5,17 +5,14 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.network.NetworkLobbyScreen;
 
 public class MainMenuScreen implements Screen {
     private Game game;
@@ -49,6 +46,23 @@ public class MainMenuScreen implements Screen {
             }
         });
         stage.addActor(playButton);
+
+        TextButton lobby = new TextButton("Network", Carcassonne.skin);
+        lobby.setWidth(Gdx.graphics.getWidth()/2);
+        lobby.setPosition(Gdx.graphics.getWidth()/2-lobby.getWidth()/2, Gdx.graphics.getHeight()/4-lobby.getHeight()/2);
+        lobby.addListener(new InputListener(){
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                Gdx.app.debug("touch", "start touch up");
+                game.setScreen(new NetworkLobbyScreen(game));
+            }
+        });
+        stage.addActor(lobby);
         Gdx.input.setInputProcessor(stage);
     }
 
