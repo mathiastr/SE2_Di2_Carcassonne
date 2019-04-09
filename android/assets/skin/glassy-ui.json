@@ -32,7 +32,13 @@ com.badlogic.gdx.graphics.Color: {
 		b: 1
 		a: 1
 	}
-}
+	brown: {
+		r: 0.128
+		g: 0
+		b: 0
+		a: 1
+	}
+},
 com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	pale-blue: {
 		name: white
@@ -110,6 +116,10 @@ com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
 	big-black: {
 		font: font-big
 		fontColor: black
+	}
+	menu: {
+		font: font,
+		fontColor: brown
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
@@ -189,6 +199,12 @@ com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
 		font: font
 		up: button-small
 		down: button-small-down
+	}
+	menu:{
+		font: font-big
+		up: button
+		down: button-down
+		fontColor: brown
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
