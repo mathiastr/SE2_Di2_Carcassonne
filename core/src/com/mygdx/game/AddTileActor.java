@@ -17,6 +17,7 @@ public class AddTileActor extends TileActor {
                 AddTileActor clicked = (AddTileActor)event.getListenerActor();
                 Gdx.app.log("hmm", "clicked tileActor");
 
+                // TODO pass a specific tile here
                 TileActor newTile = gameBoard.replaceTileAt(clicked);
                 gameBoard.addSurroundingAddTiles(newTile);
             }

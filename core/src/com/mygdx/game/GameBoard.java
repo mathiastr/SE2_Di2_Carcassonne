@@ -2,11 +2,29 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class GameBoard {
     private HashMap<Position, TileActor> tiles;
     private Stage stageOfBoard;
+
+    public enum Color {
+        yellow, red, green, blue, black
+    }
+
+    /*
+        Map with tile type number (coreesponding to the rules) and tile by it self
+     */
+    private HashMap<Integer, TileActor> allTileTypes;
+
+    /*
+        The number of each tile type is specified in rules
+     */
+    private HashMap<Integer, Integer> numberOfTileTypeLeft;
+
+    private ArrayList<Player> players;
+
 
     public GameBoard(Stage stage) {
         tiles = new HashMap<Position, TileActor>();
@@ -15,9 +33,13 @@ public class GameBoard {
         tiles.put(initialPosition, initialTile);
         stageOfBoard = stage;
         stageOfBoard.addActor(initialTile);
+
+        // TODO create all tile types
     }
 
+    // TODO add a TileActor as a parameter
     public TileActor replaceTileAt(AddTileActor tileToReplace) {
+
         TileActor newTile = new TileActor(tileToReplace.getPosition(), tileToReplace.getBoard());
         stageOfBoard.addActor(newTile);
         tiles.put(newTile.getPosition(), newTile);
@@ -36,4 +58,17 @@ public class GameBoard {
             }
         }
     }
+
+    /*
+        method for dynamic checking owners of the city/road/field
+        if two or more players own the same property, score is splitted between
+     */
+    public ArrayList<Player> getFeatureOwners(Feature feature, Side side, TileActor tile) {
+
+        // count number of meeples of each player
+
+        return new ArrayList<Player>();
+    }
+
+
 }
