@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Position {
@@ -13,6 +15,13 @@ public class Position {
 
     public Position add(Position other) {
         return new Position(x+other.x, y+other.y);
+    }
+
+    public Position[] getSurroundingPositions() {
+        return new Position[] {new Position(x, y+1),
+                new Position(x+1, y),
+                new Position(x, y-1),
+                new Position(x-1, y)};
     }
 
     @Override
@@ -43,5 +52,10 @@ public class Position {
 
     public void setY(int y) {
         this.y = y;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + x + " " + y + ")";
     }
 }

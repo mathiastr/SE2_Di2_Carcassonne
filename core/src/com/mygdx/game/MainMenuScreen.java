@@ -18,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -34,13 +35,12 @@ public class MainMenuScreen implements Screen {
 
         background = new Texture("background.png");
         Image bg = new Image(background);
-        bg.setPosition(0,0);
         bg.setWidth(Gdx.graphics.getWidth());
         bg.setHeight(Gdx.graphics.getHeight());
         stage.addActor(bg);
 
 
-
+        /* TODO: make labels less pixelated */
         Label title = new Label("CARCASSONNE", Carcassonne.skin, "menu" );
         title.setAlignment(Align.center);
         title.setY(Gdx.graphics.getHeight()*7/8);
@@ -53,14 +53,9 @@ public class MainMenuScreen implements Screen {
         TextButton jgButton = new TextButton("Join Game", Carcassonne.skin, "menu");
         jgButton.setWidth(Gdx.graphics.getWidth()/4);
         jgButton.setPosition(Gdx.graphics.getWidth()/2-jgButton.getWidth()/2, Gdx.graphics.getHeight()*6/9);
-        jgButton.addListener(new InputListener(){
+        jgButton.addListener(new ClickListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start touch up");
                 game.setScreen(new GameScreen(game));
             }

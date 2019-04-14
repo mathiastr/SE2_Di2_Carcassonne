@@ -13,8 +13,6 @@ public class Carcassonne extends Game {
     public void create() {
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         this.setScreen(new MainMenuScreen(this));
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        Gdx.app.debug("touch", "tezfd");
     }
 
     @Override
