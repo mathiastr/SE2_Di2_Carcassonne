@@ -1,14 +1,11 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 
 public class TileActor extends Actor {
@@ -31,8 +28,10 @@ public class TileActor extends Actor {
     private int rotation;
 
     /* what does this tile have: (city, road, monastery) */
-    private List<Feature> features = new ArrayList<Feature>();
-
+    private List<Feature> features = new ArrayList<>();
+    public List<Feature> getFeatures() {
+        return features;
+    }
 
     public TileActor(Position aPosition, final GameBoard gameBoard) {
         board = gameBoard;
@@ -57,15 +56,21 @@ public class TileActor extends Actor {
     }
 
     public Feature getFeatureAtSide(Side side) {
-        return featureAtSide.get(side);
+        return featureAtSide.get(getTileSideAt(side));
     }
 
     public int getRotationValue() {
         return rotation;
     }
 
-    public Side getSideWithRotation(Side side) {
+    // get the tile-side which after rotation points to the given side.
+    public Side getTileSideAt(Side side) {
         return Side.values()[(side.ordinal() + (4 - rotation)) % 4];
+    }
+
+    // get the side which the tile-side points after rotation.
+    public Side getSideAfterRotation(Side side) {
+        return Side.values()[(side.ordinal() + rotation) % 4];
     }
 
     public void rotate() {

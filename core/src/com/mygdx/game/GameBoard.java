@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -250,6 +251,7 @@ public class GameBoard {
     }
 
     public GameBoard(Stage stageGame, Stage stageUI) {
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
 
@@ -294,6 +296,18 @@ public class GameBoard {
         stageOfBoard.addActor(tileToPlace);
         tiles.put(position, tileToPlace);
 
+
+
+        // Testing the road scoring
+        // for every placed tile
+        for (Feature f : tileToPlace.getFeatures()) {
+            if (f instanceof Road) {
+                Gdx.app.log("scoring", Integer.toString(scoreRoad(tileToPlace, (Road)f)));
+            }
+        }
+
+
+
         removeOldHints();
 
         if (availableTiles.isEmpty()) {
@@ -321,6 +335,44 @@ public class GameBoard {
     /* -------------------------------------------------------------------- */
     /* -------------------------------------------------------------------- */
 
+    private TileActor getTileInDirectionOfSide(TileActor tile, Side side) {
+        switch (side) {
+            case top: return tiles.get(tile.getPosition().add(new Position(0, 1)));
+            case right: return tiles.get(tile.getPosition().add(new Position(1, 0)));
+            case bottom: return tiles.get(tile.getPosition().add(new Position(0, -1)));
+            case left: return tiles.get(tile.getPosition().add(new Position(-1, 0)));
+            default: return null;
+        }
+    }
+
+    //returns -1 if not completed |
+
+    public int scoreRoad(TileActor tile, Road road) {
+        HashSet<TileActor> visited = new HashSet<>();
+        return scoreRoadRec(tile, road, null, visited);
+    }
+
+    public int scoreRoadRec(TileActor tile, Road road, TileActor parent, HashSet<TileActor> visited) {
+        int score = 1; // tile itself
+
+        if (!visited.add(tile)) return 0; // we found a loop => road closed
+
+        for (Side side : road.getSides()) {
+            side = tile.getSideAfterRotation(side);
+            TileActor nextTile = getTileInDirectionOfSide(tile, side);
+            if (nextTile == null) return -1;
+            if (nextTile == parent) continue;
+
+            Road nextRoad = (Road)nextTile.getFeatureAtSide(getFacingSideOfSurroundingTile(side));
+            int currScore = scoreRoadRec(nextTile, nextRoad, tile, visited);
+            if (currScore == -1) return -1;
+
+            score += currScore;
+        }
+        return score;
+    }
+
+    // e.g. for top we want bottom, for right we want left ...
     private Side getFacingSideOfSurroundingTile(Side side) {
         return Side.values()[side.ordinal() ^ 2];
     }
@@ -330,14 +382,12 @@ public class GameBoard {
 
         boolean connected = false;
         Position[] surroundPositions = pos.getSurroundingPositions();
-        for (int i = 0; i < 4; ++i) {
-            if (tiles.containsKey(surroundPositions[i])) {
+        for (Side side : Side.values()) {
+            if (tiles.containsKey(surroundPositions[side.ordinal()])) {
                 connected = true;
-                TileActor surroundTile = tiles.get(surroundPositions[i]);
-                // TODO: maybe replace The Side enum with a static ints, so we don't have to convert so often...
-                Feature feature1 = tile.getFeatureAtSide(Side.values()[(i+(4-tile.getRotationValue()))%4]);
-                Feature feature2 = surroundTile
-                        .getFeatureAtSide( Side.values()[(getFacingSideOfSurroundingTile(Side.values()[i]).ordinal()+(4-surroundTile.getRotationValue()))%4] );
+                TileActor surroundTile = tiles.get(surroundPositions[side.ordinal()]);
+                Feature feature1 = tile.getFeatureAtSide(side);
+                Feature feature2 = surroundTile.getFeatureAtSide(getFacingSideOfSurroundingTile(side));
 
                 /* check if features line up */
                 if (feature1 == null && feature2 == null) continue;
