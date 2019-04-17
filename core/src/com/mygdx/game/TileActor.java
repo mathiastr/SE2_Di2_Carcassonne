@@ -14,9 +14,9 @@ public class TileActor extends Actor {
     private Texture textureBig;
     private Position position;
     private final GameBoard board;
-    private ArrayList<Meeple> meeples;
+    private ArrayList<Meeple> meeples; // TODO: maybe add meeple field to Feature class
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
-    private boolean hasMonastery = false;
+    private boolean monastery = false;
 
     /* direction of the tile
             for ex. (clockwise)
@@ -107,8 +107,10 @@ public class TileActor extends Actor {
     }
 
     public void setMonastery() {
-        hasMonastery = true;
+        monastery = true;
     }
+
+    public boolean isMonastery() { return monastery; }
 
     public boolean areSidesConnected(Side side1, Side side2, FeatureType type) {
 

@@ -297,15 +297,24 @@ public class GameBoard {
         tiles.put(position, tileToPlace);
 
 
-
-        // Testing the road scoring
+        /*-----------------------------*/
+        // Testing the road/city scoring
         // for every placed tile
         for (Feature f : tileToPlace.getFeatures()) {
-            if (f instanceof Road) {
-                Gdx.app.log("scoring", Integer.toString(scoreRoad(tileToPlace, (Road)f)));
+            if (f instanceof Road)
+                Gdx.app.log("scoring [road]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (Road) f)));
+            if (f instanceof City)
+                Gdx.app.log("scoring [city]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (City) f)));
+        }
+        for (Position pos : tileToPlace.getPosition().getSurroundingPositions()) {
+            if (tiles.containsKey(pos)) {
+                TileActor t = tiles.get(pos);
+                if (t.isMonastery()) {
+                    Gdx.app.log("scoring [monastery]", Integer.toString(scoreMonastery(t)));
+                }
             }
         }
-
+        /*-----------------------------*/
 
 
         removeOldHints();
@@ -345,26 +354,46 @@ public class GameBoard {
         }
     }
 
-    //returns -1 if not completed |
-
-    public int scoreRoad(TileActor tile, Road road) {
-        HashSet<TileActor> visited = new HashSet<>();
-        return scoreRoadRec(tile, road, null, visited);
+    // TODO maybe adjust scoring methods for the end of game partial scoring...
+    /* mid game scoring */
+    /* ---------------- */
+    public int scoreMonastery(TileActor tile) {
+        for (int dx = -1; dx <= 1; ++dx) {
+            for (int dy = -1; dy <= 1; ++dy) {
+                if (!tiles.containsKey(tile.getPosition().add(new Position(dx,dy)))) {
+                    // there is no tile at this surrounding position => monastery not completed
+                    return 0;
+                }
+            }
+        }
+        return tile.isMonastery() ? 9 : 0;
     }
+    /* returns 0 if road/city is not completed, score of component otherwise */
+    /* city score is 2 per tile, road score is 1 per tile */
+    public int scoreRoadOrCity(TileActor tile, Feature feature) {
+        if (!(feature instanceof Road) && !(feature instanceof City))
+            throw new IllegalArgumentException("only road or city allowed!");
 
-    public int scoreRoadRec(TileActor tile, Road road, TileActor parent, HashSet<TileActor> visited) {
-        int score = 1; // tile itself
+        if (!tile.getFeatures().contains(feature))
+            throw new IllegalArgumentException("not a feature of the tile!");
+
+        HashSet<TileActor> visited = new HashSet<>();
+        int score = scoreRoadOrCityRec(tile, feature, null, visited);
+        return score == -1 ? 0 : score;
+    }
+    public int scoreRoadOrCityRec(TileActor tile, Feature feature, TileActor parent, HashSet<TileActor> visited) {
+        int score = feature instanceof City ? 2 : 1; // tile itself
 
         if (!visited.add(tile)) return 0; // we found a loop => road closed
 
-        for (Side side : road.getSides()) {
+        for (Side side : feature.getSides()) {
             side = tile.getSideAfterRotation(side);
             TileActor nextTile = getTileInDirectionOfSide(tile, side);
             if (nextTile == null) return -1;
             if (nextTile == parent) continue;
 
-            Road nextRoad = (Road)nextTile.getFeatureAtSide(getFacingSideOfSurroundingTile(side));
-            int currScore = scoreRoadRec(nextTile, nextRoad, tile, visited);
+            Feature nextRoad = nextTile.getFeatureAtSide(getFacingSideOfSurroundingTile(side));
+            int currScore = scoreRoadOrCityRec(nextTile, nextRoad, tile, visited);
             if (currScore == -1) return -1;
 
             score += currScore;

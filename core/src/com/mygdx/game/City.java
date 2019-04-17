@@ -21,5 +21,4 @@ public class City extends Feature {
     public void addCoatOfArms() {
         this.coatOfArms = true;
     }
-
 }
