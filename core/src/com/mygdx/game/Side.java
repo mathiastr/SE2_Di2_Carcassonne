@@ -1,5 +1,5 @@
 package com.mygdx.game;
 
 public enum Side {
-    left, top, right, bottom, center
+    top, right, bottom, left
 }
