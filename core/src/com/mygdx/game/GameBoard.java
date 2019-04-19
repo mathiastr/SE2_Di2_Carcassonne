@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -250,6 +251,7 @@ public class GameBoard {
     }
 
     public GameBoard(Stage stageGame, Stage stageUI) {
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
 
@@ -294,6 +296,27 @@ public class GameBoard {
         stageOfBoard.addActor(tileToPlace);
         tiles.put(position, tileToPlace);
 
+
+        /*-----------------------------*/
+        // Testing the road/city scoring
+        // for every placed tile
+        for (Feature f : tileToPlace.getFeatures()) {
+            if (f instanceof Road)
+                Gdx.app.log("scoring [road]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (Road) f)));
+            if (f instanceof City)
+                Gdx.app.log("scoring [city]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (City) f)));
+        }
+        for (Position pos : tileToPlace.getPosition().getSurroundingPositions()) {
+            if (tiles.containsKey(pos)) {
+                TileActor t = tiles.get(pos);
+                if (t.isMonastery()) {
+                    Gdx.app.log("scoring [monastery]", Integer.toString(scoreMonastery(t)));
+                }
+            }
+        }
+        /*-----------------------------*/
+
+
         removeOldHints();
 
         if (availableTiles.isEmpty()) {
@@ -321,6 +344,64 @@ public class GameBoard {
     /* -------------------------------------------------------------------- */
     /* -------------------------------------------------------------------- */
 
+    private TileActor getTileInDirectionOfSide(TileActor tile, Side side) {
+        switch (side) {
+            case top: return tiles.get(tile.getPosition().add(new Position(0, 1)));
+            case right: return tiles.get(tile.getPosition().add(new Position(1, 0)));
+            case bottom: return tiles.get(tile.getPosition().add(new Position(0, -1)));
+            case left: return tiles.get(tile.getPosition().add(new Position(-1, 0)));
+            default: return null;
+        }
+    }
+
+    // TODO maybe adjust scoring methods for the end of game partial scoring...
+    /* mid game scoring */
+    /* ---------------- */
+    public int scoreMonastery(TileActor tile) {
+        for (int dx = -1; dx <= 1; ++dx) {
+            for (int dy = -1; dy <= 1; ++dy) {
+                if (!tiles.containsKey(tile.getPosition().add(new Position(dx,dy)))) {
+                    // there is no tile at this surrounding position => monastery not completed
+                    return 0;
+                }
+            }
+        }
+        return tile.isMonastery() ? 9 : 0;
+    }
+    /* returns 0 if road/city is not completed, score of component otherwise */
+    /* city score is 2 per tile, road score is 1 per tile */
+    public int scoreRoadOrCity(TileActor tile, Feature feature) {
+        if (!(feature instanceof Road) && !(feature instanceof City))
+            throw new IllegalArgumentException("only road or city allowed!");
+
+        if (!tile.getFeatures().contains(feature))
+            throw new IllegalArgumentException("not a feature of the tile!");
+
+        HashSet<TileActor> visited = new HashSet<>();
+        int score = scoreRoadOrCityRec(tile, feature, null, visited);
+        return score == -1 ? 0 : score;
+    }
+    public int scoreRoadOrCityRec(TileActor tile, Feature feature, TileActor parent, HashSet<TileActor> visited) {
+        int score = feature instanceof City ? 2 : 1; // tile itself
+
+        if (!visited.add(tile)) return 0; // we found a loop => road closed
+
+        for (Side side : feature.getSides()) {
+            side = tile.getSideAfterRotation(side);
+            TileActor nextTile = getTileInDirectionOfSide(tile, side);
+            if (nextTile == null) return -1;
+            if (nextTile == parent) continue;
+
+            Feature nextRoad = nextTile.getFeatureAtSide(getFacingSideOfSurroundingTile(side));
+            int currScore = scoreRoadOrCityRec(nextTile, nextRoad, tile, visited);
+            if (currScore == -1) return -1;
+
+            score += currScore;
+        }
+        return score;
+    }
+
+    // e.g. for top we want bottom, for right we want left ...
     private Side getFacingSideOfSurroundingTile(Side side) {
         return Side.values()[side.ordinal() ^ 2];
     }
@@ -330,14 +411,12 @@ public class GameBoard {
 
         boolean connected = false;
         Position[] surroundPositions = pos.getSurroundingPositions();
-        for (int i = 0; i < 4; ++i) {
-            if (tiles.containsKey(surroundPositions[i])) {
+        for (Side side : Side.values()) {
+            if (tiles.containsKey(surroundPositions[side.ordinal()])) {
                 connected = true;
-                TileActor surroundTile = tiles.get(surroundPositions[i]);
-                // TODO: maybe replace The Side enum with a static ints, so we don't have to convert so often...
-                Feature feature1 = tile.getFeatureAtSide(Side.values()[(i+(4-tile.getRotationValue()))%4]);
-                Feature feature2 = surroundTile
-                        .getFeatureAtSide( Side.values()[(getFacingSideOfSurroundingTile(Side.values()[i]).ordinal()+(4-surroundTile.getRotationValue()))%4] );
+                TileActor surroundTile = tiles.get(surroundPositions[side.ordinal()]);
+                Feature feature1 = tile.getFeatureAtSide(side);
+                Feature feature2 = surroundTile.getFeatureAtSide(getFacingSideOfSurroundingTile(side));
 
                 /* check if features line up */
                 if (feature1 == null && feature2 == null) continue;

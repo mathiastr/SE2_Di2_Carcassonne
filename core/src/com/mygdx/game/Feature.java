@@ -39,4 +39,11 @@ public class Feature {
         this.connections.put(side1, side2);
         this.connections.put(side2, side1);
     }
+
+    @Override
+    public String toString() {
+        return "Feature{" +
+                "sides=" + sides +
+                '}';
+    }
 }
