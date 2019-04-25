@@ -6,7 +6,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -29,6 +28,7 @@ public class GameScreen implements Screen {
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
+    private Label currentPlayerLabel;
 
     public GameScreen(Game aGame) {
         game = aGame;
@@ -82,7 +82,15 @@ public class GameScreen implements Screen {
         labelTilesLeft.setWidth(Gdx.graphics.getWidth());
         labelTilesLeft.setFontScale(2);
         labelTilesLeft.setY(20);
+
+        currentPlayerLabel = new Label("", Carcassonne.skin);
+        currentPlayerLabel.setAlignment(Align.center);
+        currentPlayerLabel.setWidth(Gdx.graphics.getWidth());
+        currentPlayerLabel.setFontScale(2);
+        currentPlayerLabel.setY(60);
+
         stageUI.addActor(labelTilesLeft);
+        stageUI.addActor(currentPlayerLabel);
     }
 
     @Override
@@ -97,6 +105,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         labelTilesLeft.setText("Tiles left: " + gameBoard.tilesLeft());
+        currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer());
 
         stage.act();
         stage.draw();

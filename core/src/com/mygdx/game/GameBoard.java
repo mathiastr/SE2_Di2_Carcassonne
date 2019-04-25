@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
 import java.util.ArrayList;
@@ -15,14 +14,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Random;
-import java.util.function.BiConsumer;
 
 public class GameBoard {
     private HashMap<Position, TileActor> tiles = new HashMap<>();
     private Stage stageOfBoard;
     private Stage stageOfUI;
+
 
     public enum Color {
         yellow, red, green, blue, black
@@ -36,7 +34,11 @@ public class GameBoard {
     private HashMap<Integer, Integer> numberOfTileTypeLeft;
     */
 
+    private int numberOfPlayers;
+    private Player currentPlayer;
+
     private ArrayList<Player> players;
+
 
 
     private ArrayList<TileActor> hints = new ArrayList<>();
@@ -46,6 +48,9 @@ public class GameBoard {
 
     private TileActor currentTile;
 
+    public int getCurrentPlayer() {
+        return players.indexOf(currentPlayer);
+    }
     public void createDeckTilesAndStartTile() {
         int straightRoadUnderCityCount = 4; // 3 + (1 start-tile)
         int diagCityCount = 5;
@@ -250,10 +255,23 @@ public class GameBoard {
         showHintsForTile(currentTile);
     }
 
+    public void nextTurn() {
+        currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+
+    }
+
     public GameBoard(Stage stageGame, Stage stageUI) {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
+
+        // TODO ask for number of players from main menu
+        numberOfPlayers = 3;
+        players = new ArrayList<>();
+        players.add(new Player(Color.green));
+        players.add(new Player(Color.blue));
+        players.add(new Player(Color.yellow));
+        currentPlayer = players.get(0);
 
         createDeckTilesAndStartTile();
 
@@ -328,6 +346,7 @@ public class GameBoard {
         }
 
         tileToPlace.removeListener(listeners.peek());
+        nextTurn();
     }
 
     /*
