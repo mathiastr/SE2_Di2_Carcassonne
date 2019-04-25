@@ -6,6 +6,7 @@ import com.esotericsoftware.kryonet.Listener;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.util.List;
 
 public class GameClient extends AbstractGameManager{
@@ -15,14 +16,6 @@ public class GameClient extends AbstractGameManager{
         client = new Client();
         Network.register(client);
         client.start();
-        client.addListener(new Listener(){
-            public void received (Connection connection, Object object) {
-                if (object instanceof TestOutput) {
-                    TestOutput response = (TestOutput)object;
-                    System.out.println(response.getTest());
-                }
-            }
-        });
     }
 
     public void connect(final InetAddress host){
@@ -39,7 +32,7 @@ public class GameClient extends AbstractGameManager{
         }.start();
     }
 
-    public void sendMessage(final String message){
+    public void sendMessage(final Object message){
         if (!client.isConnected()) {
             try {
                 client.reconnect();
@@ -47,14 +40,35 @@ public class GameClient extends AbstractGameManager{
                 e.printStackTrace();
             }
         }
-        new Thread("Sending") {
-            public void run() {
-                client.sendTCP(new TestOutput(message));
-            }
-        }.start();
+        if(client.isConnected()){
+            new Thread("Sending") {
+                public void run() {
+                    client.sendTCP(message);
+                }
+            }.start();
+        }
     }
 
     public List<InetAddress> discover() {
         return client.discoverHosts(Network.UDP, 2000);
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void initConnection (final InetAddress host, final Object message){
+        client.setKeepAliveTCP(1000);
+        new Thread("Connect") {
+            public void run () {
+                try {
+                    client.connect(1000, host, Network.TCP, Network.UDP);
+                    client.sendTCP(message);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }.start();
     }
 }
