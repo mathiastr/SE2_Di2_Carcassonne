@@ -14,6 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import java.util.List;
+
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)
 // TODO: add algorithmic for scoring
@@ -30,11 +32,11 @@ public class GameScreen implements Screen {
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
 
-    public GameScreen(Game aGame) {
+    public GameScreen(Game aGame, List<Player> players) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
-        gameBoard = new GameBoard(stage, stageUI);
+        gameBoard = new GameBoard(stage, stageUI, players);
 
         stage.addListener(new InputListener() {
             @Override

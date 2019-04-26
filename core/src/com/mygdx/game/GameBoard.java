@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 public class GameBoard {
@@ -23,7 +24,23 @@ public class GameBoard {
 
 
     public enum Color {
-        yellow, red, green, blue, black
+        yellow, red, green, blue, black;
+
+        public static Color getRandomColorExcept(List<Color> colors) {
+            boolean colorFound = true;
+            Color randomColor = getRandom();
+            if (colors.size() >= values().length) {
+                return randomColor;
+            }
+            while (colors.contains(randomColor)) {
+                randomColor = getRandom();
+            }
+            return randomColor;
+        }
+
+        public static Color getRandom() {
+            return values()[(int)(Math.random() * values().length)];
+        }
     }
 
     /*
@@ -37,7 +54,7 @@ public class GameBoard {
     private int numberOfPlayers;
     private Player currentPlayer;
 
-    private ArrayList<Player> players;
+    private List<Player> players;
 
 
 
@@ -260,17 +277,14 @@ public class GameBoard {
 
     }
 
-    public GameBoard(Stage stageGame, Stage stageUI) {
+    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players) {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
 
         // TODO ask for number of players from main menu
-        numberOfPlayers = 3;
-        players = new ArrayList<>();
-        players.add(new Player(Color.green));
-        players.add(new Player(Color.blue));
-        players.add(new Player(Color.yellow));
+        numberOfPlayers = players.size();
+        this.players = players;
         currentPlayer = players.get(0);
 
         createDeckTilesAndStartTile();
