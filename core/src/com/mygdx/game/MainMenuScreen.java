@@ -1,69 +1,77 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Application;
+import    com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.game.network.NetworkLobbyScreen;
 
 public class MainMenuScreen implements Screen {
     private Game game;
     private Stage stage;
+    Texture background;
 
     public MainMenuScreen(final Game game1) {
         game = game1;
         stage = new Stage(new ScreenViewport());
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-        Label title = new Label("a title?", Carcassonne.skin);
+        background = new Texture("background.png");
+        Image bg = new Image(background);
+        bg.setWidth(Gdx.graphics.getWidth());
+        bg.setHeight(Gdx.graphics.getHeight());
+        stage.addActor(bg);
+
+
+        /* TODO: make labels less pixelated */
+        Label title = new Label("CARCASSONNE", Carcassonne.skin, "menu" );
         title.setAlignment(Align.center);
-        title.setY(Gdx.graphics.getHeight()*2/3);
+        title.setY(Gdx.graphics.getHeight()*7/8);
         title.setWidth(Gdx.graphics.getWidth());
-        title.setFontScale(3);
+        title.setFontScale(5);
         stage.addActor(title);
 
-        TextButton playButton = new TextButton("Start", Carcassonne.skin);
-        playButton.setWidth(Gdx.graphics.getWidth()/2);
-        playButton.setPosition(Gdx.graphics.getWidth()/2-playButton.getWidth()/2, Gdx.graphics.getHeight()/2-playButton.getHeight()/2);
-        playButton.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
 
+
+        TextButton jgButton = new TextButton("Join Game", Carcassonne.skin, "menu");
+        jgButton.setWidth(Gdx.graphics.getWidth()/4);
+        jgButton.setPosition(Gdx.graphics.getWidth()/2-jgButton.getWidth()/2, Gdx.graphics.getHeight()*6/9);
+        jgButton.addListener(new ClickListener() {
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start touch up");
                 game.setScreen(new GameScreen(game));
             }
         });
+
         stage.addActor(playButton);
-
-        TextButton lobby = new TextButton("Network", Carcassonne.skin);
-        lobby.setWidth(Gdx.graphics.getWidth()/2);
-        lobby.setPosition(Gdx.graphics.getWidth()/2-lobby.getWidth()/2, Gdx.graphics.getHeight()/4-lobby.getHeight()/2);
-        lobby.addListener(new InputListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                Gdx.app.debug("touch", "start touch up");
-                game.setScreen(new NetworkLobbyScreen(game));
-            }
-        });
-        stage.addActor(lobby);
         Gdx.input.setInputProcessor(stage);
+
+        TextButton cgButton = new TextButton("Create Game", Carcassonne.skin, "menu");
+        cgButton.setWidth(Gdx.graphics.getWidth()/4);
+        cgButton.setPosition(Gdx.graphics.getWidth()/2-cgButton.getWidth()/2, Gdx.graphics.getHeight()*6/9 - cgButton.getHeight()*3/2);
+        stage.addActor(cgButton);
+
+        TextButton settButton = new TextButton("Settings", Carcassonne.skin, "menu");
+        settButton.setWidth(Gdx.graphics.getWidth()/4);
+        settButton.setPosition(Gdx.graphics.getWidth()/2-settButton.getWidth()/2, Gdx.graphics.getHeight()*6/9 - settButton.getHeight()*3);
+        stage.addActor(settButton);
     }
 
     @Override
@@ -72,6 +80,7 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
+
     }
 
     @Override

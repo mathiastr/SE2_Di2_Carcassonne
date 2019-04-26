@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,7 +10,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 // TODO: add the current Tile view (first add UI stage)
@@ -20,18 +23,18 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 public class GameScreen implements Screen {
     private Game game;
     private Stage stage;
-    private Texture tileTexture;
-    private Texture addTexture;
+    private Stage stageUI;
     private OrthographicCamera camera;
     private GameBoard gameBoard;
+
+    private InputMultiplexer multiplexer;
+    private Label labelTilesLeft;
 
     public GameScreen(Game aGame) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
-        gameBoard = new GameBoard(stage);
-
-        tileTexture = new Texture(Gdx.files.internal("tile.png"));
-        addTexture = new Texture(Gdx.files.internal("addtile.png"));
+        stageUI = new Stage(new ScreenViewport());
+        gameBoard = new GameBoard(stage, stageUI);
 
         stage.addListener(new InputListener() {
             @Override
@@ -62,21 +65,43 @@ public class GameScreen implements Screen {
 
         camera = (OrthographicCamera) stage.getViewport().getCamera();
         camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
+
+
+        // TODO currently so we can differentiate between board tiles and currentTile.
+        // TODO show currentTile in right corner and make it bigger.
+        camera.zoom *= 1.2;
+        camera.update();
+
+        multiplexer = new InputMultiplexer();
+        /* UI gets click first (call event.handle() in listener to not pass the event down to game stage */
+        multiplexer.addProcessor(stageUI);
+        multiplexer.addProcessor(stage);
+
+        labelTilesLeft = new Label("", Carcassonne.skin);
+        labelTilesLeft.setAlignment(Align.center);
+        labelTilesLeft.setWidth(Gdx.graphics.getWidth());
+        labelTilesLeft.setFontScale(2);
+        labelTilesLeft.setY(20);
+        stageUI.addActor(labelTilesLeft);
     }
 
     @Override
     public void show() {
-        Gdx.input.setInputProcessor(stage);
+        Gdx.input.setInputProcessor(multiplexer);
     }
 
     @Override
     public void render(float delta) {
         // clear the screen with dark blue
-        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        labelTilesLeft.setText("Tiles left: " + gameBoard.tilesLeft());
 
         stage.act();
         stage.draw();
+        stageUI.act();
+        stageUI.draw();
     }
 
     @Override
@@ -101,6 +126,7 @@ public class GameScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        stage.dispose();
+        stageUI.dispose();
     }
 }
