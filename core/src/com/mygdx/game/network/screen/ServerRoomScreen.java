@@ -5,7 +5,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,17 +15,14 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
-import com.mygdx.game.GameScreen;
-import com.mygdx.game.network.GameClient;
+import com.mygdx.game.MainMenuScreen;
 import com.mygdx.game.network.GameServer;
-import com.mygdx.game.network.Network;
 import com.mygdx.game.network.NetworkDevice;
 import com.mygdx.game.network.NetworkHelper;
-import com.mygdx.game.network.NetworkLobbyScreen;
 import com.mygdx.game.network.TestOutput;
+import com.mygdx.game.GameScreen;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +90,7 @@ public class ServerRoomScreen implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 ((GameServer)NetworkHelper.getGameManager()).destroy();
                 NetworkHelper.setGameManager(null);
-                game.setScreen(new NetworkLobbyScreen(game));
+                game.setScreen(new MainMenuScreen(game));
             }
         });
         stage.addActor(back);
@@ -111,7 +107,7 @@ public class ServerRoomScreen implements Screen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                NetworkHelper.getGameManager().sendAll(new TestOutput("Start"));
+                NetworkHelper.getGameManager().sendToAll(new TestOutput("Start"));
                 game.setScreen(new GameScreen(game));
             }
         });

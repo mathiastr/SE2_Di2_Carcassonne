@@ -14,6 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.mygdx.game.network.NetworkHelper;
+import com.mygdx.game.network.TestOutput;
 
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)
@@ -35,6 +39,12 @@ public class GameScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
         gameBoard = new GameBoard(stage, stageUI);
+
+        NetworkHelper.getGameManager().addListener(new Listener(){
+            public void received (Connection connection, Object object) {
+                receive(connection,object);
+            }
+        });
 
         stage.addListener(new InputListener() {
             @Override
@@ -128,5 +138,14 @@ public class GameScreen implements Screen {
     public void dispose() {
         stage.dispose();
         stageUI.dispose();
+    }
+
+    public void receive(Connection connection, Object object){
+        //do here what should happen if you get a message of type ...
+        //send message with "Networkhelper.getGameManager.sentToAll(message)
+        //before register the class in the Network class
+        if (object instanceof TestOutput) {
+            //do something
+        }
     }
 }

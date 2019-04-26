@@ -28,20 +28,7 @@ public class GameServer extends AbstractGameManager{
         server.bind(Network.TCP,Network.UDP);
         server.start();
         this.setIp(ip());
-        /*
-        server.addListener(new Listener() {
-            public void received (Connection connection, Object object) {
-                if (object instanceof TestOutput) {
-                    TestOutput request = (TestOutput) object;
-                    System.out.println(request.getTest());
-                    Gdx.app.debug("network",request.getTest());
 
-                    TestOutput response = new TestOutput("hi Client");
-                    connection.sendTCP(response);
-                }
-            }
-        });
-        */
     }
 
     public void destroy() {
@@ -86,11 +73,23 @@ public class GameServer extends AbstractGameManager{
     }
 
     @Override
-    public void sendAll(final Object message) {
+    public void sendToAll(final Object message) {
         new Thread("Sending") {
             public void run () {
                 server.sendToAllTCP(message);
             }
         }.start();
+    }
+
+
+    @Override
+    public void sendToHost(final Object message){
+        super.sendToHost(message);
+        //to do
+    }
+
+    @Override
+    public void addListener(Listener listener) {
+        server.addListener(listener);
     }
 }

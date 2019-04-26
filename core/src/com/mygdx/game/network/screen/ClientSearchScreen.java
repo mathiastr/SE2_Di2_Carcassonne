@@ -9,26 +9,18 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.async.AsyncTask;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
-import com.mygdx.game.GameScreen;
+import com.mygdx.game.MainMenuScreen;
 import com.mygdx.game.network.GameClient;
-import com.mygdx.game.network.GameServer;
-import com.mygdx.game.network.Network;
-import com.mygdx.game.network.NetworkDevice;
 import com.mygdx.game.network.NetworkHelper;
-import com.mygdx.game.network.NetworkLobbyScreen;
 import com.mygdx.game.network.TestOutput;
+import com.mygdx.game.GameScreen;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +67,6 @@ public class ClientSearchScreen implements Screen {
                     @Override
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         try{
-                            //gameClient.connect(host);
                             gameClient.initConnection(host,new TestOutput("Hugo"));
                         }catch (Exception e){
 
@@ -131,72 +122,10 @@ public class ClientSearchScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 NetworkHelper.setGameManager(null);
-                game.setScreen(new NetworkLobbyScreen(game));
+                game.setScreen(new MainMenuScreen(game));
             }
         });
         stage.addActor(back);
-
-
-/*
-        TextButton client = new TextButton("Client", Carcassonne.skin);
-        client.setWidth(Gdx.graphics.getWidth() / 2);
-        client.setPosition(Gdx.graphics.getWidth() / 2 - client.getWidth() / 2, Gdx.graphics.getHeight() / 4 * 3);
-        client.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                GameClient gameClient = new GameClient();
-                if(NetworkHelper.getGameManager() != null &&
-                        NetworkHelper.getGameManager().getClass() == GameServer.class){
-                    ((GameServer)NetworkHelper.getGameManager()).destroy();
-                }
-                NetworkHelper.setGameManager(gameClient);
-                List<InetAddress> hosts = gameClient.discover();
-                if(!hosts.isEmpty()){
-                    output.setText("found" + hosts.size());
-                    gameClient.connect(hosts.get(0));
-                    output.setText("cliented");
-                }else {
-                    output.setText("nothing found");
-                }
-
-                Gdx.app.debug("network","client");
-            }
-        });
-        stage.addActor(client);
-
-        TextButton send = new TextButton("send Message", Carcassonne.skin);
-        send.setWidth(Gdx.graphics.getWidth() / 2);
-        send.setPosition(Gdx.graphics.getWidth() / 2 - send.getWidth() / 2, Gdx.graphics.getHeight() / 4);
-        send.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-                if(NetworkHelper.getGameManager() != null){
-                    Gdx.app.debug("network",NetworkHelper.getGameManager().getClass().toString());
-                    if(NetworkHelper.getGameManager().getClass() == GameClient.class){
-                        GameClient gameClient = (GameClient)NetworkHelper.getGameManager();
-                        Gdx.app.debug("network",GameClient.class.toString());
-                        gameClient.sendMessage("Hi Host");
-                    }
-                }
-                else{
-                    Gdx.app.debug("network","No Network");
-                }
-            }
-        });
-        stage.addActor(send);
-
-        */
         Gdx.input.setInputProcessor(stage);
     }
 

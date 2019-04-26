@@ -1,5 +1,7 @@
 package com.mygdx.game.network;
 
+import com.esotericsoftware.kryonet.Listener;
+
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
@@ -17,5 +19,9 @@ public abstract class AbstractGameManager {
         this.ip = ip;
     }
 
-    public void sendAll(Object message){}
+    public void sendToAll(Object message){}
+
+    public void sendToHost(Object message){}
+
+    public void addListener(Listener listener){}
 }

@@ -18,37 +18,6 @@ public class GameClient extends AbstractGameManager{
         client.start();
     }
 
-    public void connect(final InetAddress host){
-        client.setKeepAliveTCP(1000);
-        new Thread("Connect") {
-            public void run () {
-                try {
-                    client.connect(10000000, host, Network.TCP, Network.UDP);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }.start();
-    }
-
-    public void sendMessage(final Object message){
-        if (!client.isConnected()) {
-            try {
-                client.reconnect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        if(client.isConnected()){
-            new Thread("Sending") {
-                public void run() {
-                    client.sendTCP(message);
-                }
-            }.start();
-        }
-    }
-
     public List<InetAddress> discover() {
         return client.discoverHosts(Network.UDP, 2000);
     }
@@ -70,5 +39,26 @@ public class GameClient extends AbstractGameManager{
 
             }
         }.start();
+    }
+
+    @Override
+    public void sendToAll(final Object message) {
+        new Thread("Sending") {
+            public void run () {
+                client.sendTCP(message);
+            }
+        }.start();
+    }
+
+
+    @Override
+    public void sendToHost(final Object message){
+        super.sendToHost(message);
+        //to do
+    }
+
+    @Override
+    public void addListener(Listener listener) {
+        client.addListener(listener);
     }
 }
