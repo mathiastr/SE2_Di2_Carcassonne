@@ -49,20 +49,26 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start touch up");
-                game.setScreen(new CreatePlayersScreen(game));
             }
         });
         stage.addActor(jgButton);
         Gdx.input.setInputProcessor(stage);
 
         TextButton cgButton = new TextButton("Create Game", Carcassonne.skin, "menu");
-        cgButton.setWidth(Gdx.graphics.getWidth()/4);
-        cgButton.setPosition(Gdx.graphics.getWidth()/2-cgButton.getWidth()/2, Gdx.graphics.getHeight()*6/9 - cgButton.getHeight()*3/2);
+        cgButton.setWidth(Gdx.graphics.getWidth() / 4);
+        cgButton.setPosition(Gdx.graphics.getWidth() / 2 - cgButton.getWidth() / 2, Gdx.graphics.getHeight() * 6 / 9 - cgButton.getHeight() * 3 / 2);
+        cgButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.debug("touch", "start touch up");
+                game.setScreen(new CreatePlayersScreen(game));
+            }
+        });
         stage.addActor(cgButton);
 
         TextButton settButton = new TextButton("Settings", Carcassonne.skin, "menu");
-        settButton.setWidth(Gdx.graphics.getWidth()/4);
-        settButton.setPosition(Gdx.graphics.getWidth()/2-settButton.getWidth()/2, Gdx.graphics.getHeight()*6/9 - settButton.getHeight()*3);
+        settButton.setWidth(Gdx.graphics.getWidth() / 4);
+        settButton.setPosition(Gdx.graphics.getWidth() / 2-settButton.getWidth() / 2, Gdx.graphics.getHeight() * 6 / 9 - settButton.getHeight() * 3);
         stage.addActor(settButton);
     }
 

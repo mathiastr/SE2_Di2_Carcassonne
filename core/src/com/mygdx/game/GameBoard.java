@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 
 import java.util.ArrayList;
@@ -53,11 +54,7 @@ public class GameBoard {
 
     private int numberOfPlayers;
     private Player currentPlayer;
-
     private List<Player> players;
-
-
-
     private ArrayList<TileActor> hints = new ArrayList<>();
 
     /* is the deck of tiles */
@@ -267,6 +264,7 @@ public class GameBoard {
 
     public void drawTile() {
         currentTile = availableTiles.get(availableTiles.size()-1);
+        currentTile.setPosition(new Position(Gdx.graphics.getWidth() / TileActor.getSize() - 1, 0));
         availableTiles.remove(availableTiles.size()-1);
         stageOfUI.addActor(currentTile);
         showHintsForTile(currentTile);
@@ -282,7 +280,6 @@ public class GameBoard {
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
 
-        // TODO ask for number of players from main menu
         numberOfPlayers = players.size();
         this.players = players;
         currentPlayer = players.get(0);
@@ -309,6 +306,10 @@ public class GameBoard {
                 event.handle();
             }
         });
+
+        PlayerStatusActor playerStatusActor = new PlayerStatusActor();
+        playerStatusActor.setPosition(10, Gdx.graphics.getHeight(), Align.topLeft);
+        stageUI.addActor(playerStatusActor);
     }
 
     public int tilesLeft() {

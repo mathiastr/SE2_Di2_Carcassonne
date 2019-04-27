@@ -29,6 +29,11 @@ public class TileActor extends Actor {
 
     /* what does this tile have: (city, road, monastery) */
     private List<Feature> features = new ArrayList<>();
+
+    public static int getSize() {
+        return SIZE;
+    }
+
     public List<Feature> getFeatures() {
         return features;
     }

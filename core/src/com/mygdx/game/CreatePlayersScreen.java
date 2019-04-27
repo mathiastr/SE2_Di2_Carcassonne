@@ -76,7 +76,7 @@ public class CreatePlayersScreen implements Screen {
             playerListTable.add(new Label("" + player.getColor().name(), textStyle));
 
             TextButton deleteButton = new TextButton("delete", Carcassonne.skin, "menu");
-            playerListTable.add(deleteButton);
+            playerListTable.add(deleteButton).pad(20);
             deleteButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
@@ -90,7 +90,7 @@ public class CreatePlayersScreen implements Screen {
         }
 
         playerListTable.setFillParent(true);
-        playerListTable.setY(-150);
+        playerListTable.setY(-125);
         stage.addActor(playerListTable);
     }
 
@@ -101,7 +101,6 @@ public class CreatePlayersScreen implements Screen {
         players.add(new Player(GameBoard.Color.red, "Player 1"));
         players.add(new Player(GameBoard.Color.blue, "Player 2"));
 
-        // TODO: do I need this?
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
         background = new Texture("background.png");
@@ -112,7 +111,7 @@ public class CreatePlayersScreen implements Screen {
 
         int marginTop = 10;
 
-        // TODO another styleName
+        // TODO place these buttons inside the table
         TextButton startGameButton = new TextButton("Start Game", Carcassonne.skin, "menu");
         startGameButton.setWidth(Gdx.graphics.getWidth() / 4);
         startGameButton.setPosition(Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, Gdx.graphics.getHeight() * 6 / 9 - marginTop);

@@ -70,7 +70,7 @@ public class GameScreen implements Screen {
 
 
         // TODO currently so we can differentiate between board tiles and currentTile.
-        // TODO show currentTile in right corner and make it bigger.
+        // TODO currentTile make it bigger.
         camera.zoom *= 1.2;
         camera.update();
 

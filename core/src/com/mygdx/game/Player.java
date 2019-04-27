@@ -4,6 +4,16 @@ import java.util.ArrayList;
 
 public class Player {
     private int score;
+    private GameBoard.Color color;
+    private ArrayList<Meeple> meeples;
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 
     public GameBoard.Color getColor() {
         return color;
@@ -12,9 +22,6 @@ public class Player {
     public void setColor(GameBoard.Color color) {
         this.color = color;
     }
-
-    private GameBoard.Color color;
-    private ArrayList<Meeple> meeples;
 
     public String getName() {
         return name;
