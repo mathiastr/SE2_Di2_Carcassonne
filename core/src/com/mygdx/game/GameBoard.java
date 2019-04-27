@@ -21,13 +21,13 @@ public class GameBoard {
     private HashMap<Position, TileActor> tiles = new HashMap<>();
     private Stage stageOfBoard;
     private Stage stageOfUI;
+    public final static int MAX_NUM_OF_PLAYERS = 6;
 
 
     public enum Color {
-        yellow, red, green, blue, black;
+        yellow, red, green, blue, black, grey;
 
         public static Color getRandomColorExcept(List<Color> colors) {
-            boolean colorFound = true;
             Color randomColor = getRandom();
             if (colors.size() >= values().length) {
                 return randomColor;

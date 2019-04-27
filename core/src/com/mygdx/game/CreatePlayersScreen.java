@@ -117,13 +117,15 @@ public class CreatePlayersScreen implements Screen {
         addPlayer.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                List<GameBoard.Color> colors = new ArrayList<>();
-                for (Player p : players) {
-                    colors.add(p.getColor());
+                if (players.size() < GameBoard.MAX_NUM_OF_PLAYERS) {
+                    List<GameBoard.Color> colors = new ArrayList<>();
+                    for (Player p : players) {
+                        colors.add(p.getColor());
+                    }
+                    players.add(new Player(GameBoard.Color.getRandomColorExcept(colors),
+                            "Player " + (players.size() + 1)));
+                    renderPlayersList();
                 }
-                players.add(new Player(GameBoard.Color.getRandomColorExcept(colors),
-                        "Player " + (players.size() + 1)));
-                renderPlayersList();
                 Gdx.app.debug("touch", "add player button is touched");
             }
         });
