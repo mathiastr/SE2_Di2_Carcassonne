@@ -22,6 +22,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CreatePlayersScreen implements Screen {
@@ -73,11 +74,23 @@ public class CreatePlayersScreen implements Screen {
             });
             playerListTable.add(nameField).width(500);
             playerListTable.add(new Label("" + player.getColor().name(), textStyle));
+
+            TextButton deleteButton = new TextButton("delete", Carcassonne.skin, "menu");
+            playerListTable.add(deleteButton);
+            deleteButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.debug("touch", "delete button is touched");
+                    players.remove(player);
+                    renderPlayersList();
+                }
+            });
             playerListTable.row();
 
         }
 
         playerListTable.setFillParent(true);
+        playerListTable.setY(-150);
         stage.addActor(playerListTable);
     }
 
@@ -97,7 +110,7 @@ public class CreatePlayersScreen implements Screen {
         backgroundImage.setHeight(Gdx.graphics.getHeight());
         stage.addActor(backgroundImage);
 
-        int marginTop = 50;
+        int marginTop = 10;
 
         // TODO another styleName
         TextButton startGameButton = new TextButton("Start Game", Carcassonne.skin, "menu");
@@ -119,11 +132,16 @@ public class CreatePlayersScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (players.size() < GameBoard.MAX_NUM_OF_PLAYERS) {
                     List<GameBoard.Color> colors = new ArrayList<>();
+                    List<Integer> numbers = new ArrayList<>();
                     for (Player p : players) {
+                        numbers.add(Integer.valueOf(p.getName().split(" ")[1]));
                         colors.add(p.getColor());
                     }
+                    Integer[] arr = {1, 2, 3, 4, 5, 6};
+                    List<Integer> rest = (new ArrayList<>(Arrays.asList(arr)));
+                    rest.removeAll(numbers);
                     players.add(new Player(GameBoard.Color.getRandomColorExcept(colors),
-                            "Player " + (players.size() + 1)));
+                            "Player " + rest.get(0)));
                     renderPlayersList();
                 }
                 Gdx.app.debug("touch", "add player button is touched");
@@ -134,19 +152,8 @@ public class CreatePlayersScreen implements Screen {
         stage.addActor(startGameButton);
         // TODO what is that?
 
-        int width = Gdx.graphics.getWidth();
-        int height = Gdx.graphics.getHeight();
-
-        Label text;
-        Label.LabelStyle headerStyle = new Label.LabelStyle();
         font = new BitmapFont(Gdx.files.internal("font/font.fnt"));
         font.getData().setScale(5);
-        headerStyle.font = font;
-        headerStyle.fontColor = Color.BLACK;
-        text = new Label("Players", headerStyle);
-        text.setAlignment(Align.top);
-
-        stage.addActor(text);
 
         renderPlayersList();
 
