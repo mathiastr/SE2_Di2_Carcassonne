@@ -264,6 +264,7 @@ public class GameBoard {
         /*
         TODO: probably best to generate a seed at the "server-player", then send out the seed and do the shuffle locally
          */
+
         long seed = 123456789;
         Collections.shuffle(availableTiles, new Random(seed));
 

@@ -10,7 +10,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -18,11 +21,15 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
+import com.mygdx.game.network.screen.ChooseMeeplePlacementActor;
 
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)
 // TODO: add algorithmic for scoring
 // TODO: "Home-Button": goes back to baseTile and resets zoom.
+
+
+
 
 public class GameScreen implements Screen {
     private Game game;
@@ -30,6 +37,8 @@ public class GameScreen implements Screen {
     private Stage stageUI;
     private OrthographicCamera camera;
     private GameBoard gameBoard;
+    private Skin skin;
+
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
@@ -39,6 +48,33 @@ public class GameScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
         gameBoard = new GameBoard(stage, stageUI);
+        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+
+        Button placeMeeple = new TextButton("Meeple platzieren", skin,"small");
+        placeMeeple.setWidth(Gdx.graphics.getWidth()/8);
+        placeMeeple.setHeight(Gdx.graphics.getHeight()/8);
+        placeMeeple.setPosition(Gdx.graphics.getWidth()/2-placeMeeple.getWidth()/2, Gdx.graphics.getHeight()*6/9);
+        placeMeeple.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                //TODO: neuer Screen öffnet noch nicht
+
+                ChooseMeeplePlacementActor cmpa = new ChooseMeeplePlacementActor();
+                stageUI.addActor(cmpa);
+
+                //TODO: SetPosition richtig?
+                cmpa.setPosition(Gdx.graphics.getWidth()-placeMeeple.getWidth(), Gdx.graphics.getHeight());
+            }
+        });
+
+        stageUI.addActor(placeMeeple);
+        Gdx.input.setInputProcessor(stage);
 
         NetworkHelper.getGameManager().addListener(new Listener(){
             public void received (Connection connection, Object object) {
@@ -79,6 +115,7 @@ public class GameScreen implements Screen {
 
         // TODO currently so we can differentiate between board tiles and currentTile.
         // TODO show currentTile in right corner and make it bigger.
+
         camera.zoom *= 1.2;
         camera.update();
 
