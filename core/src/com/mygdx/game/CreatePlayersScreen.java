@@ -6,8 +6,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,6 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -59,9 +62,28 @@ public class CreatePlayersScreen implements Screen {
             TextField nameField = new TextField(player.getName(), textFieldStyle);
 
             //TODO profile photo
+
             Texture imageTexture = new Texture(Gdx.files.internal("profilePhoto.png"));
             Image profilePhoto = new Image();
             profilePhoto.setDrawable(new TextureRegionDrawable(new TextureRegion(imageTexture)));
+
+            profilePhoto.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Carcassonne.getNativeInterface().getPhoto((byte[] bytes) -> {
+                        Pixmap p = new Pixmap(bytes, 0, bytes.length);
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                Texture tex=new Texture(p);
+                                Sprite sprite = new Sprite(tex);
+                                sprite.setRotation(180f);
+                                profilePhoto.setDrawable(new SpriteDrawable(sprite));
+                            }
+                        });
+                    });
+                }
+            });
 
             playerListTable.add(profilePhoto).width(100).height(100);
             nameField.setAlignment(Align.center);
