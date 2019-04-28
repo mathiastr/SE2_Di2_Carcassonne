@@ -307,9 +307,11 @@ public class GameBoard {
             }
         });
 
-        PlayerStatusActor playerStatusActor = new PlayerStatusActor();
-        playerStatusActor.setPosition(10, Gdx.graphics.getHeight(), Align.topLeft);
-        stageUI.addActor(playerStatusActor);
+        for (Player p: players) {
+            PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
+            playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
+            stageUI.addActor(playerStatusActor);
+        }
     }
 
     public int tilesLeft() {

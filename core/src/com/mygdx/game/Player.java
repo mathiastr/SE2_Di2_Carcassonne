@@ -7,6 +7,11 @@ public class Player {
     private GameBoard.Color color;
     private ArrayList<Meeple> meeples;
 
+    public int getNumberOfMeeples() {
+        return meeples.size();
+    }
+
+
     public int getScore() {
         return score;
     }

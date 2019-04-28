@@ -76,7 +76,7 @@ public class CreatePlayersScreen implements Screen {
             playerListTable.add(new Label("" + player.getColor().name(), textStyle));
 
             TextButton deleteButton = new TextButton("delete", Carcassonne.skin, "menu");
-            playerListTable.add(deleteButton).pad(20);
+            playerListTable.add(deleteButton);
             deleteButton.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
