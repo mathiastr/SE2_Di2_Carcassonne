@@ -46,6 +46,10 @@ public class GameBoard {
 
     private TileActor currentTile;
 
+    public TileActor getCurrentTile() {
+        return currentTile;
+    }
+
     public void createDeckTilesAndStartTile() {
         int straightRoadUnderCityCount = 4; // 3 + (1 start-tile)
         int diagCityCount = 5;
@@ -445,6 +449,14 @@ public class GameBoard {
             stageOfBoard.addActor(newHint);
             hints.add(newHint);
         }
+    }
+
+    public Stage getStageOfBoard() {
+        return stageOfBoard;
+    }
+
+    public Stage getStageOfUI() {
+        return stageOfUI;
     }
 
     public void removeOldHints() {
