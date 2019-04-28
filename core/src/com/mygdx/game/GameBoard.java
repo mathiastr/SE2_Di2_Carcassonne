@@ -62,8 +62,8 @@ public class GameBoard {
 
     private TileActor currentTile;
 
-    public int getCurrentPlayer() {
-        return players.indexOf(currentPlayer);
+    public Player getCurrentPlayer() {
+        return currentPlayer;
     }
     public void createDeckTilesAndStartTile() {
         int straightRoadUnderCityCount = 4; // 3 + (1 start-tile)

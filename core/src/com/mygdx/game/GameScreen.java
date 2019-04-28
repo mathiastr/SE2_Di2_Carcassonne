@@ -107,7 +107,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         labelTilesLeft.setText("Tiles left: " + gameBoard.tilesLeft());
-        currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer());
+        currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer().getName());
 
         stage.act();
         stage.draw();
