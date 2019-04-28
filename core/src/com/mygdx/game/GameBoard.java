@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -23,6 +24,9 @@ public class GameBoard {
     private Stage stageOfBoard;
     private Stage stageOfUI;
     public final static int MAX_NUM_OF_PLAYERS = 6;
+    private final TextButton finishTurnButton;
+    private boolean tileIsPlaced = false;
+    private boolean turnIsFinished = false;
 
 
     public enum Color {
@@ -262,17 +266,18 @@ public class GameBoard {
         }
     }
 
-    public void drawTile() {
-        currentTile = availableTiles.get(availableTiles.size()-1);
-        currentTile.setPosition(new Position(Gdx.graphics.getWidth() / TileActor.getSize() - 1, 0));
-        availableTiles.remove(availableTiles.size()-1);
+    public void drawCurentTile() {
+        currentTile = availableTiles.get(availableTiles.size() - 1);
+        currentTile.setSize(300);
+        currentTile.setPosition(Gdx.graphics.getWidth() - currentTile.getWidth() - 100,  100);
+        availableTiles.remove(availableTiles.size() - 1);
         stageOfUI.addActor(currentTile);
-        showHintsForTile(currentTile);
     }
 
     public void nextTurn() {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
-
+        turnIsFinished = false;
+        tileIsPlaced = false;
     }
 
     public GameBoard(Stage stageGame, Stage stageUI, List<Player> players) {
@@ -292,7 +297,9 @@ public class GameBoard {
         long seed = 123456789;
         Collections.shuffle(availableTiles, new Random(seed));
 
-        drawTile();
+        drawCurentTile();
+        showHintsForTile(currentTile);
+
 
         /* if we click on the "currentTile" we rotate it and recalculate the hints etc. */
         currentTile.addListener(new ClickListener() {
@@ -302,7 +309,9 @@ public class GameBoard {
                 currentTile.rotate();
                 Gdx.app.log("hmmmm", getValidPositionsForTile(currentTile).toString());
                 removeOldHints();
-                showHintsForTile(currentTile);
+                if (!tileIsPlaced) {
+                    showHintsForTile(currentTile);
+                }
                 event.handle();
             }
         });
@@ -312,6 +321,24 @@ public class GameBoard {
             playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
             stageUI.addActor(playerStatusActor);
         }
+
+        // Create button for finishing turn
+
+        finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
+        finishTurnButton.setWidth(currentTile.getSize());
+        finishTurnButton.getLabel().setFontScale(0.8f);
+        finishTurnButton.setPosition(Gdx.graphics.getWidth() - currentTile.getSize()- 100, 0);
+        finishTurnButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (tileIsPlaced) {
+                    turnIsFinished = true;
+                    nextTurn();
+                }
+            }
+        });
+
+        stageUI.addActor(finishTurnButton);
     }
 
     public int tilesLeft() {
@@ -323,47 +350,51 @@ public class GameBoard {
     }
 
     public void placeCurrentTileAt(Position position) {
-        DelayedRemovalArray<EventListener> listeners = currentTile.getListeners();
+        if (!tileIsPlaced) {
+            DelayedRemovalArray<EventListener> listeners = currentTile.getListeners();
 
-        TileActor tileToPlace = currentTile;
-        tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
-        tileToPlace.setPosition(position);
-        stageOfBoard.addActor(tileToPlace);
-        tiles.put(position, tileToPlace);
+            currentTile.setSize(128);
+            TileActor tileToPlace = currentTile;
+            tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
+            tileToPlace.setPosition(position);
+            stageOfBoard.addActor(tileToPlace);
+            tiles.put(position, tileToPlace);
 
 
-        /*-----------------------------*/
-        // Testing the road/city scoring
-        // for every placed tile
-        for (Feature f : tileToPlace.getFeatures()) {
-            if (f instanceof Road)
-                Gdx.app.log("scoring [road]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (Road) f)));
-            if (f instanceof City)
-                Gdx.app.log("scoring [city]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (City) f)));
-        }
-        for (Position pos : tileToPlace.getPosition().getSurroundingPositions()) {
-            if (tiles.containsKey(pos)) {
-                TileActor t = tiles.get(pos);
-                if (t.isMonastery()) {
-                    Gdx.app.log("scoring [monastery]", Integer.toString(scoreMonastery(t)));
+            /*-----------------------------*/
+            // Testing the road/city scoring
+            // for every placed tile
+            for (Feature f : tileToPlace.getFeatures()) {
+                if (f instanceof Road)
+                    Gdx.app.log("scoring [road]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (Road) f)));
+                if (f instanceof City)
+                    Gdx.app.log("scoring [city]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (City) f)));
+            }
+            for (Position pos : tileToPlace.getPosition().getSurroundingPositions()) {
+                if (tiles.containsKey(pos)) {
+                    TileActor t = tiles.get(pos);
+                    if (t.isMonastery()) {
+                        Gdx.app.log("scoring [monastery]", Integer.toString(scoreMonastery(t)));
+                    }
                 }
             }
+            /*-----------------------------*/
+            tileIsPlaced = true;
+
+            removeOldHints();
+
+            if (availableTiles.isEmpty()) {
+                Gdx.app.log("hmmmm", "No Tiles left, game ends");
+                gameEnds();
+            } else {
+                drawCurentTile();
+                currentTile.addListener(listeners.peek());
+            }
+
+            tileToPlace.removeListener(listeners.peek());
+
         }
-        /*-----------------------------*/
 
-
-        removeOldHints();
-
-        if (availableTiles.isEmpty()) {
-            Gdx.app.log("hmmmm", "No Tiles left, game ends");
-            gameEnds();
-        } else {
-            drawTile();
-            currentTile.addListener(listeners.peek());
-        }
-
-        tileToPlace.removeListener(listeners.peek());
-        nextTurn();
     }
 
     /*
