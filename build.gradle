@@ -92,7 +92,7 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
-
+        compile "com.esotericsoftware:kryonet:2.22.0-RC1"
     }
 }
 

@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -14,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.network.screen.ClientSearchScreen;
+import com.mygdx.game.network.screen.ServerRoomScreen;
 
 public class MainMenuScreen implements Screen {
     private Game game;
@@ -40,8 +44,6 @@ public class MainMenuScreen implements Screen {
         title.setFontScale(5);
         stage.addActor(title);
 
-
-
         TextButton jgButton = new TextButton("Join Game", Carcassonne.skin, "menu");
         jgButton.setWidth(Gdx.graphics.getWidth()/4);
         jgButton.setPosition(Gdx.graphics.getWidth()/2-jgButton.getWidth()/2, Gdx.graphics.getHeight()*6/9);
@@ -49,10 +51,23 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start touch up");
+                game.setScreen(new ClientSearchScreen(game));
             }
         });
         stage.addActor(jgButton);
-        Gdx.input.setInputProcessor(stage);
+
+        TextButton lgButton = new TextButton("Local Game", Carcassonne.skin, "menu");
+        lgButton.setWidth(Gdx.graphics.getWidth()/4);
+        lgButton.setPosition(Gdx.graphics.getWidth()/ 2 - jgButton.getWidth()/2, Gdx.graphics.getHeight()*6/9 - lgButton.getHeight() * 9 / 2);
+        lgButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.debug("touch", "local game touch up");
+                game.setScreen(new CreatePlayersScreen(game));
+
+            }
+        });
+        stage.addActor(lgButton);
 
         TextButton cgButton = new TextButton("Create Game", Carcassonne.skin, "menu");
         cgButton.setWidth(Gdx.graphics.getWidth() / 4);
@@ -61,7 +76,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start touch up");
-                game.setScreen(new CreatePlayersScreen(game));
+                game.setScreen(new ServerRoomScreen(game));
             }
         });
         stage.addActor(cgButton);
@@ -70,6 +85,8 @@ public class MainMenuScreen implements Screen {
         settButton.setWidth(Gdx.graphics.getWidth() / 4);
         settButton.setPosition(Gdx.graphics.getWidth() / 2-settButton.getWidth() / 2, Gdx.graphics.getHeight() * 6 / 9 - settButton.getHeight() * 3);
         stage.addActor(settButton);
+
+        Gdx.input.setInputProcessor(stage);
     }
 
     @Override
