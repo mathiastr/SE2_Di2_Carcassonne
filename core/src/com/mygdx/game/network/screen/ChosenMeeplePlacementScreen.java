@@ -22,7 +22,7 @@ import com.mygdx.game.TileActor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChooseMeeplePlacementActor extends Actor implements Screen {
+public class Choosen extends Actor implements Screen {
     //TODO: Ist implements Screen notwendig?
 
     Stage stage;
@@ -33,6 +33,8 @@ public class ChooseMeeplePlacementActor extends Actor implements Screen {
     TileActor currentTile;
     private List<Feature> features = new ArrayList<>();
     private Texture texture;
+    
+    public Choosen
 
     public void set() {
         gb = TileActor.getGameboard();
@@ -40,7 +42,7 @@ public class ChooseMeeplePlacementActor extends Actor implements Screen {
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         features = currentTile.getFeatures();
 
-        Button placeMonk = new TextButton("place Monk", skin, "small");
+        TextButton placeMonk = new TextButton("place Monk", skin, "small");
         placeMonk.setWidth(Gdx.graphics.getWidth() / 8);
         placeMonk.setHeight(Gdx.graphics.getHeight() / 8);
         //TODO: Button Position ändern!

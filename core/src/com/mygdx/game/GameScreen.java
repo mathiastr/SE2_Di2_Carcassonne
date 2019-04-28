@@ -6,7 +6,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,7 +20,7 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
-import com.mygdx.game.network.screen.ChooseMeeplePlacementActor;
+import com.mygdx.game.network.screen.ChosseMeeplePlacementScreen;
 
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)
@@ -50,7 +49,7 @@ public class GameScreen implements Screen {
         gameBoard = new GameBoard(stage, stageUI);
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
-        Button placeMeeple = new TextButton("Meeple platzieren", skin,"small");
+        Button placeMeeple = new TextButton("place Meeple", skin,"small");
         placeMeeple.setWidth(Gdx.graphics.getWidth()/8);
         placeMeeple.setHeight(Gdx.graphics.getHeight()/8);
         placeMeeple.setPosition(Gdx.graphics.getWidth()/2-placeMeeple.getWidth()/2, Gdx.graphics.getHeight()*6/9);
@@ -65,7 +64,7 @@ public class GameScreen implements Screen {
 
                 //TODO: neuer Screen öffnet noch nicht
 
-                ChooseMeeplePlacementActor cmpa = new ChooseMeeplePlacementActor();
+                ChosseMeeplePlacementScreen cmpa = new ChosseMeeplePlacementScreen();
                 stageUI.addActor(cmpa);
 
                 //TODO: SetPosition richtig?
