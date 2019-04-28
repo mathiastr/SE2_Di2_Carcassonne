@@ -30,7 +30,11 @@ public class PlayerStatusActor extends Actor {
         font.getData().setScale(3);
 
         //TODO get profile photo from player
-        profilePhoto = new Texture(Gdx.files.internal("profilePhoto.png"));
+        if (player.getPhoto() == null) {
+            profilePhoto = new Texture(Gdx.files.internal("profilePhoto.png"));
+        } else {
+            profilePhoto = player.getPhoto();
+        }
         meeple = new Texture(Gdx.files.internal("meeple.png"));
         score = new Texture(Gdx.files.internal("coin.png"));
 

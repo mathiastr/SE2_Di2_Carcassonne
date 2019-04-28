@@ -79,6 +79,7 @@ public class CreatePlayersScreen implements Screen {
                                 Sprite sprite = new Sprite(tex);
                                 sprite.setRotation(180f);
                                 profilePhoto.setDrawable(new SpriteDrawable(sprite));
+                                player.setPhoto(tex);
                             }
                         });
                     });
