@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
@@ -20,6 +21,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
 import com.mygdx.game.network.screen.ChosenMeeplePlacementScreen;
+import com.mygdx.game.network.screen.ClientSearchScreen;
 
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)
@@ -53,12 +55,17 @@ public class GameScreen implements Screen {
         placeMeeple.setHeight(Gdx.graphics.getHeight()/8);
         //placeMeeple.setPosition(Gdx.graphics.getWidth()/2-placeMeeple.getWidth()/2, Gdx.graphics.getHeight()*6/9);
         placeMeeple.setPosition(Gdx.graphics.getWidth()- placeMeeple.getWidth() - 20, 40);
-        placeMeeple.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
+        placeMeeple.addListener(new ClickListener() {
 
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.debug("touch", "start touch up");
+                game.setScreen(new ChosenMeeplePlacementScreen());
+            }
+        });
+        //ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();
+        stageUI.addActor(placeMeeple);
+/*
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
@@ -70,9 +77,9 @@ public class GameScreen implements Screen {
                 //TODO: SetPosition richtig?
                 cmpa.setPosition(Gdx.graphics.getWidth()-placeMeeple.getWidth(), Gdx.graphics.getHeight());
             }
-        });
+        });*/
 
-        stageUI.addActor(placeMeeple);
+        //stageUI.addActor(placeMeeple);
         Gdx.input.setInputProcessor(stage);
 
         NetworkHelper.getGameManager().addListener(new Listener(){
