@@ -17,14 +17,16 @@ import java.util.List;
 
 public class GameServer extends AbstractGameManager{
 
+    public static final int WRITE_BUFFER_SIZE = 32768;
+    public static final int OBJECT_BUFFER_SIZE = 16384;
     private Server server;
     private List<NetworkDevice> deviceList;
 
     public GameServer() throws IOException {
-        server = new Server(32768,16384);
+        server = new Server(WRITE_BUFFER_SIZE, OBJECT_BUFFER_SIZE);
         Network.register(server);
 
-        deviceList = new ArrayList<NetworkDevice>();
+        deviceList = new ArrayList<>();
         server.bind(Network.TCP,Network.UDP);
         server.start();
         this.setIp(ip());
@@ -36,7 +38,7 @@ public class GameServer extends AbstractGameManager{
     }
 
 
-    public InetAddress ip() throws SocketException {
+    private InetAddress ip() throws SocketException {
         Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
         NetworkInterface ni;
         while (nis.hasMoreElements()) {
@@ -72,7 +74,6 @@ public class GameServer extends AbstractGameManager{
         deviceList.add(device);
     }
 
-    @Override
     public void sendToAll(final Object message) {
         new Thread("Sending") {
             public void run () {
@@ -81,15 +82,13 @@ public class GameServer extends AbstractGameManager{
         }.start();
     }
 
-
-    @Override
-    public void sendToHost(final Object message){
-        super.sendToHost(message);
-        //to do
-    }
-
     @Override
     public void addListener(Listener listener) {
         server.addListener(listener);
+    }
+
+    @Override
+    public void sendToHost(Object message) {
+
     }
 }

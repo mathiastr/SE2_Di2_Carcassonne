@@ -45,11 +45,11 @@ public class ClientSearchScreen implements Screen {
         output.setFontScale(3);
         stage.addActor(output);
 
-        server = new ArrayList<TextButton>();
+        server = new ArrayList<>();
         final GameClient gameClient = new GameClient();
         gameClient.getClient().addListener(new Listener(){
             public void received (Connection connection, Object object) {
-                receive(connection,object);
+                receive(object);
             }
         });
         NetworkHelper.setGameManager(gameClient);
@@ -69,7 +69,7 @@ public class ClientSearchScreen implements Screen {
                         try{
                             gameClient.initConnection(host,new TestOutput("Hugo"));
                         }catch (Exception e){
-
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -96,7 +96,7 @@ public class ClientSearchScreen implements Screen {
                 GameClient client = ((GameClient)NetworkHelper.getGameManager());
                 List<InetAddress> hosts = client.discover();
                 if(!hosts.isEmpty()){
-                    server = new ArrayList<TextButton>();
+                    server = new ArrayList<>();
                     for (InetAddress host : hosts
                     ) {
                         TextButton serv = new TextButton(host.getHostName(), Carcassonne.skin);
@@ -183,14 +183,11 @@ public class ClientSearchScreen implements Screen {
 
     }
 
-    public void receive(Connection connection, Object object){
+    private void receive(Object object){
         if (object instanceof TestOutput) {
-            Gdx.app.postRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    // TODO pass players
-                    game.setScreen(new GameScreen(game, new ArrayList<>()));
-                }
+            Gdx.app.postRunnable(() -> {
+                // TODO pass players
+                game.setScreen(new GameScreen(game, new ArrayList<>()));
             });
         }
     }

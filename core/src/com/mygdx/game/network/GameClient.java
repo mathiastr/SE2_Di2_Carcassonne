@@ -10,7 +10,8 @@ import java.net.SocketException;
 import java.util.List;
 
 public class GameClient extends AbstractGameManager{
-    Client client;
+    public static final int TIMEOUT = 1000;
+    private Client client;
 
     public GameClient() {
         client = new Client();
@@ -19,7 +20,7 @@ public class GameClient extends AbstractGameManager{
     }
 
     public List<InetAddress> discover() {
-        return client.discoverHosts(Network.UDP, 2000);
+        return client.discoverHosts(Network.UDP, TIMEOUT * 2);
     }
 
     public Client getClient() {
@@ -27,11 +28,11 @@ public class GameClient extends AbstractGameManager{
     }
 
     public void initConnection (final InetAddress host, final Object message){
-        client.setKeepAliveTCP(1000);
+        client.setKeepAliveTCP(TIMEOUT);
         new Thread("Connect") {
             public void run () {
                 try {
-                    client.connect(1000, host, Network.TCP, Network.UDP);
+                    client.connect(TIMEOUT, host, Network.TCP, Network.UDP);
                     client.sendTCP(message);
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -42,7 +43,7 @@ public class GameClient extends AbstractGameManager{
     }
 
     @Override
-    public void sendToAll(final Object message) {
+    public void sendToHost(final Object message){
         new Thread("Sending") {
             public void run () {
                 client.sendTCP(message);
@@ -50,11 +51,9 @@ public class GameClient extends AbstractGameManager{
         }.start();
     }
 
-
     @Override
-    public void sendToHost(final Object message){
-        super.sendToHost(message);
-        //to do
+    public void sendToAll(Object message) {
+
     }
 
     @Override

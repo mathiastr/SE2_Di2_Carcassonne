@@ -19,9 +19,9 @@ public abstract class AbstractGameManager {
         this.ip = ip;
     }
 
-    public void sendToAll(Object message){}
+    public abstract void addListener(Listener listener);
 
-    public void sendToHost(Object message){}
+    public abstract void sendToHost(final Object message);
 
-    public void addListener(Listener listener){}
+    public abstract void sendToAll(final Object message);
 }

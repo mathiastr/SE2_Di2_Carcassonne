@@ -28,24 +28,21 @@ import java.util.List;
 
 public class ServerRoomScreen implements Screen {
 
-    private Game game;
     private Stage stage;
-    private Label output;
     private List<TextButton> devices;
 
     public ServerRoomScreen(final Game game) {
-        this.game = game;
         stage = new Stage(new ScreenViewport());
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-        output = new Label("Server room", Carcassonne.skin);
+        Label output = new Label("Server room", Carcassonne.skin);
         output.setAlignment(Align.center);
         output.setY(Gdx.graphics.getHeight()/8*7);
         output.setWidth(Gdx.graphics.getWidth());
         output.setFontScale(3);
         stage.addActor(output);
 
-        devices = new ArrayList<TextButton>();
+        devices = new ArrayList<>();
 
         for (int i = 0; i < 6; i++) {
             TextButton device = new TextButton("Device " +(i+1), Carcassonne.skin);
@@ -156,7 +153,7 @@ public class ServerRoomScreen implements Screen {
     public void dispose() {
     }
 
-    public void receive(Connection connection, Object object){
+    private void receive(Connection connection, Object object){
         if (object instanceof TestOutput) {
             NetworkDevice device = new NetworkDevice(((TestOutput) object).getTest(),
                     connection.getRemoteAddressTCP().getAddress());
