@@ -9,9 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TileActor extends Actor {
-    private static int SIZE = 128;
+    private int SIZE = 128;
     private Texture texture;
-    private Texture textureBig;
     private Position position;
     private final GameBoard board;
     private ArrayList<Meeple> meeples; // TODO: maybe add meeple field to Feature class
@@ -29,6 +28,17 @@ public class TileActor extends Actor {
 
     /* what does this tile have: (city, road, monastery) */
     private List<Feature> features = new ArrayList<>();
+
+    public int getSize() {
+        return SIZE;
+    }
+
+    public void setSize(int size) {
+        this.SIZE = size;
+        setWidth(size);
+        setHeight(size);
+    }
+
     public List<Feature> getFeatures() {
         return features;
     }
@@ -81,8 +91,7 @@ public class TileActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        //batch.draw(texture, getX(), getY());
-        batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 360 - rotation * 90, 0, 0, (int) getWidth(), (int) getHeight(), false, false);
+        batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 360 - rotation * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
     }
 
     public Texture getTexture() {
