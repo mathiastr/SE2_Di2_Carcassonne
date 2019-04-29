@@ -1,5 +1,6 @@
 package com.mygdx.game.network.screen;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -11,8 +12,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.Carcassonne;
 import com.mygdx.game.City;
 import com.mygdx.game.Feature;
 import com.mygdx.game.GameBoard;
@@ -22,7 +27,7 @@ import com.mygdx.game.TileActor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Choosen extends Actor implements Screen {
+public class ChosenMeeplePlacementScreen extends Actor implements Screen{
     //TODO: Ist implements Screen notwendig?
 
     Stage stage;
@@ -33,8 +38,6 @@ public class Choosen extends Actor implements Screen {
     TileActor currentTile;
     private List<Feature> features = new ArrayList<>();
     private Texture texture;
-    
-    public Choosen
 
     public void set() {
         gb = TileActor.getGameboard();
@@ -42,7 +45,7 @@ public class Choosen extends Actor implements Screen {
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         features = currentTile.getFeatures();
 
-        TextButton placeMonk = new TextButton("place Monk", skin, "small");
+        Button placeMonk = new TextButton("Mönch platzieren", skin, "small");
         placeMonk.setWidth(Gdx.graphics.getWidth() / 8);
         placeMonk.setHeight(Gdx.graphics.getHeight() / 8);
         //TODO: Button Position ändern!
@@ -61,7 +64,7 @@ public class Choosen extends Actor implements Screen {
             }
         });
 
-        Button placeHighwayman = new TextButton("place Highwayman", skin, "small");
+        Button placeHighwayman = new TextButton("Wegelagerer platzieren", skin, "small");
         placeHighwayman.setWidth(Gdx.graphics.getWidth() / 8);
         placeHighwayman.setHeight(Gdx.graphics.getHeight() / 8);
         //TODO: Button Position ändern!
@@ -80,7 +83,7 @@ public class Choosen extends Actor implements Screen {
             }
         });
 
-        Button placeFarmer = new TextButton("place Farmer", skin, "small");
+        Button placeFarmer = new TextButton("Bauer platzieren", skin, "small");
         placeFarmer.setWidth(Gdx.graphics.getWidth() / 8);
         placeFarmer.setHeight(Gdx.graphics.getHeight() / 8);
         //TODO: Button Position ändern!
@@ -98,7 +101,7 @@ public class Choosen extends Actor implements Screen {
             }
         });
 
-        Button placeKnight = new TextButton("place Knight", skin, "small");
+        Button placeKnight = new TextButton("Ritter platzieren", skin, "small");
         placeKnight.setWidth(Gdx.graphics.getWidth() / 8);
         placeKnight.setHeight(Gdx.graphics.getHeight() / 8);
         //TODO: Button Position ändern!
@@ -122,6 +125,7 @@ public class Choosen extends Actor implements Screen {
             for (Feature f : features) {
                 if (f.equals(City.class) && currentTile.isMonastery() == true) {
                     //TODO: Transparenz auf 100
+                    f.addMeeple();
                     dispose();
                 }
             }
@@ -133,6 +137,7 @@ public class Choosen extends Actor implements Screen {
             for (Feature f : features) {
                 if (f.equals(Road.class)) {
                     //TODO: Transparenz auf 100
+                    f.addMeeple();
                     dispose();
                 }
             }
@@ -145,6 +150,7 @@ public class Choosen extends Actor implements Screen {
             for (Feature f : features) {
                 if (f.equals(Road.class)) {
                     //TODO: Transparenz auf 100
+                    f.addMeeple();
                     dispose();
 
                 }
@@ -157,6 +163,7 @@ public class Choosen extends Actor implements Screen {
             for (Feature f : features) {
                 if (f.equals(City.class)) {
                     //TODO: Transparenz auf 100
+                    f.addMeeple();
                     dispose();
                 }
             }
@@ -166,7 +173,7 @@ public class Choosen extends Actor implements Screen {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         //TODO: Richtig überschreiben
-        super.draw(batch, parentAlpha);
+        //super.draw(batch, parentAlpha);
         //batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1);
         //batch.draw(texture, getX(), getY());
     }
