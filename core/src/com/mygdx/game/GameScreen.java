@@ -60,7 +60,7 @@ public class GameScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start touch up");
-                game.setScreen(new ChosenMeeplePlacementScreen());
+                game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this,game, gameBoard));
             }
         });
         //ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();

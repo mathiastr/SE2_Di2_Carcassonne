@@ -39,39 +39,21 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
     private Label output;
     private List<TextButton> meepleButtons;
     private Game game;
+    private Screen previousScreen;
 
-    public TextButton createMeeplePlacementButton(Feature feature)
-    {
-        TextButton placeMeepleButton = new TextButton("Place Meeple on " + feature.getClass().getSimpleName(), Carcassonne.skin);
-
-        placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8);
-        placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8);
-
-        placeMeepleButton.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                feature.addMeeple();
-            }
-        });
-
-        return placeMeepleButton;
-    }
-
-    public  ChosenMeeplePlacementScreen() {
+    public  ChosenMeeplePlacementScreen(Screen previousScreen, Game game, GameBoard gb) {
+        this.gb = gb;
+        this.previousScreen = previousScreen;
+        this.game = game;
         stage = new Stage(new ScreenViewport());
         stageUi = new Stage(new ScreenViewport());
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        gb = new GameBoard(stage, stageUi);
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         currentTile = gb.getCurrentTile();
         features = currentTile.getFeatures();
         meepleButtons = new ArrayList<TextButton>();
-        this.game = game;
+
+
 
         output = new Label("Which Meeple would you like to place?", Carcassonne.skin);
         output.setAlignment(Align.center);
@@ -98,14 +80,34 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                ((GameServer)NetworkHelper.getGameManager()).destroy();
-                NetworkHelper.setGameManager(null);
-                game.setScreen(new GameScreen(game));
+                game.setScreen(previousScreen);
             }
         });
         stage.addActor(back);
         //Gdx.input.setInputProcessor(stage);
 
+    }
+
+    public TextButton createMeeplePlacementButton(Feature feature)
+    {
+        TextButton placeMeepleButton = new TextButton("Place Meeple on " + feature.getClass().getSimpleName(), Carcassonne.skin);
+
+        placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8);
+        placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8);
+
+        placeMeepleButton.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                feature.addMeeple();
+            }
+        });
+
+        return placeMeepleButton;
     }
 
     private void setMeepleTextButtons() {
@@ -121,69 +123,6 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
             stage.addActor(button);
         }
     }
-
-    public void placeMeepleOnMonastry() {
-        for (int i = 0; i < features.size(); ++i) {
-            for (Feature f : features) {
-                if (f.equals(City.class) && currentTile.isMonastery() == true) {
-                    //TODO: Transparenz auf 100
-                    f.addMeeple();
-                    dispose();
-                }
-            }
-        }
-    }
-
-    public void placeMeepleOnRoad() {
-        for (int i = 0; i < features.size(); ++i) {
-            for (Feature f : features) {
-                System.out.println("road before if");
-                if (f.equals(Road.class)) {
-                    System.out.println("road in if");
-                    //TODO: Transparenz auf 100
-                    f.addMeeple();
-                    dispose();
-                }
-            }
-        }
-    }
-
-    public void placeMeepleOnField() {
-
-        for (int i = 0; i < features.size(); ++i) {
-            for (Feature f : features) {
-                System.out.println("place farmer before if");
-
-                if (f instanceof Field) {
-                    System.out.println("place farmer in if");
-                    //TODO: Transparenz auf 100
-                    f.addMeeple();
-                    dispose();
-
-                }
-            }
-        }
-    }
-
-    public void placeMeepleOnCity() {
-        for (int i = 0; i < features.size(); ++i) {
-            for (Feature f : features) {
-                if (f.equals(City.class)) {
-                    //TODO: Transparenz auf 100
-                    f.addMeeple();
-                    dispose();
-                }
-            }
-        }
-    }
-
-    /*@Override
-    public void draw(Batch batch, float parentAlpha) {
-        //TODO: Richtig überschreiben
-        super.draw(batch, parentAlpha);
-        batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1);
-        batch.draw(texture, getX(), getY());
-    }*/
 
     @Override
     public void show() {
