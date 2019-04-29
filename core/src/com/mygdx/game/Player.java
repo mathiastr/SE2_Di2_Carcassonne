@@ -1,11 +1,23 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import java.util.ArrayList;
 
 public class Player {
     private int score;
     private GameBoard.Color color;
     private ArrayList<Meeple> meeples;
+
+    public Texture getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Texture photo) {
+        this.photo = photo;
+    }
+
+    private Texture photo;
 
     public int getNumberOfMeeples() {
         return meeples.size();
