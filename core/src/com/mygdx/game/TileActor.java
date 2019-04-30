@@ -1,21 +1,34 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.badlogic.gdx.scenes.scene2d.actions.Actions.show;
+
 public class TileActor extends Actor {
     private int SIZE = 128;
     private Texture texture;
+    private Texture textureBig;
     private Position position;
-    private final GameBoard board;
+    private static GameBoard board;
     private ArrayList<Meeple> meeples; // TODO: maybe add meeple field to Feature class
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
     private boolean monastery = false;
+    private Player player1;
+
+    public static GameBoard getGameboard(){
+        return board;
+    }
 
     /* direction of the tile
             for ex. (clockwise)
@@ -38,6 +51,7 @@ public class TileActor extends Actor {
         setWidth(size);
         setHeight(size);
     }
+
 
     public List<Feature> getFeatures() {
         return features;

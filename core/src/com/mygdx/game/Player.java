@@ -51,6 +51,17 @@ public class Player {
     private String name;
 
     // TODO meeples inactive and active
+    public boolean checkIfMeepleAvailable(){
+        for (int i = 0; i < meeples.size(); i++){
+            if(
+                    meeples.get(i).isBusy() == false){
+                meeples.get(i).makeBusy();
+                //TODO: Wenn Meeple abgezogen wird, muss er der Liste wieder hinzugefügt werden
+                meeples.remove(i);
+                return true;
+            }
+        }return false;
+    }
 
     public Player(GameBoard.Color color, String name) {
         this.score = 0;

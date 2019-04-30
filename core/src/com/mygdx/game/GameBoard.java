@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.function.BiConsumer;
 
 public class GameBoard {
     private HashMap<Position, TileActor> tiles = new HashMap<>();
@@ -65,6 +66,10 @@ public class GameBoard {
     private ArrayList<TileActor> availableTiles = new ArrayList<>();
 
     private TileActor currentTile;
+
+    public TileActor getCurrentTile() {
+        return currentTile;
+    }
 
     public Player getCurrentPlayer() {
         return currentPlayer;
@@ -294,6 +299,7 @@ public class GameBoard {
         /*
         TODO: probably best to generate a seed at the "server-player", then send out the seed and do the shuffle locally
          */
+
         long seed = 123456789;
         Collections.shuffle(availableTiles, new Random(seed));
 
@@ -512,6 +518,14 @@ public class GameBoard {
             stageOfBoard.addActor(newHint);
             hints.add(newHint);
         }
+    }
+
+    public Stage getStageOfBoard() {
+        return stageOfBoard;
+    }
+
+    public Stage getStageOfUI() {
+        return stageOfUI;
     }
 
     public void removeOldHints() {

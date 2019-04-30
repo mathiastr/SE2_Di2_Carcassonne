@@ -6,11 +6,15 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
@@ -31,6 +35,8 @@ public class GameScreen implements Screen {
     private Stage stageUI;
     private OrthographicCamera camera;
     private GameBoard gameBoard;
+    private Skin skin;
+
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
@@ -41,6 +47,41 @@ public class GameScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
         gameBoard = new GameBoard(stage, stageUI, players);
+        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+
+        TextButton placeMeeple = new TextButton("place Meeple",  Carcassonne.skin, "default");
+        placeMeeple.setWidth(Gdx.graphics.getWidth()/4);
+        placeMeeple.setHeight(Gdx.graphics.getHeight()/8);
+        placeMeeple.getLabel().setFontScale(0.8f);
+        //placeMeeple.setPosition(Gdx.graphics.getWidth()/2-placeMeeple.getWidth()/2, Gdx.graphics.getHeight()*6/9);
+        placeMeeple.setPosition(10, 0);
+
+        placeMeeple.addListener(new ClickListener() {
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.debug("touch", "start touch up");
+                game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this,game, gameBoard));
+            }
+        });
+        //ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();
+        stageUI.addActor(placeMeeple);
+/*
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+
+                //TODO: neuer Screen öffnet noch nicht
+
+                ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();
+                stageUI.addActor(cmpa);
+
+                //TODO: SetPosition richtig?
+                cmpa.setPosition(Gdx.graphics.getWidth()-placeMeeple.getWidth(), Gdx.graphics.getHeight());
+            }
+        });*/
+
+        //stageUI.addActor(placeMeeple);
+        Gdx.input.setInputProcessor(stage);
 
         if (NetworkHelper.getGameManager() != null) {
             NetworkHelper.getGameManager().addListener(new Listener(){
@@ -82,7 +123,7 @@ public class GameScreen implements Screen {
 
 
         // TODO currently so we can differentiate between board tiles and currentTile.
-        // TODO currentTile make it bigger.
+        // TODO show currentTile in right corner and make it bigger.
         camera.zoom *= 1.2;
         camera.update();
 

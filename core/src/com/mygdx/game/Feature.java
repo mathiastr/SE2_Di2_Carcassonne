@@ -10,6 +10,8 @@ public class Feature {
 
     private Set<Side> sides;
     private  HashMap<Side, Side> connections; // probably don't need that
+    private boolean hasMeepleOnIt;
+    //private Player player1;
 
     public Feature() {
         this.sides = new HashSet<Side>();
@@ -45,5 +47,19 @@ public class Feature {
         return "Feature{" +
                 "sides=" + sides +
                 '}';
+    }
+
+    public boolean isHasMeepleOnIt(){
+        return hasMeepleOnIt;
+    }
+
+    public void setHasMeepleOnIt(boolean hasMeepleOnIt){
+        this.hasMeepleOnIt = hasMeepleOnIt;
+    }
+
+    public void addMeeple(){
+        if(hasMeepleOnIt == false /*&& .checkIfMeepleAvailable() == true*/){
+            setHasMeepleOnIt(true);
+        }
     }
 }
