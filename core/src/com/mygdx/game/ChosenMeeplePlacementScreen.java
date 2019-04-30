@@ -1,4 +1,4 @@
-package com.mygdx.game.network.screen;
+package com.mygdx.game;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -55,7 +55,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
 
 
 
-        output = new Label("Which Meeple would you like to place?", Carcassonne.skin);
+        output = new Label("What do you want to do?", Carcassonne.skin);
         output.setAlignment(Align.center);
         output.setY(Gdx.graphics.getHeight()/8*7);
         output.setWidth(Gdx.graphics.getWidth());

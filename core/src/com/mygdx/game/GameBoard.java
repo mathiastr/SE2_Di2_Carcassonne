@@ -310,6 +310,7 @@ public class GameBoard {
                 Gdx.app.log("scoring [road]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (Road) f)));
             if (f instanceof City)
                 Gdx.app.log("scoring [city]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (City) f)));
+
         }
         for (Position pos : tileToPlace.getPosition().getSurroundingPositions()) {
             if (tiles.containsKey(pos)) {

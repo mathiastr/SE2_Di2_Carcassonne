@@ -20,8 +20,6 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
-import com.mygdx.game.network.screen.ChosenMeeplePlacementScreen;
-import com.mygdx.game.network.screen.ClientSearchScreen;
 
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)

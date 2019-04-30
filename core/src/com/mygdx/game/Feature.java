@@ -11,7 +11,7 @@ public class Feature {
     private Set<Side> sides;
     private  HashMap<Side, Side> connections; // probably don't need that
     private boolean hasMeepleOnIt;
-    private Player player1;
+    //private Player player1;
 
     public Feature() {
         this.sides = new HashSet<Side>();
@@ -58,7 +58,7 @@ public class Feature {
     }
 
     public void addMeeple(){
-        if(hasMeepleOnIt == false && player1.checkIfMeepleAvailable() == true){
+        if(hasMeepleOnIt == false /*&& player1.checkIfMeepleAvailable() == true*/){
             setHasMeepleOnIt(true);
         }
     }
