@@ -108,7 +108,8 @@ public class ServerRoomScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 NetworkHelper.getGameManager().sendToAll(new TestOutput("Start"));
-                game.setScreen(new GameScreen(game));
+                // TODO pass players
+                game.setScreen(new GameScreen(game, new ArrayList<>()));
             }
         });
         stage.addActor(start);

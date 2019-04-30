@@ -4,6 +4,10 @@ apply plugin: 'jacoco'
 android {
     buildToolsVersion "28.0.3"
     compileSdkVersion 27
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'

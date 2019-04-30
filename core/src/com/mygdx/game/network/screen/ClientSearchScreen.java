@@ -188,7 +188,8 @@ public class ClientSearchScreen implements Screen {
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
-                    game.setScreen(new GameScreen(game));
+                    // TODO pass players
+                    game.setScreen(new GameScreen(game, new ArrayList<>()));
                 }
             });
         }

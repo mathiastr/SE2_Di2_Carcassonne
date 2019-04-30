@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,13 +22,12 @@ import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
 
+import java.util.List;
+
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)
 // TODO: add algorithmic for scoring
 // TODO: "Home-Button": goes back to baseTile and resets zoom.
-
-
-
 
 public class GameScreen implements Screen {
     private Game game;
@@ -40,11 +40,13 @@ public class GameScreen implements Screen {
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
+    private Label currentPlayerLabel;
 
-    public GameScreen(Game aGame) {
+    public GameScreen(Game aGame, List<Player> players) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
+        gameBoard = new GameBoard(stage, stageUI, players);
         gameBoard = new GameBoard(stage, stageUI);
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
@@ -80,11 +82,13 @@ public class GameScreen implements Screen {
         //stageUI.addActor(placeMeeple);
         Gdx.input.setInputProcessor(stage);
 
-        NetworkHelper.getGameManager().addListener(new Listener(){
-            public void received (Connection connection, Object object) {
-                receive(connection,object);
-            }
-        });
+        if (NetworkHelper.getGameManager() != null) {
+            NetworkHelper.getGameManager().addListener(new Listener(){
+                public void received (Connection connection, Object object) {
+                    receive(connection,object);
+                }
+            });
+        }
 
         stage.addListener(new InputListener() {
             @Override
@@ -119,7 +123,6 @@ public class GameScreen implements Screen {
 
         // TODO currently so we can differentiate between board tiles and currentTile.
         // TODO show currentTile in right corner and make it bigger.
-
         camera.zoom *= 1.2;
         camera.update();
 
@@ -133,7 +136,15 @@ public class GameScreen implements Screen {
         labelTilesLeft.setWidth(Gdx.graphics.getWidth());
         labelTilesLeft.setFontScale(2);
         labelTilesLeft.setY(20);
+
+        currentPlayerLabel = new Label("", Carcassonne.skin);
+        currentPlayerLabel.setAlignment(Align.center);
+        currentPlayerLabel.setWidth(Gdx.graphics.getWidth());
+        currentPlayerLabel.setFontScale(2);
+        currentPlayerLabel.setY(60);
+
         stageUI.addActor(labelTilesLeft);
+        stageUI.addActor(currentPlayerLabel);
     }
 
     @Override
@@ -148,6 +159,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         labelTilesLeft.setText("Tiles left: " + gameBoard.tilesLeft());
+        currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer().getName());
 
         stage.act();
         stage.draw();
