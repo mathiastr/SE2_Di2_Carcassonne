@@ -58,7 +58,7 @@ public class Feature {
     }
 
     public void addMeeple(){
-        if(hasMeepleOnIt == false /*&& player1.checkIfMeepleAvailable() == true*/){
+        if(hasMeepleOnIt == false /*&& .checkIfMeepleAvailable() == true*/){
             setHasMeepleOnIt(true);
         }
     }

@@ -47,14 +47,15 @@ public class GameScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
         gameBoard = new GameBoard(stage, stageUI, players);
-        gameBoard = new GameBoard(stage, stageUI);
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
-        TextButton placeMeeple = new TextButton("place Meeple", skin,"small");
-        placeMeeple.setWidth(Gdx.graphics.getWidth()/8);
+        TextButton placeMeeple = new TextButton("place Meeple",  Carcassonne.skin, "default");
+        placeMeeple.setWidth(Gdx.graphics.getWidth()/4);
         placeMeeple.setHeight(Gdx.graphics.getHeight()/8);
+        placeMeeple.getLabel().setFontScale(0.8f);
         //placeMeeple.setPosition(Gdx.graphics.getWidth()/2-placeMeeple.getWidth()/2, Gdx.graphics.getHeight()*6/9);
-        placeMeeple.setPosition(Gdx.graphics.getWidth()- placeMeeple.getWidth() - 20, 40);
+        placeMeeple.setPosition(10, 0);
+
         placeMeeple.addListener(new ClickListener() {
 
             @Override

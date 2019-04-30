@@ -56,6 +56,8 @@ public class Player {
             if(
                     meeples.get(i).isBusy() == false){
                 meeples.get(i).makeBusy();
+                //TODO: Wenn Meeple abgezogen wird, muss er der Liste wieder hinzugefügt werden
+                meeples.remove(i);
                 return true;
             }
         }return false;
