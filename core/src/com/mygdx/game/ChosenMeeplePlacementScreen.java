@@ -20,29 +20,19 @@ import java.util.List;
 public class ChosenMeeplePlacementScreen extends Actor implements Screen{
 
     private Stage stage;
-    private Skin skin;
-    private Stage stageUi;
     GameBoard gb;
     TileActor currentTile;
     private List<Feature> features;
     private Label output;
     private List<TextButton> meepleButtons;
-    private Game game;
-    private Screen previousScreen;
 
     public  ChosenMeeplePlacementScreen(Screen previousScreen, Game game, GameBoard gb) {
         this.gb = gb;
-        this.previousScreen = previousScreen;
-        this.game = game;
         stage = new Stage(new ScreenViewport());
-        stageUi = new Stage(new ScreenViewport());
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         currentTile = gb.getCurrentTile();
         features = currentTile.getFeatures();
-        meepleButtons = new ArrayList<TextButton>();
-
-
+        meepleButtons = new ArrayList<>();
 
         output = new Label("What do you want to do?", Carcassonne.skin);
         output.setAlignment(Align.center);
@@ -73,8 +63,6 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
             }
         });
         stage.addActor(back);
-        //Gdx.input.setInputProcessor(stage);
-
     }
 
     public TextButton createMeeplePlacementButton(Feature feature)
