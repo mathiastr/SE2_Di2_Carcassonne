@@ -28,6 +28,7 @@ public class GameBoard {
     private final TextButton finishTurnButton;
     private boolean tileIsPlaced = false;
     private boolean turnIsFinished = false;
+    private ArrayList<TileActor> usedTiles = new ArrayList<>();
 
 
     public enum Color {
@@ -275,8 +276,14 @@ public class GameBoard {
         currentTile = availableTiles.get(availableTiles.size() - 1);
         currentTile.setSize(300);
         currentTile.setPosition(Gdx.graphics.getWidth() - currentTile.getWidth() - 100,  100);
+        usedTiles.add(currentTile);
         availableTiles.remove(availableTiles.size() - 1);
         stageOfUI.addActor(currentTile);
+    }
+
+    public TileActor getPreviousTile(){
+        int lastElement = usedTiles.size()-2;
+        return usedTiles.get(lastElement);
     }
 
     public void nextTurn() {
