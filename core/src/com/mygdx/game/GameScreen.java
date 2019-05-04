@@ -6,7 +6,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -36,18 +35,20 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private GameBoard gameBoard;
     private Skin skin;
+    private boolean isLocal;
 
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
 
-    public GameScreen(Game aGame, List<Player> players) {
+    public GameScreen(Game aGame, List<Player> players, boolean isLocal) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
-        gameBoard = new GameBoard(stage, stageUI, players);
+        gameBoard = new GameBoard(stage, stageUI, players, isLocal);
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        this.isLocal = isLocal;
 
         TextButton placeMeeple = new TextButton("place Meeple",  Carcassonne.skin, "default");
         placeMeeple.setWidth(Gdx.graphics.getWidth()/4);

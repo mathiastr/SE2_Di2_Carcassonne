@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.function.BiConsumer;
 
 public class GameBoard {
     private HashMap<Position, TileActor> tiles = new HashMap<>();
@@ -28,6 +27,7 @@ public class GameBoard {
     private final TextButton finishTurnButton;
     private boolean tileIsPlaced = false;
     private boolean turnIsFinished = false;
+    private boolean isLocal;
 
 
     public enum Color {
@@ -285,13 +285,14 @@ public class GameBoard {
         tileIsPlaced = false;
     }
 
-    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players) {
+    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal) {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
 
         numberOfPlayers = players.size();
         this.players = players;
+        this.isLocal = isLocal;
         currentPlayer = players.get(0);
 
         createDeckTilesAndStartTile();

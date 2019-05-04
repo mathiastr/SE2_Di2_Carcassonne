@@ -15,12 +15,16 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.MainMenuScreen;
+import com.mygdx.game.Player;
 import com.mygdx.game.network.GameServer;
 import com.mygdx.game.network.NetworkDevice;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
-import com.mygdx.game.GameScreen;
+import com.mygdx.game.network.response.InitGameMessage;
+import com.mygdx.game.network.response.PlayerGameMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -107,9 +111,29 @@ public class ServerRoomScreen implements Screen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                NetworkHelper.getGameManager().sendToAll(new TestOutput("Start"));
-                // TODO pass players
-                game.setScreen(new GameScreen(game, new ArrayList<>()));
+
+                // TODO get players from
+                ArrayList<Player> players = new ArrayList<>();
+                players.add(new Player(GameBoard.Color.green, "Client"));
+                players.add(new Player(GameBoard.Color.blue, "Server"));
+
+                ArrayList<PlayerGameMessage> playerGameMessages = new ArrayList<>();
+                for (Player p : players) {
+                    playerGameMessages.add(new PlayerGameMessage(p));
+                }
+
+                InitGameMessage ig = new InitGameMessage();
+                ig.setPlayers(playerGameMessages);
+                //NetworkHelper.getGameManager().sendToAll(ig);
+
+                SimpleMessage sm = new SimpleMessage();
+                sm.message = "hui";
+
+                TestOutput to = new TestOutput("smth");
+
+                NetworkHelper.getGameManager().sendToAll(ig);
+
+                game.setScreen(new GameScreen(game, players, false));
             }
         });
         stage.addActor(start);
@@ -166,6 +190,7 @@ public class ServerRoomScreen implements Screen {
             }else{
                 gameServer.addDevice(device);
                 for (int i = 1; i < gameServer.getDeviceList().size(); i++) {
+                    // TODO add player name to the player list
                     devices.get(i).setText(device.getDeviceName()
                             + System.lineSeparator() +  device.getIp());
                 }
