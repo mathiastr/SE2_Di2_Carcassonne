@@ -15,7 +15,6 @@ public class Network {
     static public void register (EndPoint endPoint) {
         Kryo kryo = endPoint.getKryo();
         kryo.register(TestOutput.class);
-        kryo.register(SimpleMessage.class);
         kryo.register(PlayerGameMessage.class);
         kryo.register(InitGameMessage.class);
         kryo.register(ArrayList.class);

@@ -124,12 +124,6 @@ public class ServerRoomScreen implements Screen {
 
                 InitGameMessage ig = new InitGameMessage();
                 ig.setPlayers(playerGameMessages);
-                //NetworkHelper.getGameManager().sendToAll(ig);
-
-                SimpleMessage sm = new SimpleMessage();
-                sm.message = "hui";
-
-                TestOutput to = new TestOutput("smth");
 
                 NetworkHelper.getGameManager().sendToAll(ig);
 
