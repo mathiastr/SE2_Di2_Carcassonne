@@ -312,7 +312,9 @@ public class GameBoard {
         CurrentTileMessage cm = new CurrentTileMessage();
         cm.tileNumber = availableTiles.indexOf(nextTile);
 
-        NetworkHelper.getGameManager().sendToServer(cm);
+        if (gameClient != null) {
+            NetworkHelper.getGameManager().sendToServer(cm);
+        }
         onTurnBegin(cm);
         showHintsForTile(currentTile);
     }
@@ -324,7 +326,9 @@ public class GameBoard {
 
     public void placeMyTile(Position position) {
         TilePlacementMessage tilePlacementMessage = new TilePlacementMessage(position, currentTile.getRotationValue());
-        NetworkHelper.getGameManager().sendToServer(tilePlacementMessage);
+        if (gameClient != null) {
+            NetworkHelper.getGameManager().sendToServer(tilePlacementMessage);
+        }
 
         onTilePlaced(tilePlacementMessage);
     }
@@ -342,7 +346,9 @@ public class GameBoard {
 
     public void endMyTurn() {
         TurnEndMessage turnEndMessage = new TurnEndMessage();
-        NetworkHelper.getGameManager().sendToServer(turnEndMessage);
+        if (gameClient != null) {
+            NetworkHelper.getGameManager().sendToServer(turnEndMessage);
+        }
         onTurnEnd();
     }
 
@@ -378,8 +384,9 @@ public class GameBoard {
     }
 
     public boolean isMyTurn() {
+
         // TODO check not for name but for an ID (add id to a Player class)
-        return currentPlayer.getName().equals(me.getName());
+        return (currentPlayer.getName().equals(me.getName()) || gameClient == null);
     }
 
 
@@ -403,11 +410,11 @@ public class GameBoard {
             gameClient.getClient().addListener(new Listener() {
                 public void received(Connection connection, Object object) {
                     if (object instanceof TilePlacementMessage) {
-                        onTilePlaced((TilePlacementMessage)object);
+                        onTilePlaced((TilePlacementMessage) object);
                     }
 
                     if (object instanceof CurrentTileMessage) {
-                        onTurnBegin((CurrentTileMessage)object);
+                        onTurnBegin((CurrentTileMessage) object);
                     }
                     if (object instanceof TurnEndMessage) {
                         onTurnEnd();
@@ -528,7 +535,7 @@ public class GameBoard {
         currentTile.rotate();
         removeOldHints();
         //if (!tileIsPlaced) {
-            showHintsForTile(currentTile);
+        showHintsForTile(currentTile);
         //}
     }
 
@@ -649,6 +656,7 @@ public class GameBoard {
     }
 
     public void showHintsForTile(TileActor tile) {
+        removeOldHints();
         for (Position validPos : getValidPositionsForTile(tile)) {
             AddTileActor newHint = new AddTileActor(validPos, this);
             stageOfBoard.addActor(newHint);
