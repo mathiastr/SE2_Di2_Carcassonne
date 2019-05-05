@@ -3,7 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.mygdx.game.network.response.TurnInfoMessage;
+import com.mygdx.game.network.response.TilePlacementMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -77,15 +77,15 @@ public class TileActor extends Actor {
         this(new Position(0, 0), gameBoard);
     }
 
-    public TileActor(TurnInfoMessage turnInfoMessage) {
-        if (turnInfoMessage.meeples != null) {
+    public TileActor(TilePlacementMessage tilePlacementMessage) {
+        if (tilePlacementMessage.meeples != null) {
             this.meeples = new ArrayList<>();
-            for (Meeple m : turnInfoMessage.meeples) {
+            for (Meeple m : tilePlacementMessage.meeples) {
                 this.meeples.add(m);
             }
         }
-        this.monastery = turnInfoMessage.monastery;
-        this.position = turnInfoMessage.position;
+        this.monastery = tilePlacementMessage.monastery;
+        this.position = tilePlacementMessage.position;
 
     }
 

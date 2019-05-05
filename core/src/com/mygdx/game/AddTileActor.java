@@ -16,7 +16,7 @@ public class AddTileActor extends TileActor {
                 super.clicked(event, x, y);
                 AddTileActor clicked = (AddTileActor)event.getListenerActor();
 
-                gameBoard.placeCurrentTileAt(clicked.getPosition());
+                gameBoard.placeMyTile(clicked.getPosition());
             }
         });
     }
