@@ -55,7 +55,7 @@ public class GameBoard {
         }
 
         public static Color getRandom() {
-            return values()[(int)(Math.random() * values().length)];
+            return values()[(int) (Math.random() * values().length)];
         }
     }
 
@@ -84,6 +84,7 @@ public class GameBoard {
     public Player getCurrentPlayer() {
         return currentPlayer;
     }
+
     public void createDeckTilesAndStartTile() {
         int straightRoadUnderCityCount = 4; // 3 + (1 start-tile)
         int diagCityCount = 5;
@@ -281,16 +282,15 @@ public class GameBoard {
         }
     }
 
-    public TileActor getRandomElement(List<TileActor> list)
-    {
+    public TileActor getRandomElement(List<TileActor> list) {
         Random rand = new Random();
         return list.get(rand.nextInt(list.size()));
     }
 
-    public void drawCurrentTile() {
+    public void nextCurrentTile() {
         currentTile = getRandomElement(availableTiles);
         currentTile.setSize(300);
-        currentTile.setPosition(Gdx.graphics.getWidth() - currentTile.getWidth() - 100,  100);
+        currentTile.setPosition(Gdx.graphics.getWidth() - currentTile.getWidth() - 100, 100);
         availableTiles.remove(availableTiles.size() - 1);
         stageOfUI.addActor(currentTile);
     }
@@ -305,27 +305,35 @@ public class GameBoard {
     }
 
     public void update() {
-        drawCurrentTile();
+        //nextCurrentTile();
+
+        if (gameClient != null) {
+
+            if (!isMyTurn()) {
+                finishTurnButton.setText("Wait");
+            } else {
+                finishTurnButton.setText("Finish turn");
+            }
 
 
-
-        if (!isMyTurn()) {
-            finishTurnButton.setText("Wait");
+            if (isMyTurn()) {
+                showHintsForTile(currentTile);
+            }
         } else {
-            finishTurnButton.setText("Finish turn");
+            if (!tileIsPlaced) {
+                showHintsForTile(currentTile);
+            }
         }
 
+        if (gameClient != null) {
+            int rotation = availableTiles.get(lastTileNumber).getRotationValue();
 
-        if (isMyTurn()) {
-            showHintsForTile(currentTile);
+            TurnInfoMessage turnInfoMessage = new TurnInfoMessage(currentTile, lastTileNumber, lastTilePosition, rotation, players.indexOf(currentPlayer));
+            SimpleMessage sm = new SimpleMessage();
+            //sm.setLastTileNumber(lastTileNumber);
+            System.out.println("SENDING turn info TO ALL");
+            NetworkHelper.getGameManager().sendToServer(turnInfoMessage);
         }
-
-        int rotation = availableTiles.get(lastTileNumber).getRotationValue();
-        TurnInfoMessage turnInfoMessage = new TurnInfoMessage(currentTile, lastTileNumber, lastTilePosition, rotation);
-        SimpleMessage sm = new SimpleMessage();
-        //sm.setLastTileNumber(lastTileNumber);
-        System.out.println("SENDING turn info TO ALL");
-        NetworkHelper.getGameManager().sendToServer(turnInfoMessage);
     }
 
     public boolean isMyTurn() {
@@ -349,25 +357,45 @@ public class GameBoard {
 
         createDeckTilesAndStartTile();
 
-        gameClient.getClient().addListener(new Listener() {
-            public void received (Connection connection, Object object) {
-                System.out.println("DEGUG ::: client rcvd " + object.toString());
-                if (object instanceof TurnInfoMessage) {
-                    TurnInfoMessage turnInfoMessage = (TurnInfoMessage)object;
-                    TileActor placedTile = availableTiles.get(turnInfoMessage.placedTileNumber);
-                    placedTile.setRotation(turnInfoMessage.rotation);
+        if (gameClient != null) {
 
-                    Gdx.app.postRunnable(new Runnable() {
-                        @Override
-                        public void run() {
-                            placeTileAt(placedTile, turnInfoMessage.position);
-                        }
-                    });
-                    //currentTile = tileActor;
-//                    drawCurrentTile();
+            gameClient.getClient().addListener(new Listener() {
+                public void received(Connection connection, Object object) {
+                    System.out.println("DEGUG ::: client rcvd " + object.toString());
+                    if (object instanceof TurnInfoMessage) {
+                        TurnInfoMessage turnInfoMessage = (TurnInfoMessage) object;
+                        TileActor placedTile = availableTiles.get(turnInfoMessage.placedTileNumber);
+                        placedTile.setRotation(turnInfoMessage.rotation);
+                        currentPlayer = players.get(turnInfoMessage.currentPlayerNumber);
+
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                placeTileAt(placedTile, turnInfoMessage.position);
+                            }
+                        });
+                        nextCurrentTile();
+                        currentTile.addListener(new ClickListener() {
+                            @Override
+                            public void clicked(InputEvent event, float x, float y) {
+                                if (gameClient != null && isMyTurn()) {
+                                    super.clicked(event, x, y);
+                                    clickForRotation();
+                                    event.handle();
+                                } else if (gameClient == null) {
+                                    super.clicked(event, x, y);
+                                    clickForRotation();
+                                    event.handle();
+                                }
+                            }
+                        });
+                        tileIsPlaced = false;
+                        turnIsFinished = false;
+                        showHintsForTile(currentTile);
+                    }
                 }
-            }
-        });
+            });
+        }
 
         /*
         TODO: probably best to generate a seed at the "server-player", then send out the seed and do the shuffle locally
@@ -376,21 +404,24 @@ public class GameBoard {
         long seed = 123456789;
 
 
-        drawCurrentTile();
+        nextCurrentTile();
 
         finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
 
         finishTurnButton.setWidth(currentTile.getSize());
         finishTurnButton.getLabel().setFontScale(0.8f);
-        finishTurnButton.setPosition(Gdx.graphics.getWidth() - currentTile.getSize()- 100, 0);
+        finishTurnButton.setPosition(Gdx.graphics.getWidth() - currentTile.getSize() - 100, 0);
         finishTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (isMyTurn()) {
+                if (gameClient != null && isMyTurn()) {
                     if (tileIsPlaced) {
                         turnIsFinished = true;
                         nextTurn();
                     }
+                } else if (gameClient == null) {
+                    turnIsFinished = true;
+                    nextTurn();
                 }
 
             }
@@ -400,28 +431,28 @@ public class GameBoard {
 
         //TODO place update function somwhere here
 
-
-//        showHintsForTile(currentTile);
+        if (gameClient == null) {
+            showHintsForTile(currentTile);
+        }
 
 
         /* if we click on the "currentTile" we rotate it and recalculate the hints etc. */
         currentTile.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (isMyTurn()) {
+                if (gameClient != null && isMyTurn()) {
                     super.clicked(event, x, y);
-                    currentTile.rotate();
-                    Gdx.app.log("hmmmm", getValidPositionsForTile(currentTile).toString());
-                    removeOldHints();
-                    if (!tileIsPlaced) {
-                        showHintsForTile(currentTile);
-                    }
+                    clickForRotation();
+                    event.handle();
+                } else if (gameClient == null) {
+                    super.clicked(event, x, y);
+                    clickForRotation();
                     event.handle();
                 }
             }
         });
 
-        for (Player p: players) {
+        for (Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
             playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
             stageUI.addActor(playerStatusActor);
@@ -437,15 +468,18 @@ public class GameBoard {
     }
 
     public void placeTileAt(TileActor tileToPlace, Position position) {
-        stageOfBoard.addActor(tileToPlace);
-        tileToPlace.setPosition(position);
-        tiles.put(position, tileToPlace);
+        if (!tileIsPlaced) {
+            stageOfBoard.addActor(tileToPlace);
+            tileToPlace.setPosition(position);
+            tiles.put(position, tileToPlace);
+            lastTilePosition = position;
+            tileIsPlaced = true;
 
-        tileIsPlaced = true;
-        DelayedRemovalArray<EventListener> listeners = tileToPlace.getListeners();
+            DelayedRemovalArray<EventListener> listeners = tileToPlace.getListeners();
 
-        if (listeners != null) {
-            tileToPlace.removeListener(listeners.peek());
+            if (listeners != null && listeners.size != 0) {
+                tileToPlace.removeListener(listeners.peek());
+            }
         }
     }
 
@@ -457,16 +491,14 @@ public class GameBoard {
             TileActor tileToPlace = currentTile;
             lastTileNumber = availableTiles.indexOf(currentTile);
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
-            tileToPlace.setPosition(position);
-            stageOfBoard.addActor(tileToPlace);
-            tiles.put(position, tileToPlace);
 
-            lastTilePosition = position;
+            placeTileAt(currentTile, position);
 
 
             /*-----------------------------*/
             // Testing the road/city scoring
             // for every placed tile
+            /*
             for (Feature f : tileToPlace.getFeatures()) {
                 if (f instanceof Road)
                     Gdx.app.log("scoring [road]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (Road) f)));
@@ -480,9 +512,8 @@ public class GameBoard {
                         Gdx.app.log("scoring [monastery]", Integer.toString(scoreMonastery(t)));
                     }
                 }
-            }
+            } */
             /*-----------------------------*/
-            tileIsPlaced = true;
 
             removeOldHints();
 
@@ -490,16 +521,34 @@ public class GameBoard {
                 Gdx.app.log("hmmmm", "No Tiles left, game ends");
                 gameEnds();
             } else {
-                drawCurrentTile();
-                currentTile.addListener(listeners.peek());
-            }
+                nextCurrentTile();
 
-            if (listeners != null) {
-                tileToPlace.removeListener(listeners.peek());
+                currentTile.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        if (gameClient != null && isMyTurn()) {
+                            super.clicked(event, x, y);
+                            clickForRotation();
+                            event.handle();
+                        } else if (gameClient == null) {
+                            super.clicked(event, x, y);
+                            clickForRotation();
+                            event.handle();
+                        }
+                    }
+                });
             }
 
         }
 
+    }
+
+    public void clickForRotation() {
+        currentTile.rotate();
+        removeOldHints();
+        if (!tileIsPlaced) {
+            showHintsForTile(currentTile);
+        }
     }
 
     /*
@@ -518,11 +567,16 @@ public class GameBoard {
 
     private TileActor getTileInDirectionOfSide(TileActor tile, Side side) {
         switch (side) {
-            case top: return tiles.get(tile.getPosition().add(new Position(0, 1)));
-            case right: return tiles.get(tile.getPosition().add(new Position(1, 0)));
-            case bottom: return tiles.get(tile.getPosition().add(new Position(0, -1)));
-            case left: return tiles.get(tile.getPosition().add(new Position(-1, 0)));
-            default: return null;
+            case top:
+                return tiles.get(tile.getPosition().add(new Position(0, 1)));
+            case right:
+                return tiles.get(tile.getPosition().add(new Position(1, 0)));
+            case bottom:
+                return tiles.get(tile.getPosition().add(new Position(0, -1)));
+            case left:
+                return tiles.get(tile.getPosition().add(new Position(-1, 0)));
+            default:
+                return null;
         }
     }
 
@@ -532,7 +586,7 @@ public class GameBoard {
     public int scoreMonastery(TileActor tile) {
         for (int dx = -1; dx <= 1; ++dx) {
             for (int dy = -1; dy <= 1; ++dy) {
-                if (!tiles.containsKey(tile.getPosition().add(new Position(dx,dy)))) {
+                if (!tiles.containsKey(tile.getPosition().add(new Position(dx, dy)))) {
                     // there is no tile at this surrounding position => monastery not completed
                     return 0;
                 }
@@ -540,6 +594,7 @@ public class GameBoard {
         }
         return tile.isMonastery() ? 9 : 0;
     }
+
     /* returns 0 if road/city is not completed, score of component otherwise */
     /* city score is 2 per tile, road score is 1 per tile */
     public int scoreRoadOrCity(TileActor tile, Feature feature) {
@@ -553,6 +608,7 @@ public class GameBoard {
         int score = scoreRoadOrCityRec(tile, feature, null, visited);
         return score == -1 ? 0 : score;
     }
+
     public int scoreRoadOrCityRec(TileActor tile, Feature feature, TileActor parent, HashSet<TileActor> visited) {
         int score = feature instanceof City ? 2 : 1; // tile itself
 

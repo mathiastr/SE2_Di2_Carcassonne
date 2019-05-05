@@ -12,17 +12,19 @@ public class TurnInfoMessage {
     public ArrayList<Meeple> meeples;
     public boolean monastery = false;
     public int rotation;
+    public int currentPlayerNumber;
 
 
     public TurnInfoMessage() {
 
     }
 
-    public TurnInfoMessage(TileActor tileActor, int placedTileNumber, Position position, int rotation) {
+    public TurnInfoMessage(TileActor tileActor, int placedTileNumber, Position position, int rotation, int currentPlayerNumber) {
         this.position = position;
         this.monastery = tileActor.isMonastery();
         this.meeples = new ArrayList<>();
         this.rotation = rotation;
+        this.currentPlayerNumber = currentPlayerNumber;
         if (tileActor.getMeeples() != null) {
 
         for (Meeple m : tileActor.getMeeples()) {
