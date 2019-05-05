@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.function.BiConsumer;
 
 public class GameBoard {
     private HashMap<Position, TileActor> tiles = new HashMap<>();
@@ -29,7 +28,6 @@ public class GameBoard {
     private boolean tileIsPlaced = false;
     private boolean turnIsFinished = false;
     private ArrayList<TileActor> usedTiles = new ArrayList<>();
-
 
     public enum Color {
         yellow, red, green, blue, black, grey;
@@ -286,6 +284,7 @@ public class GameBoard {
         return usedTiles.get(lastElement);
     }
 
+
     public void nextTurn() {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         turnIsFinished = false;
@@ -370,8 +369,10 @@ public class GameBoard {
             TileActor tileToPlace = currentTile;
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
             tileToPlace.setPosition(position);
+            getCurrentTile().setPosition(position);
             stageOfBoard.addActor(tileToPlace);
             tiles.put(position, tileToPlace);
+
 
 
             /*-----------------------------*/

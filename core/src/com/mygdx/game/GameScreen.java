@@ -7,14 +7,19 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
@@ -23,6 +28,8 @@ import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
 
 import java.util.List;
+
+import javax.swing.text.html.ImageView;
 
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)
@@ -64,21 +71,8 @@ public class GameScreen implements Screen {
                 game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this,game, gameBoard));
             }
         });
-        //ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();
         stageUI.addActor(placeMeeple);
-/*
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
-                //TODO: neuer Screen öffnet noch nicht
-
-                ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();
-                stageUI.addActor(cmpa);
-
-                //TODO: SetPosition richtig?
-                cmpa.setPosition(Gdx.graphics.getWidth()-placeMeeple.getWidth(), Gdx.graphics.getHeight());
-            }
-        });*/
 
         //stageUI.addActor(placeMeeple);
         Gdx.input.setInputProcessor(stage);
@@ -201,5 +195,33 @@ public class GameScreen implements Screen {
         if (object instanceof TestOutput) {
             //do something
         }
+    }
+
+    public static void placeMeeple(GameBoard gameboard){
+
+        Texture meepleTexture= new Texture(Gdx.files.internal("redmeeple.png"));
+        Position pos = gameboard.getPreviousTile().getPosition();
+        ImageButton meepleImg = new ImageButton(
+                new TextureRegionDrawable(new TextureRegion(meepleTexture)),
+                new TextureRegionDrawable(new TextureRegion(meepleTexture)));
+        meepleImg.setSize(Gdx.graphics.getWidth()/18,Gdx.graphics.getHeight()/18);
+        meepleImg.setPosition(pos.getX(), pos.getY());
+        gameboard.getStageOfBoard().addActor(meepleImg);
+
+        /*
+        if(side == Side.left){
+
+        }
+        else if (side == Side.right){
+
+        }
+        else if (side == Side.bottom){
+
+        }
+        else{
+
+        }*/
+
+
     }
 }
