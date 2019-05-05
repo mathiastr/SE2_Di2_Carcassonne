@@ -61,7 +61,8 @@ public class GameClient extends AbstractGameManager{
     }
 
     @Override
-    public void sendToAll(final Object message) {
+    public void sendToServer(final Object message) {
+        System.out.println("DEGUG ::: sendtoAll   " + message.toString());
         new Thread("Sending") {
             public void run () {
                 client.sendTCP(message);

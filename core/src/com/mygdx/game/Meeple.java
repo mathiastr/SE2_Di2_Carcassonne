@@ -5,9 +5,10 @@ public class Meeple {
     private GameBoard.Color color;
     private boolean isBusy;
 
-    public Meeple(/*MeepleType mt*/) {
-        //meepleType = mt;
+    public Meeple() {
+
     }
+
 
     public Meeple(GameBoard.Color color){
         this.color = color;

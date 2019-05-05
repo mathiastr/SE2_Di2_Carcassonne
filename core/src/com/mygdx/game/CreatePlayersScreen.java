@@ -142,7 +142,8 @@ public class CreatePlayersScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start button is touched");
-                game.setScreen(new GameScreen(game, players, true));
+                // in this case "me" doesn't matter
+                game.setScreen(new GameScreen(game, players, true, players.get(0), null));
             }
         });
 

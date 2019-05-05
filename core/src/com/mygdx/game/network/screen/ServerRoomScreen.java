@@ -25,6 +25,7 @@ import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
 import com.mygdx.game.network.response.InitGameMessage;
 import com.mygdx.game.network.response.PlayerGameMessage;
+import com.mygdx.game.network.response.SimpleMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,8 +66,10 @@ public class ServerRoomScreen implements Screen {
             stage.addActor(device);
         }
 
+        GameServer server = null;
+
         try{
-            GameServer server = new GameServer();
+            server = new GameServer();
             server.addDevice(new NetworkDevice("Host", server.getIp()));
             devices.get(0).setText(server.getDeviceList().get(0).getDeviceName()
                     + System.lineSeparator() + server.getDeviceList().get(0).getIp());
@@ -80,7 +83,7 @@ public class ServerRoomScreen implements Screen {
         }catch (IOException io){
             Gdx.app.debug("network","server problem");
         }
-
+        final GameServer f = server;
         TextButton back = new TextButton("Back", Carcassonne.skin);
         back.setWidth(Gdx.graphics.getWidth() / 5 - 40);
         back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
@@ -125,9 +128,10 @@ public class ServerRoomScreen implements Screen {
                 InitGameMessage ig = new InitGameMessage();
                 ig.setPlayers(playerGameMessages);
 
-                NetworkHelper.getGameManager().sendToAll(ig);
+                NetworkHelper.getGameManager().sendToServer(ig);
 
-                game.setScreen(new GameScreen(game, players, false));
+                // TODO get "me" from settings
+                game.setScreen(new GameScreen(game, players, false, players.get(1), f.localClient));
             }
         });
         stage.addActor(start);
@@ -175,6 +179,7 @@ public class ServerRoomScreen implements Screen {
     }
 
     public void receive(Connection connection, Object object){
+        System.out.println("DEGUG ::: server received   " + object.toString());
         if (object instanceof TestOutput) {
             NetworkDevice device = new NetworkDevice(((TestOutput) object).getTest(),
                     connection.getRemoteAddressTCP().getAddress());
@@ -189,6 +194,9 @@ public class ServerRoomScreen implements Screen {
                             + System.lineSeparator() +  device.getIp());
                 }
             }
+        }
+        if (object instanceof SimpleMessage) {
+            System.out.println("huinya");
         }
     }
 

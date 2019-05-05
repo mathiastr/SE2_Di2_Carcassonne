@@ -1,19 +1,13 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.network.response.TurnInfoMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import static com.badlogic.gdx.scenes.scene2d.actions.Actions.show;
 
 public class TileActor extends Actor {
     private int SIZE = 128;
@@ -21,6 +15,15 @@ public class TileActor extends Actor {
     private Texture textureBig;
     private Position position;
     private static GameBoard board;
+
+    public ArrayList<Meeple> getMeeples() {
+        return meeples;
+    }
+
+    public void setMeeples(ArrayList<Meeple> meeples) {
+        this.meeples = meeples;
+    }
+
     private ArrayList<Meeple> meeples; // TODO: maybe add meeple field to Feature class
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
     private boolean monastery = false;
@@ -68,6 +71,18 @@ public class TileActor extends Actor {
 
     public TileActor(final GameBoard gameBoard) {
         this(new Position(0, 0), gameBoard);
+    }
+
+    public TileActor(TurnInfoMessage turnInfoMessage) {
+        if (turnInfoMessage.meeples != null) {
+            this.meeples = new ArrayList<>();
+            for (Meeple m : turnInfoMessage.meeples) {
+                this.meeples.add(m);
+            }
+        }
+        this.monastery = turnInfoMessage.monastery;
+        this.position = turnInfoMessage.position;
+
     }
 
     public void addFeature(Feature feature) {

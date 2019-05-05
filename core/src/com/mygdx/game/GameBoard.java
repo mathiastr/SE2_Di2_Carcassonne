@@ -10,10 +10,15 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
+import com.esotericsoftware.kryonet.Connection;
+import com.esotericsoftware.kryonet.Listener;
+import com.mygdx.game.network.GameClient;
+import com.mygdx.game.network.NetworkHelper;
+import com.mygdx.game.network.response.SimpleMessage;
+import com.mygdx.game.network.response.TurnInfoMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +33,9 @@ public class GameBoard {
     private boolean tileIsPlaced = false;
     private boolean turnIsFinished = false;
     private boolean isLocal;
+    private Player me;
+    private int lastTileNumber;
+    private GameClient gameClient;
 
 
     public enum Color {
@@ -271,8 +279,14 @@ public class GameBoard {
         }
     }
 
+    public TileActor getRandomElement(List<TileActor> list)
+    {
+        Random rand = new Random();
+        return list.get(rand.nextInt(list.size()));
+    }
+
     public void drawCurentTile() {
-        currentTile = availableTiles.get(availableTiles.size() - 1);
+        currentTile = getRandomElement(availableTiles);
         currentTile.setSize(300);
         currentTile.setPosition(Gdx.graphics.getWidth() - currentTile.getWidth() - 100,  100);
         availableTiles.remove(availableTiles.size() - 1);
@@ -281,11 +295,57 @@ public class GameBoard {
 
     public void nextTurn() {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
+        // TODO change for an id check in case if names are the same
+
         turnIsFinished = false;
         tileIsPlaced = false;
+        update();
     }
 
-    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal) {
+    public void update() {
+        drawCurentTile();
+
+        finishTurnButton.setWidth(currentTile.getSize());
+        finishTurnButton.getLabel().setFontScale(0.8f);
+        finishTurnButton.setPosition(Gdx.graphics.getWidth() - currentTile.getSize()- 100, 0);
+        finishTurnButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (isMyTurn()) {
+                    if (tileIsPlaced) {
+                        turnIsFinished = true;
+                        nextTurn();
+                    }
+                }
+
+            }
+        });
+
+        if (!isMyTurn()) {
+            finishTurnButton.setText("Wait");
+        } else {
+            finishTurnButton.setText("Finish turn");
+        }
+
+
+        if (isMyTurn()) {
+            showHintsForTile(currentTile);
+        }
+
+        TurnInfoMessage turnInfoMessage = new TurnInfoMessage(currentTile, lastTileNumber);
+        SimpleMessage sm = new SimpleMessage();
+        //sm.setLastTileNumber(lastTileNumber);
+        System.out.println("SENDING turn info TO ALL");
+        NetworkHelper.getGameManager().sendToServer(turnInfoMessage);
+    }
+
+    public boolean isMyTurn() {
+        // TODO check not for name but for an ID (add id to a Player class)
+        return currentPlayer.getName().equals(me.getName());
+    }
+
+
+    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
@@ -294,32 +354,56 @@ public class GameBoard {
         this.players = players;
         this.isLocal = isLocal;
         currentPlayer = players.get(0);
+        this.me = me;
+        this.gameClient = gameClient;
+
 
         createDeckTilesAndStartTile();
+
+        gameClient.getClient().addListener(new Listener() {
+            public void received (Connection connection, Object object) {
+                System.out.println("DEGUG ::: client rcvd " + object.toString());
+                if (object instanceof TurnInfoMessage) {
+                    TurnInfoMessage turnInfoMessage = (TurnInfoMessage)object;
+                    TileActor tileActor = availableTiles.get(turnInfoMessage.tileNumber);
+                    System.out.println(turnInfoMessage);
+
+                    currentTile = tileActor;
+                    drawCurentTile();
+                }
+            }
+        });
 
         /*
         TODO: probably best to generate a seed at the "server-player", then send out the seed and do the shuffle locally
          */
 
         long seed = 123456789;
-        Collections.shuffle(availableTiles, new Random(seed));
 
-        drawCurentTile();
-        showHintsForTile(currentTile);
+        finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
+        stageUI.addActor(finishTurnButton);
+
+        //TODO place update function somwhere here
+        update();
+
+//        drawCurentTile();
+//        showHintsForTile(currentTile);
 
 
         /* if we click on the "currentTile" we rotate it and recalculate the hints etc. */
         currentTile.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                currentTile.rotate();
-                Gdx.app.log("hmmmm", getValidPositionsForTile(currentTile).toString());
-                removeOldHints();
-                if (!tileIsPlaced) {
-                    showHintsForTile(currentTile);
+                if (isMyTurn()) {
+                    super.clicked(event, x, y);
+                    currentTile.rotate();
+                    Gdx.app.log("hmmmm", getValidPositionsForTile(currentTile).toString());
+                    removeOldHints();
+                    if (!tileIsPlaced) {
+                        showHintsForTile(currentTile);
+                    }
+                    event.handle();
                 }
-                event.handle();
             }
         });
 
@@ -328,24 +412,6 @@ public class GameBoard {
             playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
             stageUI.addActor(playerStatusActor);
         }
-
-        // Create button for finishing turn
-
-        finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
-        finishTurnButton.setWidth(currentTile.getSize());
-        finishTurnButton.getLabel().setFontScale(0.8f);
-        finishTurnButton.setPosition(Gdx.graphics.getWidth() - currentTile.getSize()- 100, 0);
-        finishTurnButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (tileIsPlaced) {
-                    turnIsFinished = true;
-                    nextTurn();
-                }
-            }
-        });
-
-        stageUI.addActor(finishTurnButton);
     }
 
     public int tilesLeft() {
@@ -362,6 +428,7 @@ public class GameBoard {
 
             currentTile.setSize(128);
             TileActor tileToPlace = currentTile;
+            lastTileNumber = availableTiles.indexOf(currentTile);
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
             tileToPlace.setPosition(position);
             stageOfBoard.addActor(tileToPlace);
@@ -398,7 +465,9 @@ public class GameBoard {
                 currentTile.addListener(listeners.peek());
             }
 
-            tileToPlace.removeListener(listeners.peek());
+            if (listeners != null) {
+                tileToPlace.removeListener(listeners.peek());
+            }
 
         }
 

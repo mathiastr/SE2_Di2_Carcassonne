@@ -1,7 +1,5 @@
 package com.mygdx.game;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Objects;
 
 public class Position {
@@ -11,6 +9,10 @@ public class Position {
     public Position(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Position() {
+
     }
 
     public Position add(Position other) {

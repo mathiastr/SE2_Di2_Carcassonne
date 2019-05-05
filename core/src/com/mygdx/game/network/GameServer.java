@@ -1,10 +1,12 @@
 package com.mygdx.game.network;
 
 
-import com.badlogic.gdx.Gdx;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.esotericsoftware.kryonet.Server;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.Player;
+import com.mygdx.game.network.response.PlayerGameMessage;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -19,6 +21,7 @@ public class GameServer extends AbstractGameManager{
 
     private Server server;
     private List<NetworkDevice> deviceList;
+    public GameClient localClient;
 
     public GameServer() throws IOException {
         server = new Server(32768,16384);
@@ -29,6 +32,15 @@ public class GameServer extends AbstractGameManager{
         server.start();
         this.setIp(ip());
 
+        server.addListener(new Listener() {
+            @Override
+            public void received(Connection connection, Object object) {
+                server.sendToAllExceptTCP(connection.getID(), object);
+            }
+        });
+
+        localClient = new GameClient();
+        localClient.initConnection(InetAddress.getLocalHost(), new PlayerGameMessage(new Player(GameBoard.Color.getRandom(), "Server")));
     }
 
     public void destroy() {
@@ -73,10 +85,11 @@ public class GameServer extends AbstractGameManager{
     }
 
     @Override
-    public void sendToAll(final Object message) {
+    public void sendToServer(final Object message) {
+        System.out.println("DEGUG :::  server   sendtoAll   " + message.toString());
         new Thread("Sending") {
             public void run () {
-                server.sendToAllTCP(message);
+                localClient.sendToServer(message);
             }
         }.start();
     }
