@@ -36,7 +36,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         stage = new Stage(new ScreenViewport());
         currentTile = gb.getPreviousTile(); //current Tile for Placing Meeple
         features = currentTile.getFeatures();
-        meepleButtons = new ArrayList<TextButton>();
+        meepleButtons = new ArrayList<>();
 
         output = new Label("What do you want to do?", Carcassonne.skin);
         output.setAlignment(Align.center);
