@@ -25,7 +25,6 @@ import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
 import com.mygdx.game.network.response.InitGameMessage;
 import com.mygdx.game.network.response.PlayerGameMessage;
-import com.mygdx.game.network.response.SimpleMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -194,9 +193,6 @@ public class ServerRoomScreen implements Screen {
                             + System.lineSeparator() +  device.getIp());
                 }
             }
-        }
-        if (object instanceof SimpleMessage) {
-            System.out.println("huinya");
         }
     }
 

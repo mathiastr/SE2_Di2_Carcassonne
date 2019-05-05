@@ -35,6 +35,8 @@ public class GameBoard {
     private boolean isLocal;
     private Player me;
     private int lastTileNumber;
+    private Position lastTilePosition;
+    private int currentTileNumber;
     private GameClient gameClient;
 
 
@@ -285,7 +287,7 @@ public class GameBoard {
         return list.get(rand.nextInt(list.size()));
     }
 
-    public void drawCurentTile() {
+    public void drawCurrentTile() {
         currentTile = getRandomElement(availableTiles);
         currentTile.setSize(300);
         currentTile.setPosition(Gdx.graphics.getWidth() - currentTile.getWidth() - 100,  100);
@@ -303,23 +305,9 @@ public class GameBoard {
     }
 
     public void update() {
-        drawCurentTile();
+        drawCurrentTile();
 
-        finishTurnButton.setWidth(currentTile.getSize());
-        finishTurnButton.getLabel().setFontScale(0.8f);
-        finishTurnButton.setPosition(Gdx.graphics.getWidth() - currentTile.getSize()- 100, 0);
-        finishTurnButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (isMyTurn()) {
-                    if (tileIsPlaced) {
-                        turnIsFinished = true;
-                        nextTurn();
-                    }
-                }
 
-            }
-        });
 
         if (!isMyTurn()) {
             finishTurnButton.setText("Wait");
@@ -332,7 +320,8 @@ public class GameBoard {
             showHintsForTile(currentTile);
         }
 
-        TurnInfoMessage turnInfoMessage = new TurnInfoMessage(currentTile, lastTileNumber);
+        int rotation = availableTiles.get(lastTileNumber).getRotationValue();
+        TurnInfoMessage turnInfoMessage = new TurnInfoMessage(currentTile, lastTileNumber, lastTilePosition, rotation);
         SimpleMessage sm = new SimpleMessage();
         //sm.setLastTileNumber(lastTileNumber);
         System.out.println("SENDING turn info TO ALL");
@@ -365,11 +354,17 @@ public class GameBoard {
                 System.out.println("DEGUG ::: client rcvd " + object.toString());
                 if (object instanceof TurnInfoMessage) {
                     TurnInfoMessage turnInfoMessage = (TurnInfoMessage)object;
-                    TileActor tileActor = availableTiles.get(turnInfoMessage.tileNumber);
-                    System.out.println(turnInfoMessage);
+                    TileActor placedTile = availableTiles.get(turnInfoMessage.placedTileNumber);
+                    placedTile.setRotation(turnInfoMessage.rotation);
 
-                    currentTile = tileActor;
-                    drawCurentTile();
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            placeTileAt(placedTile, turnInfoMessage.position);
+                        }
+                    });
+                    //currentTile = tileActor;
+//                    drawCurrentTile();
                 }
             }
         });
@@ -380,13 +375,32 @@ public class GameBoard {
 
         long seed = 123456789;
 
+
+        drawCurrentTile();
+
         finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
+
+        finishTurnButton.setWidth(currentTile.getSize());
+        finishTurnButton.getLabel().setFontScale(0.8f);
+        finishTurnButton.setPosition(Gdx.graphics.getWidth() - currentTile.getSize()- 100, 0);
+        finishTurnButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (isMyTurn()) {
+                    if (tileIsPlaced) {
+                        turnIsFinished = true;
+                        nextTurn();
+                    }
+                }
+
+            }
+        });
+
         stageUI.addActor(finishTurnButton);
 
         //TODO place update function somwhere here
-        update();
 
-//        drawCurentTile();
+
 //        showHintsForTile(currentTile);
 
 
@@ -422,6 +436,19 @@ public class GameBoard {
         // TODO
     }
 
+    public void placeTileAt(TileActor tileToPlace, Position position) {
+        stageOfBoard.addActor(tileToPlace);
+        tileToPlace.setPosition(position);
+        tiles.put(position, tileToPlace);
+
+        tileIsPlaced = true;
+        DelayedRemovalArray<EventListener> listeners = tileToPlace.getListeners();
+
+        if (listeners != null) {
+            tileToPlace.removeListener(listeners.peek());
+        }
+    }
+
     public void placeCurrentTileAt(Position position) {
         if (!tileIsPlaced) {
             DelayedRemovalArray<EventListener> listeners = currentTile.getListeners();
@@ -433,6 +460,8 @@ public class GameBoard {
             tileToPlace.setPosition(position);
             stageOfBoard.addActor(tileToPlace);
             tiles.put(position, tileToPlace);
+
+            lastTilePosition = position;
 
 
             /*-----------------------------*/
@@ -461,7 +490,7 @@ public class GameBoard {
                 Gdx.app.log("hmmmm", "No Tiles left, game ends");
                 gameEnds();
             } else {
-                drawCurentTile();
+                drawCurrentTile();
                 currentTile.addListener(listeners.peek());
             }
 

@@ -33,13 +33,17 @@ public class TileActor extends Actor {
         return board;
     }
 
+    public void setRotation(int rotation) {
+        this.rotation = rotation;
+    }
+
     /* direction of the tile
-            for ex. (clockwise)
-            0 - straight
-            1 - 90
-            2 - 180
-            3 - 270
-         */
+                for ex. (clockwise)
+                0 - straight
+                1 - 90
+                2 - 180
+                3 - 270
+             */
     private int rotation;
 
     /* what does this tile have: (city, road, monastery) */
