@@ -20,6 +20,8 @@ import com.mygdx.game.network.response.TurnEndMessage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -469,7 +471,7 @@ public class GameBoard {
     }
 
     public void gameEnds() {
-        // TODO
+
     }
 
     public void placeTileAt(TileActor tileToPlace, Position position) {
@@ -675,5 +677,9 @@ public class GameBoard {
     public void removeOldHints() {
         for (TileActor a : hints) a.remove();
         hints.clear();
+    }
+
+    public Player getWinningPlayer() {
+        return Collections.max(players, Comparator.comparing(Player::getScore));
     }
 }

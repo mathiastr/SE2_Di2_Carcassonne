@@ -165,6 +165,9 @@ public class GameScreen implements Screen {
         labelTilesLeft.setText("Tiles left: " + gameBoard.tilesLeft());
         currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer().getName());
 
+        if (gameBoard.tilesLeft() == 0)
+            game.setScreen(new GameOverScreen(game, gameBoard.getWinningPlayer()));
+
         stage.act();
         stage.draw();
         stageUI.act();
