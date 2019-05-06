@@ -16,8 +16,11 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
-import com.mygdx.game.GameScreen;
-import com.mygdx.game.MainMenuScreen;
+import com.mygdx.game.network.response.ConnectMessage;
+import com.mygdx.game.network.response.ErrorMessage;
+import com.mygdx.game.network.response.ErrorNumber;
+import com.mygdx.game.screen.GameScreen;
+import com.mygdx.game.screen.MainMenuScreen;
 import com.mygdx.game.Player;
 import com.mygdx.game.network.GameServer;
 import com.mygdx.game.network.NetworkDevice;
@@ -179,12 +182,12 @@ public class ServerRoomScreen implements Screen {
 
     public void receive(Connection connection, Object object){
         System.out.println("DEGUG ::: server received   " + object.toString());
-        if (object instanceof TestOutput) {
-            NetworkDevice device = new NetworkDevice(((TestOutput) object).getTest(),
+        if (object instanceof ConnectMessage) {
+            NetworkDevice device = new NetworkDevice(((ConnectMessage) object).getPlayer().getName(),
                     connection.getRemoteAddressTCP().getAddress());
             GameServer gameServer = ((GameServer)NetworkHelper.getGameManager());
             if(gameServer.getDeviceList().size() > 6){
-                connection.sendTCP(new TestOutput("too many clients"));
+                connection.sendTCP(new ErrorMessage("The game is full", ErrorNumber.TOOMANYCLIENTS));
             }else{
                 gameServer.addDevice(device);
                 for (int i = 1; i < gameServer.getDeviceList().size(); i++) {

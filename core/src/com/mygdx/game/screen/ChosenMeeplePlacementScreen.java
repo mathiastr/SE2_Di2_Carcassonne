@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -15,15 +15,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
-import com.mygdx.game.City;
 import com.mygdx.game.Feature;
-import com.mygdx.game.Field;
 import com.mygdx.game.GameBoard;
-import com.mygdx.game.GameScreen;
-import com.mygdx.game.Road;
 import com.mygdx.game.TileActor;
-import com.mygdx.game.network.GameServer;
-import com.mygdx.game.network.NetworkHelper;
 
 import java.util.ArrayList;
 import java.util.List;

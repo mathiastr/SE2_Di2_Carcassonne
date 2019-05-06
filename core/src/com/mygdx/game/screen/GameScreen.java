@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -18,6 +18,9 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.mygdx.game.Carcassonne;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.Player;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
@@ -86,14 +89,6 @@ public class GameScreen implements Screen {
 
         //stageUI.addActor(placeMeeple);
         Gdx.input.setInputProcessor(stage);
-
-        if (NetworkHelper.getGameManager() != null) {
-            NetworkHelper.getGameManager().addListener(new Listener(){
-                public void received (Connection connection, Object object) {
-                    receive(connection,object);
-                }
-            });
-        }
 
         stage.addListener(new InputListener() {
             @Override
@@ -197,12 +192,4 @@ public class GameScreen implements Screen {
         stageUI.dispose();
     }
 
-    public void receive(Connection connection, Object object){
-        //do here what should happen if you get a message of type ...
-        //send message with "Networkhelper.getGameManager.sentToAll(message)
-        //before register the class in the Network class
-        if (object instanceof TestOutput) {
-            //do something
-        }
-    }
 }
