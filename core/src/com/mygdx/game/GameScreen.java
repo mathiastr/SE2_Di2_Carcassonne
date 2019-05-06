@@ -6,7 +6,6 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,6 +18,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
 
@@ -36,18 +36,22 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private GameBoard gameBoard;
     private Skin skin;
+    private boolean isLocal;
+    private GameClient gameClient;
 
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
 
-    public GameScreen(Game aGame, List<Player> players) {
+    public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
-        gameBoard = new GameBoard(stage, stageUI, players);
+        gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient);
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        this.isLocal = isLocal;
+        this.gameClient = gameClient;
 
         TextButton placeMeeple = new TextButton("place Meeple",  Carcassonne.skin, "default");
         placeMeeple.setWidth(Gdx.graphics.getWidth()/4);
@@ -101,7 +105,6 @@ public class GameScreen implements Screen {
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
                 super.touchDragged(event, x, y, pointer);
-                Gdx.app.debug("drag", "draaaged");
                 camera.translate(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
             }
         });

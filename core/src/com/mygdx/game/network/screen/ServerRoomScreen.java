@@ -15,12 +15,16 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.MainMenuScreen;
+import com.mygdx.game.Player;
 import com.mygdx.game.network.GameServer;
 import com.mygdx.game.network.NetworkDevice;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
-import com.mygdx.game.GameScreen;
+import com.mygdx.game.network.response.InitGameMessage;
+import com.mygdx.game.network.response.PlayerGameMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -61,8 +65,10 @@ public class ServerRoomScreen implements Screen {
             stage.addActor(device);
         }
 
+        GameServer server = null;
+
         try{
-            GameServer server = new GameServer();
+            server = new GameServer();
             server.addDevice(new NetworkDevice("Host", server.getIp()));
             devices.get(0).setText(server.getDeviceList().get(0).getDeviceName()
                     + System.lineSeparator() + server.getDeviceList().get(0).getIp());
@@ -76,7 +82,7 @@ public class ServerRoomScreen implements Screen {
         }catch (IOException io){
             Gdx.app.debug("network","server problem");
         }
-
+        final GameServer f = server;
         TextButton back = new TextButton("Back", Carcassonne.skin);
         back.setWidth(Gdx.graphics.getWidth() / 5 - 40);
         back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
@@ -107,9 +113,24 @@ public class ServerRoomScreen implements Screen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                NetworkHelper.getGameManager().sendToAll(new TestOutput("Start"));
-                // TODO pass players
-                game.setScreen(new GameScreen(game, new ArrayList<>()));
+
+                // TODO get players from
+                ArrayList<Player> players = new ArrayList<>();
+                players.add(new Player(GameBoard.Color.green, "Client"));
+                players.add(new Player(GameBoard.Color.blue, "Server"));
+
+                ArrayList<PlayerGameMessage> playerGameMessages = new ArrayList<>();
+                for (Player p : players) {
+                    playerGameMessages.add(new PlayerGameMessage(p));
+                }
+
+                InitGameMessage ig = new InitGameMessage();
+                ig.setPlayers(playerGameMessages);
+
+                NetworkHelper.getGameManager().sendToServer(ig);
+
+                // TODO get "me" from settings
+                game.setScreen(new GameScreen(game, players, false, players.get(1), f.localClient));
             }
         });
         stage.addActor(start);
@@ -157,6 +178,7 @@ public class ServerRoomScreen implements Screen {
     }
 
     public void receive(Connection connection, Object object){
+        System.out.println("DEGUG ::: server received   " + object.toString());
         if (object instanceof TestOutput) {
             NetworkDevice device = new NetworkDevice(((TestOutput) object).getTest(),
                     connection.getRemoteAddressTCP().getAddress());
@@ -166,6 +188,7 @@ public class ServerRoomScreen implements Screen {
             }else{
                 gameServer.addDevice(device);
                 for (int i = 1; i < gameServer.getDeviceList().size(); i++) {
+                    // TODO add player name to the player list
                     devices.get(i).setText(device.getDeviceName()
                             + System.lineSeparator() +  device.getIp());
                 }

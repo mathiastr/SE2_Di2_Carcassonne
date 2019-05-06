@@ -15,9 +15,8 @@ public class AddTileActor extends TileActor {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
                 AddTileActor clicked = (AddTileActor)event.getListenerActor();
-                Gdx.app.log("hmm", "clicked hint");
 
-                gameBoard.placeCurrentTileAt(clicked.getPosition());
+                gameBoard.placeMyTile(clicked.getPosition());
             }
         });
     }
