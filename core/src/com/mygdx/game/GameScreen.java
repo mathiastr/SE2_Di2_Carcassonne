@@ -197,7 +197,7 @@ public class GameScreen implements Screen {
         }
     }
 
-    public static void placeMeeple(GameBoard gameboard){
+    public static void placeMeeple(GameBoard gameboard, Side side){
 
         Texture meepleTexture= new Texture(Gdx.files.internal("redmeeple.png"));
         Position pos = gameboard.getPreviousTile().getPosition();
@@ -205,23 +205,26 @@ public class GameScreen implements Screen {
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)),
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)));
         meepleImg.setSize(Gdx.graphics.getWidth()/18,Gdx.graphics.getHeight()/18);
-        meepleImg.setPosition(pos.getX(), pos.getY());
-        gameboard.getStageOfBoard().addActor(meepleImg);
+        float x = (pos.getX()*128f)+(128f/2f)-(meepleImg.getWidth()/2f);
+        float y = (pos.getY()*128f)+(128f/2f)-(meepleImg.getHeight()/2f);
 
-        /*
-        if(side == Side.left){
-
+        switch (side) {
+            case top:
+                y += 42f;
+                break;
+            case left:
+                x -= 42f;
+                break;
+            case right:
+                x += 42f;
+                break;
+            case bottom:
+                y -= 42f;
+                break;
         }
-        else if (side == Side.right){
 
-        }
-        else if (side == Side.bottom){
-
-        }
-        else{
-
-        }*/
-
-
+        meepleImg.setPosition(x, y);
+        //meepleImg.setPosition(calculatePosition(gameboard.getPreviousTile()).getX(), calculatePosition(gameboard.getPreviousTile()).getY());
+       gameboard.getStageOfBoard().addActor(meepleImg);
     }
 }

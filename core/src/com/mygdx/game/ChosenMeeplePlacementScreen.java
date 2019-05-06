@@ -38,7 +38,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         features = currentTile.getFeatures();
         meepleButtons = new ArrayList<>();
 
-        output = new Label("What do you want to do?", Carcassonne.skin);
+        output = new Label("Where do you want to place your Meeple?", Carcassonne.skin);
         output.setAlignment(Align.center);
         output.setY(Gdx.graphics.getHeight()/8*7);
         output.setWidth(Gdx.graphics.getWidth());
@@ -71,7 +71,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
 
     public TextButton createMeeplePlacementButton(Feature feature)
     {
-        TextButton placeMeepleButton = new TextButton("Place Meeple on " + feature.getClass().getSimpleName(), Carcassonne.skin);
+        TextButton placeMeepleButton = new TextButton("On " + feature.getClass().getSimpleName() + " " + feature.getSides(), Carcassonne.skin);
         placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8);
         placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8);
 
@@ -87,7 +87,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
                 sides = feature.getSides();
                 Side side = sides.get(0);
                 currentTile = gb.getPreviousTile();
-                GameScreen.placeMeeple(gb);
+                GameScreen.placeMeeple(gb, side);
                 game.setScreen(previousScreen);
             }
         });

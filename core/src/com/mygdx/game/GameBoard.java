@@ -284,7 +284,6 @@ public class GameBoard {
         return usedTiles.get(lastElement);
     }
 
-
     public void nextTurn() {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         turnIsFinished = false;

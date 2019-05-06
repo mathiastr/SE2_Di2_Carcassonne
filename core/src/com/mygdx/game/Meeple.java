@@ -10,6 +10,7 @@ public class Meeple extends Actor {
     private boolean isBusy;
     private Image img;
 
+
     public Meeple(Image img) {
         this.img = img;
     }
