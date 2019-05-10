@@ -14,25 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.game.Carcassonne;
-import com.mygdx.game.City;
-import com.mygdx.game.Feature;
-import com.mygdx.game.Field;
-import com.mygdx.game.GameBoard;
-import com.mygdx.game.GameScreen;
-import com.mygdx.game.Road;
-import com.mygdx.game.TileActor;
-import com.mygdx.game.network.GameServer;
-import com.mygdx.game.network.NetworkHelper;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChosenMeeplePlacementScreen extends Actor implements Screen{
 
     private Stage stage;
-    private Skin skin;
-    private Stage stageUi;
     GameBoard gb;
     TileActor currentTile;
     private List<Feature> features;
@@ -45,17 +32,13 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         this.gb = gb;
         this.previousScreen = previousScreen;
         this.game = game;
-        stage = new Stage(new ScreenViewport());
-        stageUi = new Stage(new ScreenViewport());
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
-        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        currentTile = gb.getCurrentTile();
+        stage = new Stage(new ScreenViewport());
+        currentTile = gb.getPreviousTile(); //current Tile for Placing Meeple
         features = currentTile.getFeatures();
-        meepleButtons = new ArrayList<TextButton>();
+        meepleButtons = new ArrayList<>();
 
-
-
-        output = new Label("What do you want to do?", Carcassonne.skin);
+        output = new Label("Where do you want to place your Meeple?", Carcassonne.skin);
         output.setAlignment(Align.center);
         output.setY(Gdx.graphics.getHeight()/8*7);
         output.setWidth(Gdx.graphics.getWidth());
@@ -84,14 +67,11 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
             }
         });
         stage.addActor(back);
-        //Gdx.input.setInputProcessor(stage);
-
-    }
+     }
 
     public TextButton createMeeplePlacementButton(Feature feature)
     {
-        TextButton placeMeepleButton = new TextButton("Place Meeple on " + feature.getClass().getSimpleName(), Carcassonne.skin);
-
+        TextButton placeMeepleButton = new TextButton("On " + feature.getClass().getSimpleName() + " " + feature.getSides(), Carcassonne.skin);
         placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8);
         placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8);
 
@@ -103,10 +83,12 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (gb.getCurrentPlayer().checkIfMeepleAvailable() == true) {
-                    feature.addMeeple();
-
-                }
+                ArrayList <Side> sides;
+                sides = feature.getSides();
+                Side side = sides.get(0);
+                currentTile = gb.getPreviousTile();
+                GameScreen.placeMeeple(gb, side);
+                game.setScreen(previousScreen);
             }
         });
 
@@ -127,6 +109,14 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         }
     }
 
+    public TileActor getCurrentTile() {
+        return currentTile;
+    }
+
+    public void setCurrentTile(TileActor currentTile) {
+        this.currentTile = currentTile;
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
@@ -136,7 +126,6 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
         stage.act();
         stage.draw();
     }
