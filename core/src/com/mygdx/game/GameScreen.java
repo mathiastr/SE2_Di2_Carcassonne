@@ -58,8 +58,8 @@ public class GameScreen implements Screen {
         this.gameClient = gameClient;
 
         TextButton placeMeeple = new TextButton("place Meeple",  Carcassonne.skin, "default");
-        placeMeeple.setWidth(Gdx.graphics.getWidth()/4);
-        placeMeeple.setHeight(Gdx.graphics.getHeight()/8);
+        placeMeeple.setWidth(Gdx.graphics.getWidth()/4f);
+        placeMeeple.setHeight(Gdx.graphics.getHeight()/8f);
         placeMeeple.getLabel().setFontScale(0.8f);
         //placeMeeple.setPosition(Gdx.graphics.getWidth()/2-placeMeeple.getWidth()/2, Gdx.graphics.getHeight()*6/9);
         placeMeeple.setPosition(10, 0);
@@ -216,7 +216,7 @@ public class GameScreen implements Screen {
         ImageButton meepleImg = new ImageButton(
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)),
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)));
-        meepleImg.setSize(Gdx.graphics.getWidth()/18,Gdx.graphics.getHeight()/18);
+        meepleImg.setSize(Gdx.graphics.getWidth()/18f,Gdx.graphics.getHeight()/18f);
         float x = (pos.getX()*128f)+(128f/2f)-(meepleImg.getWidth()/2f);
         float y = (pos.getY()*128f)+(128f/2f)-(meepleImg.getHeight()/2f);
 
