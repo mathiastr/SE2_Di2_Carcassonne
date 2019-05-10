@@ -6,30 +6,23 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
 
 import java.util.List;
-
-import javax.swing.text.html.ImageView;
 
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)
@@ -43,18 +36,22 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private GameBoard gameBoard;
     private Skin skin;
+    private boolean isLocal;
+    private GameClient gameClient;
 
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
 
-    public GameScreen(Game aGame, List<Player> players) {
+    public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
-        gameBoard = new GameBoard(stage, stageUI, players);
+        gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient);
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        this.isLocal = isLocal;
+        this.gameClient = gameClient;
 
         TextButton placeMeeple = new TextButton("place Meeple",  Carcassonne.skin, "default");
         placeMeeple.setWidth(Gdx.graphics.getWidth()/4);
@@ -71,8 +68,21 @@ public class GameScreen implements Screen {
                 game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this,game, gameBoard));
             }
         });
+        //ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();
         stageUI.addActor(placeMeeple);
+/*
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
+                //TODO: neuer Screen öffnet noch nicht
+
+                ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();
+                stageUI.addActor(cmpa);
+
+                //TODO: SetPosition richtig?
+                cmpa.setPosition(Gdx.graphics.getWidth()-placeMeeple.getWidth(), Gdx.graphics.getHeight());
+            }
+        });*/
 
         //stageUI.addActor(placeMeeple);
         Gdx.input.setInputProcessor(stage);
@@ -95,7 +105,6 @@ public class GameScreen implements Screen {
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
                 super.touchDragged(event, x, y, pointer);
-                Gdx.app.debug("drag", "draaaged");
                 camera.translate(-Gdx.input.getDeltaX(), Gdx.input.getDeltaY());
             }
         });
@@ -195,36 +204,5 @@ public class GameScreen implements Screen {
         if (object instanceof TestOutput) {
             //do something
         }
-    }
-
-    public static void placeMeeple(GameBoard gameboard, Side side){
-
-        Texture meepleTexture= new Texture(Gdx.files.internal("redmeeple.png"));
-        Position pos = gameboard.getPreviousTile().getPosition();
-        ImageButton meepleImg = new ImageButton(
-                new TextureRegionDrawable(new TextureRegion(meepleTexture)),
-                new TextureRegionDrawable(new TextureRegion(meepleTexture)));
-        meepleImg.setSize(Gdx.graphics.getWidth()/18,Gdx.graphics.getHeight()/18);
-        float x = (pos.getX()*128f)+(128f/2f)-(meepleImg.getWidth()/2f);
-        float y = (pos.getY()*128f)+(128f/2f)-(meepleImg.getHeight()/2f);
-
-        switch (side) {
-            case top:
-                y += 42f;
-                break;
-            case left:
-                x -= 42f;
-                break;
-            case right:
-                x += 42f;
-                break;
-            case bottom:
-                y -= 42f;
-                break;
-        }
-
-        meepleImg.setPosition(x, y);
-        //meepleImg.setPosition(calculatePosition(gameboard.getPreviousTile()).getX(), calculatePosition(gameboard.getPreviousTile()).getY());
-       gameboard.getStageOfBoard().addActor(meepleImg);
     }
 }

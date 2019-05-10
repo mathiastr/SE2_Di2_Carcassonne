@@ -19,7 +19,7 @@ public abstract class AbstractGameManager {
         this.ip = ip;
     }
 
-    public void sendToAll(Object message){}
+    public void sendToServer(Object message){}
 
     public void sendToHost(Object message){}
 

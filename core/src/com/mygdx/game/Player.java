@@ -1,6 +1,8 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.network.response.PlayerGameMessage;
 
 import java.util.ArrayList;
 
@@ -8,6 +10,8 @@ public class Player {
     private int score;
     private GameBoard.Color color;
     private ArrayList<Meeple> meeples;
+    private Texture photo;
+    private String name;
 
     public Texture getPhoto() {
         return photo;
@@ -17,12 +21,10 @@ public class Player {
         this.photo = photo;
     }
 
-    private Texture photo;
 
     public int getNumberOfMeeples() {
         return meeples.size();
     }
-
 
     public int getScore() {
         return score;
@@ -48,7 +50,6 @@ public class Player {
         this.name = name;
     }
 
-    private String name;
 
     // TODO meeples inactive and active
     public boolean checkIfMeepleAvailable(){
@@ -75,5 +76,17 @@ public class Player {
 
     public void addScore(int score) {
         this.score += score;
+    }
+
+    public Player(PlayerGameMessage p) {
+        this.score = p.score;
+        this.name = p.name;
+        this.color = GameBoard.Color.green;
+        this.meeples = new ArrayList<Meeple>();
+        for (int i = 0; i < 7; i++) {
+            this.meeples.add(new Meeple(this.color));
+        }
+        //standart texture
+        this.photo = new Texture(Gdx.files.internal("profilePhoto.png"));
     }
 }

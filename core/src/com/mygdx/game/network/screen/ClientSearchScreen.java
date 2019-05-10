@@ -15,11 +15,16 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.GameScreen;
 import com.mygdx.game.MainMenuScreen;
+import com.mygdx.game.Player;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
-import com.mygdx.game.GameScreen;
+import com.mygdx.game.network.response.InitGameMessage;
+import com.mygdx.game.network.response.PlayerGameMessage;
+import com.mygdx.game.network.response.SimpleMessage;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -47,11 +52,12 @@ public class ClientSearchScreen implements Screen {
 
         server = new ArrayList<TextButton>();
         final GameClient gameClient = new GameClient();
+        /*
         gameClient.getClient().addListener(new Listener(){
             public void received (Connection connection, Object object) {
                 receive(connection,object);
             }
-        });
+        }); */
         NetworkHelper.setGameManager(gameClient);
         List<InetAddress> hosts = gameClient.discover();
         if(!hosts.isEmpty()){
@@ -67,8 +73,29 @@ public class ClientSearchScreen implements Screen {
                     @Override
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         try{
+                            //TODO send player name + color
                             gameClient.initConnection(host,new TestOutput("Hugo"));
-                        }catch (Exception e){
+                            gameClient.addListener(new Listener() {
+                                public void received (Connection connection, Object object) {
+                                    if (object instanceof InitGameMessage) {
+                                        // get the init info from here
+                                        InitGameMessage response = (InitGameMessage) object;
+                                        ArrayList<Player> players = new ArrayList<>();
+                                        for (PlayerGameMessage p : response.getPlayers()) {
+                                            players.add(new Player(p));
+                                        }
+                                        System.out.println("info is here");
+                                        Gdx.app.postRunnable(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                // TODO get "me" from settings (your user name and etc.)
+                                                game.setScreen(new GameScreen(game, players, false, players.get(0), gameClient));
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+                        } catch (Exception e) {
 
                         }
                     }
@@ -183,15 +210,22 @@ public class ClientSearchScreen implements Screen {
 
     }
 
+    //TODO Delete this method
+
     public void receive(Connection connection, Object object){
         if (object instanceof TestOutput) {
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
                     // TODO pass players
-                    game.setScreen(new GameScreen(game, new ArrayList<>()));
+                    System.out.println("we are somehow in client search");
+                    game.setScreen(new GameScreen(game, new ArrayList<>(), false, new Player(GameBoard.Color.green, "name"),null));
                 }
             });
+        }
+
+        if (object instanceof SimpleMessage) {
+            System.out.println("huinya");
         }
     }
 }

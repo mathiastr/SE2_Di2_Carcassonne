@@ -1,19 +1,14 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.scenes.scene2d.Actor;
-
-import java.awt.Image;
-
-public class Meeple extends Actor {
+public class Meeple {
     private MeepleType meepleType;
     private GameBoard.Color color;
     private boolean isBusy;
-    private Image img;
 
+    public Meeple() {
 
-    public Meeple(Image img) {
-        this.img = img;
     }
+
 
     public Meeple(GameBoard.Color color){
         this.color = color;
