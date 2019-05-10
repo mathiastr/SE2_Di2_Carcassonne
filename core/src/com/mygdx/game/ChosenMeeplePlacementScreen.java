@@ -101,9 +101,9 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
             button.setWidth(Gdx.graphics.getWidth() / 2f - 40f);
             button.setHeight(Gdx.graphics.getHeight()/5f - 40f);
             if(i%2 == 0){
-                button.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5 * (i/2+2) + 40f);
+                button.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5f * (i/2+2) + 40f);
             }else{
-                button.setPosition(20f + Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5f * (i/2f+2f) + 40f);
+                button.setPosition(20f + Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5f * (i/2+2) + 40f);
             }
             stage.addActor(button);
         }
