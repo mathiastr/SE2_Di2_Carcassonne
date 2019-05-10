@@ -63,6 +63,7 @@ public class GameBoard {
     private Player currentPlayer;
     private List<Player> players;
     private ArrayList<TileActor> hints = new ArrayList<>();
+    private ArrayList<TileActor> usedTiles = new ArrayList<>();
 
     /* is the deck of tiles */
     private ArrayList<TileActor> availableTiles = new ArrayList<>();
@@ -296,8 +297,14 @@ public class GameBoard {
                 }
             }
         });
-        availableTiles.remove(availableTiles.size() - 1); // TODO
+        usedTiles.add(currentTile);
+        availableTiles.remove(availableTiles.size()-1); // TODO
         stageOfUI.addActor(currentTile);
+    }
+
+    public TileActor getPreviousTile(){
+        int lastElement = usedTiles.size()-1;
+        return usedTiles.get(lastElement);
     }
 
     public void nextTurn() {
