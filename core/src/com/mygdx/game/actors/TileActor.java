@@ -1,9 +1,16 @@
-package com.mygdx.game;
+package com.mygdx.game.actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.Player;
+import com.mygdx.game.Position;
+import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.TilePlacementMessage;
+import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.FeatureType;
+import com.mygdx.game.tile.Side;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +31,17 @@ public class TileActor extends Actor {
         this.meeples = meeples;
     }
 
-    private ArrayList<Meeple> meeples; // TODO: maybe add meeple field to Feature class
+    public void addMeeple(Meeple meeple) {
+        this.meeples.add(meeple);
+    }
+
+    public void removeMeeple(Meeple meeple) {
+        for (Meeple m: meeples) {
+            // todo
+        }
+    }
+
+    private ArrayList<Meeple> meeples = new ArrayList<>(); // TODO: maybe add meeple field to Feature class
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
     private boolean monastery = false;
     private Player player1;

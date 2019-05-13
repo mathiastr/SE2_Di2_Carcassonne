@@ -12,11 +12,20 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.mygdx.game.actors.AddTileActor;
+import com.mygdx.game.actors.PlayerStatusActor;
+import com.mygdx.game.actors.TileActor;
+import com.mygdx.game.meeple.Meeple;
+import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
+import com.mygdx.game.tile.City;
+import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.Road;
+import com.mygdx.game.tile.Side;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -63,6 +72,7 @@ public class GameBoard {
     private Player currentPlayer;
     private List<Player> players;
     private ArrayList<TileActor> hints = new ArrayList<>();
+    private ArrayList<TileActor> usedTiles = new ArrayList<>();
 
     /* is the deck of tiles */
     private ArrayList<TileActor> availableTiles = new ArrayList<>();
@@ -296,7 +306,8 @@ public class GameBoard {
                 }
             }
         });
-        availableTiles.remove(availableTiles.size() - 1); // TODO
+        usedTiles.add(currentTile);
+        availableTiles.remove(availableTiles.size()-1); // TODO
         stageOfUI.addActor(currentTile);
     }
 
@@ -346,14 +357,26 @@ public class GameBoard {
 
     public void endMyTurn() {
         TurnEndMessage turnEndMessage = new TurnEndMessage();
+        turnEndMessage.setMeeples(currentTile.getMeeples());
         if (gameClient != null) {
             NetworkHelper.getGameManager().sendToServer(turnEndMessage);
         }
-        onTurnEnd();
+        onTurnEnd(turnEndMessage);
     }
 
-    public void onTurnEnd() {
-
+    public void onTurnEnd(TurnEndMessage turnEndMessage) {
+        if (gameClient != null) {
+            GameBoard that = this;
+            Position pos = currentTile.getPosition();
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    for (Meeple m : turnEndMessage.getMeeples()) {
+                        new MeeplePlacement(that).drawMeeple(m.getSide(), pos);
+                    }
+                }
+            });
+        }
         nextTurn();
         if (isMyTurn()) {
             beginMyTurn();
@@ -417,7 +440,7 @@ public class GameBoard {
                         onTurnBegin((CurrentTileMessage) object);
                     }
                     if (object instanceof TurnEndMessage) {
-                        onTurnEnd();
+                        onTurnEnd((TurnEndMessage)object);
                     }
                 }
             });
@@ -675,5 +698,12 @@ public class GameBoard {
     public void removeOldHints() {
         for (TileActor a : hints) a.remove();
         hints.clear();
+    }
+    public ArrayList<TileActor> getUsedTiles() {
+        return usedTiles;
+    }
+      public TileActor getPreviousTile(){
+        int lastElement = usedTiles.size()-1;
+        return usedTiles.get(lastElement);
     }
 }

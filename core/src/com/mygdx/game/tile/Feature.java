@@ -1,20 +1,18 @@
-package com.mygdx.game;
+package com.mygdx.game.tile;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class Feature {
 
-    private Set<Side> sides;
+    private ArrayList<Side> sides; //Changed Set to ArrayList
     private  HashMap<Side, Side> connections; // probably don't need that
     private boolean hasMeepleOnIt;
     //private Player player1;
 
     public Feature() {
-        this.sides = new HashSet<Side>();
+        this.sides = new ArrayList<>();
         this.connections = new HashMap<Side, Side>();
     }
 
@@ -28,7 +26,7 @@ public class Feature {
         sides.add(side);
     }
 
-    public Set<Side> getSides() {
+    public ArrayList<Side> getSides() {
         return sides;
     }
 
@@ -58,7 +56,7 @@ public class Feature {
     }
 
     public void addMeeple(){
-        if(hasMeepleOnIt == false /*&& .checkIfMeepleAvailable() == true*/){
+        if(hasMeepleOnIt == false ){
             setHasMeepleOnIt(true);
         }
     }

@@ -2,9 +2,17 @@ package com.mygdx.game.network;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+import com.mygdx.game.tile.City;
+import com.mygdx.game.tile.Field;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.meeple.Meeple;
+import com.mygdx.game.meeple.MeepleType;
+import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.Meeple;
 import com.mygdx.game.Player;
 import com.mygdx.game.Position;
+import com.mygdx.game.tile.Road;
+import com.mygdx.game.tile.Side;
 import com.mygdx.game.network.response.ConnectMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.ErrorMessage;
@@ -15,6 +23,7 @@ import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Network {
     //Port Numbers randomly chosen 56773 59885
@@ -32,6 +41,14 @@ public class Network {
         kryo.register(SimpleMessage.class);
         kryo.register(CurrentTileMessage.class);
         kryo.register(TurnEndMessage.class);
+        kryo.register(GameBoard.Color.class);
+        kryo.register(City.class);
+        kryo.register(Road.class);
+        kryo.register(Field.class);
+        kryo.register(Monastery.class);
+        kryo.register(Side.class);
+        kryo.register(MeepleType.class);
+        kryo.register(HashMap.class);
         kryo.register(ErrorMessage.class);
         kryo.register(ConnectMessage.class);
     }
