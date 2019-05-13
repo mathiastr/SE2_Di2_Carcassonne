@@ -302,11 +302,6 @@ public class GameBoard {
         stageOfUI.addActor(currentTile);
     }
 
-    public TileActor getPreviousTile(){
-        int lastElement = usedTiles.size()-1;
-        return usedTiles.get(lastElement);
-    }
-
     public void nextTurn() {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
         turnIsFinished = false;
@@ -682,5 +677,12 @@ public class GameBoard {
     public void removeOldHints() {
         for (TileActor a : hints) a.remove();
         hints.clear();
+    }
+    public ArrayList<TileActor> getUsedTiles() {
+        return usedTiles;
+    }
+      public TileActor getPreviousTile(){
+        int lastElement = usedTiles.size()-1;
+        return usedTiles.get(lastElement);
     }
 }

@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -27,6 +26,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
     private List<TextButton> meepleButtons;
     private Game game;
     private Screen previousScreen;
+    MeeplePlacement mp;
 
     public  ChosenMeeplePlacementScreen(Screen previousScreen, Game game, GameBoard gb) {
         this.gb = gb;
@@ -37,10 +37,11 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         currentTile = gb.getPreviousTile(); //current Tile for Placing Meeple
         features = currentTile.getFeatures();
         meepleButtons = new ArrayList<>();
+        mp = new MeeplePlacement(gb);
 
         output = new Label("Where do you want to place your Meeple?", Carcassonne.skin);
         output.setAlignment(Align.center);
-        output.setY(Gdx.graphics.getHeight()/8*7);
+        output.setY(Gdx.graphics.getHeight()/8f*7f);
         output.setWidth(Gdx.graphics.getWidth());
         output.setFontScale(3);
         stage.addActor(output);
@@ -53,7 +54,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         setMeepleTextButtons();
 
         TextButton back = new TextButton("Back", Carcassonne.skin);
-        back.setWidth(Gdx.graphics.getWidth() / 5 - 40);
+        back.setWidth(Gdx.graphics.getWidth() / 5f - 40f);
         back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
         back.addListener(new InputListener() {
             @Override
@@ -71,9 +72,9 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
 
     public TextButton createMeeplePlacementButton(Feature feature)
     {
-        TextButton placeMeepleButton = new TextButton("On " + feature.getClass().getSimpleName() + " " + feature.getSides(), Carcassonne.skin);
-        placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8);
-        placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8);
+        TextButton placeMeepleButton = new TextButton("On " + feature.getClass().getSimpleName() + " " +feature.getSides(), Carcassonne.skin);
+        placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8f);
+        placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8f);
 
         placeMeepleButton.addListener(new InputListener() {
             @Override
@@ -87,7 +88,8 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
                 sides = feature.getSides();
                 Side side = sides.get(0);
                 currentTile = gb.getPreviousTile();
-                GameScreen.placeMeeple(gb, side);
+                side = currentTile.getSideAfterRotation(side);
+                mp.placeMeeple(side);
                 game.setScreen(previousScreen);
             }
         });
@@ -98,12 +100,12 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
     private void setMeepleTextButtons() {
         for (int i = 0; i < meepleButtons.size() && i < 6; i++) {
             TextButton button = meepleButtons.get(i);
-            button.setWidth(Gdx.graphics.getWidth() / 2 - 40);
-            button.setHeight(Gdx.graphics.getHeight()/5 - 40);
+            button.setWidth(Gdx.graphics.getWidth() / 2f - 40f);
+            button.setHeight(Gdx.graphics.getHeight()/5f - 40f);
             if(i%2 == 0){
-                button.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5 * (i/2+2) + 40);
+                button.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5f * (i/2+2) + 40f);
             }else{
-                button.setPosition(20 + Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5 * (i/2+2) + 40);
+                button.setPosition(20f + Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5f * (i/2+2) + 40f);
             }
             stage.addActor(button);
         }
