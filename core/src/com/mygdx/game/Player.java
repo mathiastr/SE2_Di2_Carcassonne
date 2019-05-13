@@ -74,6 +74,16 @@ public class Player {
         this.name = name;
     }
 
+    public Meeple getUnusedMeeple() throws Exception {
+        if (this.meeples.size() != 0) {
+            Meeple lastMeeple = this.meeples.get(this.meeples.size() - 1);
+            this.meeples.remove(this.meeples.size() - 1);
+            return lastMeeple;
+        } else {
+            throw new Exception("No more meeples");
+        }
+    }
+
     public void addScore(int score) {
         this.score += score;
     }
