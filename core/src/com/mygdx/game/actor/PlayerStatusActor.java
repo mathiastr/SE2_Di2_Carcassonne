@@ -1,4 +1,4 @@
-package com.mygdx.game.actors;
+package com.mygdx.game.actor;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;

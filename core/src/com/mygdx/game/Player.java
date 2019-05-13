@@ -100,4 +100,6 @@ public class Player {
         //standart texture
         this.photo = new Texture(Gdx.files.internal("profilePhoto.png"));
     }
+
+    public Player(){}
 }

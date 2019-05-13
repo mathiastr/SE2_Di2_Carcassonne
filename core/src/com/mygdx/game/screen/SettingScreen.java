@@ -1,4 +1,4 @@
-package com.mygdx.game.screens;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -26,17 +27,18 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
+import com.mygdx.game.network.GameServer;
+import com.mygdx.game.network.NetworkHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CreatePlayersScreen implements Screen {
+public class SettingScreen implements Screen {
 
     private Game game;
     private Stage stage;
     private Texture background;
-    private List<Player> players = new ArrayList<Player>();
     private final BitmapFont font;
     private Table playerListTable;
 
@@ -61,16 +63,15 @@ public class CreatePlayersScreen implements Screen {
         playerListTable.add(nameLabel).width(500);
         playerListTable.row();
 
-        for (Player player : players) {
-            TextField nameField = new TextField(player.getName(), textFieldStyle);
+        TextField nameField = new TextField(NetworkHelper.getPlayer().getName(), textFieldStyle);
 
-            //TODO profile photo
+        //TODO profile photo
 
-            Texture imageTexture = new Texture(Gdx.files.internal("profilePhoto.png"));
-            Image profilePhoto = new Image();
-            profilePhoto.setDrawable(new TextureRegionDrawable(new TextureRegion(imageTexture)));
+        Texture imageTexture = new Texture(Gdx.files.internal("profilePhoto.png"));
+        Image profilePhoto = new Image();
+        profilePhoto.setDrawable(new TextureRegionDrawable(new TextureRegion(imageTexture)));
 
-            profilePhoto.addListener(new ClickListener() {
+        profilePhoto.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     Carcassonne.getNativeInterface().getPhoto((byte[] bytes) -> {
@@ -82,7 +83,7 @@ public class CreatePlayersScreen implements Screen {
                                 Sprite sprite = new Sprite(tex);
                                 sprite.setRotation(180f);
                                 profilePhoto.setDrawable(new SpriteDrawable(sprite));
-                                player.setPhoto(tex);
+                                NetworkHelper.getPlayer().setPhoto(tex);
                             }
                         });
                     });
@@ -95,37 +96,21 @@ public class CreatePlayersScreen implements Screen {
             nameField.setTextFieldListener(new TextField.TextFieldListener() {
                 @Override
                 public void keyTyped(TextField textField, char c) {
-                    player.setName(nameField.getText());
+                    NetworkHelper.getPlayer().setName(nameField.getText());
                 }
             });
             playerListTable.add(nameField).width(500);
-            playerListTable.add(new Label("" + player.getColor().name(), textStyle));
-
-            TextButton deleteButton = new TextButton("delete", Carcassonne.skin, "menu");
-            playerListTable.add(deleteButton);
-            deleteButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.debug("touch", "delete button is touched");
-                    players.remove(player);
-                    renderPlayersList();
-                }
-            });
+            playerListTable.add(new Label("" + NetworkHelper.getPlayer().getColor().name(), textStyle));
             playerListTable.row();
 
-        }
-
         playerListTable.setFillParent(true);
-        playerListTable.setY(-125);
+        playerListTable.setY(350);
         stage.addActor(playerListTable);
     }
 
-    public CreatePlayersScreen(final Game game) {
+    public SettingScreen(final Game game) {
         this.game = game;
         stage = new Stage(new ScreenViewport());
-
-        players.add(new Player(GameBoard.Color.red, "Player 1"));
-        players.add(new Player(GameBoard.Color.blue, "Player 2"));
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
@@ -137,52 +122,29 @@ public class CreatePlayersScreen implements Screen {
 
         int marginTop = 10;
 
-        // TODO place these buttons inside the table
-        TextButton startGameButton = new TextButton("Start Game", Carcassonne.skin, "menu");
-        startGameButton.setWidth(Gdx.graphics.getWidth() / 4);
-        startGameButton.setPosition(Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, Gdx.graphics.getHeight() * 6 / 9 - marginTop);
-        startGameButton.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.debug("touch", "start button is touched");
-                // in this case "me" doesn't matter
-                game.setScreen(new GameScreen(game, players, true, players.get(0), null));
-            }
-        });
-
-        TextButton addPlayer = new TextButton("Add player", Carcassonne.skin, "menu");
-        addPlayer.setWidth(Gdx.graphics.getWidth() / 4);
-        addPlayer.setPosition(Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, Gdx.graphics.getHeight() * 6 / 9 + startGameButton.getHeight() * 3 / 2 - marginTop);
-        addPlayer.addListener(new ClickListener(){
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (players.size() < GameBoard.MAX_NUM_OF_PLAYERS) {
-                    List<GameBoard.Color> colors = new ArrayList<>();
-                    List<Integer> numbers = new ArrayList<>();
-                    for (Player p : players) {
-                        numbers.add(Integer.valueOf(p.getName().split(" ")[1]));
-                        colors.add(p.getColor());
-                    }
-                    Integer[] arr = {1, 2, 3, 4, 5, 6};
-                    List<Integer> rest = (new ArrayList<>(Arrays.asList(arr)));
-                    rest.removeAll(numbers);
-                    players.add(new Player(GameBoard.Color.getRandomColorExcept(colors),
-                            "Player " + rest.get(0)));
-                    renderPlayersList();
-                }
-                Gdx.app.debug("touch", "add player button is touched");
-            }
-        });
-
-        stage.addActor(addPlayer);
-        stage.addActor(startGameButton);
-        // TODO what is that?
-
         font = new BitmapFont(Gdx.files.internal("font/font.fnt"));
         font.getData().setScale(5);
 
+        if(NetworkHelper.getPlayer() == null){
+            NetworkHelper.setPlayer(new Player(GameBoard.Color.red, "Guest"));
+        }
         renderPlayersList();
 
+        TextButton back = new TextButton("Back", Carcassonne.skin);
+        back.setWidth(Gdx.graphics.getWidth() / 5 - 40);
+        back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
+        back.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+        stage.addActor(back);
         Gdx.input.setInputProcessor(stage);
 
     }

@@ -2,14 +2,13 @@ package com.mygdx.game.network;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+import com.mygdx.game.Player;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Field;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.meeple.MeepleType;
 import com.mygdx.game.tile.Monastery;
-import com.mygdx.game.Meeple;
-import com.mygdx.game.Player;
 import com.mygdx.game.Position;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
@@ -51,6 +50,7 @@ public class Network {
         kryo.register(HashMap.class);
         kryo.register(ErrorMessage.class);
         kryo.register(ConnectMessage.class);
+        kryo.register(Player.class);
     }
 }
 

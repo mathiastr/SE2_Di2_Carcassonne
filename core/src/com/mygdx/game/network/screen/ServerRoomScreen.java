@@ -39,6 +39,7 @@ public class ServerRoomScreen implements Screen {
     private Stage stage;
     private Label output;
     private List<TextButton> devices;
+    ArrayList<Player> players = new ArrayList<>();
 
     public ServerRoomScreen(final Game game) {
         this.game = game;
@@ -72,7 +73,7 @@ public class ServerRoomScreen implements Screen {
 
         try{
             server = new GameServer();
-            server.addDevice(new NetworkDevice("Host", server.getIp()));
+            server.addDevice(new NetworkDevice(NetworkHelper.getPlayer().getName(), server.getIp()));
             devices.get(0).setText(server.getDeviceList().get(0).getDeviceName()
                     + System.lineSeparator() + server.getDeviceList().get(0).getIp());
             NetworkHelper.setGameManager(server);
@@ -118,9 +119,8 @@ public class ServerRoomScreen implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
                 // TODO get players from
-                ArrayList<Player> players = new ArrayList<>();
-                players.add(new Player(GameBoard.Color.green, "Client"));
-                players.add(new Player(GameBoard.Color.blue, "Server"));
+                //players.add(new Player(GameBoard.Color.green, "Client"));
+                //players.add(new Player(GameBoard.Color.blue, "Server"));
 
                 ArrayList<PlayerGameMessage> playerGameMessages = new ArrayList<>();
                 for (Player p : players) {
@@ -137,6 +137,12 @@ public class ServerRoomScreen implements Screen {
             }
         });
         stage.addActor(start);
+
+        if(NetworkHelper.getPlayer() != null){
+            players.add(NetworkHelper.getPlayer());
+        }else{
+            players.add(new Player(GameBoard.Color.blue, "Server"));
+        }
 
         Gdx.input.setInputProcessor(stage);
     }
@@ -183,13 +189,21 @@ public class ServerRoomScreen implements Screen {
     public void receive(Connection connection, Object object){
         System.out.println("DEGUG ::: server received   " + object.toString());
         if (object instanceof ConnectMessage) {
-            NetworkDevice device = new NetworkDevice(((ConnectMessage) object).getPlayer().getName(),
-                    connection.getRemoteAddressTCP().getAddress());
+
             GameServer gameServer = ((GameServer)NetworkHelper.getGameManager());
             if(gameServer.getDeviceList().size() > 6){
                 connection.sendTCP(new ErrorMessage("The game is full", ErrorNumber.TOOMANYCLIENTS));
             }else{
+                NetworkDevice device = new NetworkDevice(((ConnectMessage) object).getPlayer().getName(),
+                        connection.getRemoteAddressTCP().getAddress());
                 gameServer.addDevice(device);
+                for (Player p: players
+                     ) {
+                    if(p.getName().equals(((ConnectMessage) object).player.getName())){
+                        ((ConnectMessage) object).player.setName(((ConnectMessage) object).player.getName() + players.size());
+                    }
+                }
+                players.add(((ConnectMessage) object).player);
                 for (int i = 1; i < gameServer.getDeviceList().size(); i++) {
                     // TODO add player name to the player list
                     devices.get(i).setText(device.getDeviceName()
