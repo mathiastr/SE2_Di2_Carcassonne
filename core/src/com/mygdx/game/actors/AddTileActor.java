@@ -1,9 +1,11 @@
-package com.mygdx.game;
+package com.mygdx.game.actors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.Position;
 
 public class AddTileActor extends TileActor {
     public AddTileActor(Position aPosition, final GameBoard gameBoard) {

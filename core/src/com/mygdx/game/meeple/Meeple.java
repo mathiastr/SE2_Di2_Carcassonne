@@ -1,4 +1,8 @@
-package com.mygdx.game;
+package com.mygdx.game.meeple;
+
+import com.mygdx.game.tile.Feature;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.tile.Side;
 
 import java.util.Random;
 

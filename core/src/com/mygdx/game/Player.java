@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.PlayerGameMessage;
 
 import java.util.ArrayList;
