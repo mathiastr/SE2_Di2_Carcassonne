@@ -61,7 +61,6 @@ public class GameScreen implements Screen {
         placeMeeple.setWidth(Gdx.graphics.getWidth()/4f);
         placeMeeple.setHeight(Gdx.graphics.getHeight()/8f);
         placeMeeple.getLabel().setFontScale(0.8f);
-        //placeMeeple.setPosition(Gdx.graphics.getWidth()/2-placeMeeple.getWidth()/2, Gdx.graphics.getHeight()*6/9);
         placeMeeple.setPosition(10, 0);
 
         placeMeeple.addListener(new ClickListener() {
@@ -72,23 +71,7 @@ public class GameScreen implements Screen {
                 game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this,game, gameBoard));
             }
         });
-        //ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();
         stageUI.addActor(placeMeeple);
-/*
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-                //TODO: neuer Screen öffnet noch nicht
-
-                ChosenMeeplePlacementScreen cmpa = new ChosenMeeplePlacementScreen();
-                stageUI.addActor(cmpa);
-
-                //TODO: SetPosition richtig?
-                cmpa.setPosition(Gdx.graphics.getWidth()-placeMeeple.getWidth(), Gdx.graphics.getHeight());
-            }
-        });*/
-
-        //stageUI.addActor(placeMeeple);
         Gdx.input.setInputProcessor(stage);
 
         if (NetworkHelper.getGameManager() != null) {

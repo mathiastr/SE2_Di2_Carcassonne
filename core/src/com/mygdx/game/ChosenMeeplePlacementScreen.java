@@ -26,6 +26,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
     private List<TextButton> meepleButtons;
     private Game game;
     private Screen previousScreen;
+    MeeplePlacement mp;
 
     public  ChosenMeeplePlacementScreen(Screen previousScreen, Game game, GameBoard gb) {
         this.gb = gb;
@@ -36,6 +37,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         currentTile = gb.getPreviousTile(); //current Tile for Placing Meeple
         features = currentTile.getFeatures();
         meepleButtons = new ArrayList<>();
+        mp = new MeeplePlacement(gb);
 
         output = new Label("Where do you want to place your Meeple?", Carcassonne.skin);
         output.setAlignment(Align.center);
@@ -85,9 +87,9 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
                 ArrayList <Side> sides;
                 sides = feature.getSides();
                 Side side = sides.get(0);
-                side = currentTile.getSideAfterRotation(side);
                 currentTile = gb.getPreviousTile();
-                GameScreen.placeMeeple(gb, side);
+                side = currentTile.getSideAfterRotation(side);
+                mp.placeMeeple(side);
                 game.setScreen(previousScreen);
             }
         });
