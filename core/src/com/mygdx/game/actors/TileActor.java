@@ -1,9 +1,16 @@
-package com.mygdx.game;
+package com.mygdx.game.actors;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.Player;
+import com.mygdx.game.Position;
+import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.TilePlacementMessage;
+import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.FeatureType;
+import com.mygdx.game.tile.Side;
 
 import java.util.ArrayList;
 import java.util.HashMap;

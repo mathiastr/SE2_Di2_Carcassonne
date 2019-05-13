@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.tile;
 
 public class Monastery extends Feature {
 

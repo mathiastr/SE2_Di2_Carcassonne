@@ -1,6 +1,6 @@
 package com.mygdx.game.network.response;
 
-import com.mygdx.game.Meeple;
+import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.Position;
 
 import java.util.ArrayList;

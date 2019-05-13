@@ -1,10 +1,15 @@
-package com.mygdx.game;
+package com.mygdx.game.meeple;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mygdx.game.tile.Feature;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.Position;
+import com.mygdx.game.tile.Side;
+import com.mygdx.game.actors.TileActor;
 
 import java.util.ArrayList;
 
