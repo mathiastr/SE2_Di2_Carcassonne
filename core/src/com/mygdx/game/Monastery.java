@@ -1,10 +1,8 @@
 package com.mygdx.game;
 
-import java.util.List;
+public class Monastery extends Feature {
 
-public class Monastary extends Feature {
-
-    public Monastary() {
+    public Monastery() {
         super();
 
     }

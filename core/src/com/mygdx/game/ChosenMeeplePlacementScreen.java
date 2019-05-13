@@ -89,7 +89,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
                 Side side = sides.get(0);
                 currentTile = gb.getPreviousTile();
                 side = currentTile.getSideAfterRotation(side);
-                mp.placeMeeple(side);
+                mp.placeMeeple(side, feature, gb.getCurrentTile().getPosition());
                 game.setScreen(previousScreen);
             }
         });

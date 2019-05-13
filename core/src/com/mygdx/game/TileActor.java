@@ -24,7 +24,17 @@ public class TileActor extends Actor {
         this.meeples = meeples;
     }
 
-    private ArrayList<Meeple> meeples; // TODO: maybe add meeple field to Feature class
+    public void addMeeple(Meeple meeple) {
+        this.meeples.add(meeple);
+    }
+
+    public void removeMeeple(Meeple meeple) {
+        for (Meeple m: meeples) {
+            // todo
+        }
+    }
+
+    private ArrayList<Meeple> meeples = new ArrayList<>(); // TODO: maybe add meeple field to Feature class
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
     private boolean monastery = false;
     private Player player1;

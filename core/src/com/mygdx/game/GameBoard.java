@@ -348,14 +348,26 @@ public class GameBoard {
 
     public void endMyTurn() {
         TurnEndMessage turnEndMessage = new TurnEndMessage();
+        turnEndMessage.setMeeples(currentTile.getMeeples());
         if (gameClient != null) {
             NetworkHelper.getGameManager().sendToServer(turnEndMessage);
         }
-        onTurnEnd();
+        onTurnEnd(turnEndMessage);
     }
 
-    public void onTurnEnd() {
-
+    public void onTurnEnd(TurnEndMessage turnEndMessage) {
+        if (gameClient != null) {
+            GameBoard that = this;
+            Position pos = currentTile.getPosition();
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    for (Meeple m : turnEndMessage.getMeeples()) {
+                        new MeeplePlacement(that).drawMeeple(m.getSide(), pos);
+                    }
+                }
+            });
+        }
         nextTurn();
         if (isMyTurn()) {
             beginMyTurn();
@@ -419,7 +431,7 @@ public class GameBoard {
                         onTurnBegin((CurrentTileMessage) object);
                     }
                     if (object instanceof TurnEndMessage) {
-                        onTurnEnd();
+                        onTurnEnd((TurnEndMessage)object);
                     }
                 }
             });

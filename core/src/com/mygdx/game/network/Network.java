@@ -2,8 +2,15 @@ package com.mygdx.game.network;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
+import com.mygdx.game.City;
+import com.mygdx.game.Field;
+import com.mygdx.game.GameBoard;
 import com.mygdx.game.Meeple;
+import com.mygdx.game.MeepleType;
+import com.mygdx.game.Monastery;
 import com.mygdx.game.Position;
+import com.mygdx.game.Road;
+import com.mygdx.game.Side;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.InitGameMessage;
 import com.mygdx.game.network.response.PlayerGameMessage;
@@ -12,6 +19,7 @@ import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Network {
     //Port Numbers randomly chosen 56773 59885
@@ -30,6 +38,14 @@ public class Network {
         kryo.register(SimpleMessage.class);
         kryo.register(CurrentTileMessage.class);
         kryo.register(TurnEndMessage.class);
+        kryo.register(GameBoard.Color.class);
+        kryo.register(City.class);
+        kryo.register(Road.class);
+        kryo.register(Field.class);
+        kryo.register(Monastery.class);
+        kryo.register(Side.class);
+        kryo.register(MeepleType.class);
+        kryo.register(HashMap.class);
     }
 }
 

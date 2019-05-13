@@ -12,21 +12,35 @@ public class MeeplePlacement {
     ArrayList<TileActor> usedTiles;
     GameBoard gb;
 
-    public MeeplePlacement(GameBoard gb){
+    public MeeplePlacement(GameBoard gb) {
         this.gb = gb;
         usedTiles = gb.getUsedTiles();
     }
 
-    public void placeMeeple(Side side){
+    public void placeMeeple(Side side, Feature feature, Position pos) {
+        try {
+            Meeple meepleForPlacement = gb.getCurrentPlayer().getUnusedMeeple();
+            meepleForPlacement.setSide(side);
+            meepleForPlacement.setFeature(feature);
+            gb.getCurrentTile().addMeeple(meepleForPlacement);
+        } catch (Exception e) {
+            // todo
+        }
 
-        Texture meepleTexture= new Texture(Gdx.files.internal("redmeeple.png"));
-        Position pos = gb.getPreviousTile().getPosition();
+        drawMeeple(side, pos);
+    }
+
+    public void drawMeeple(Side side, Position pos) {
+
+        Texture meepleTexture = new Texture(Gdx.files.internal("redmeeple.png"));
+        // Position pos = gb.getPreviousTile().getPosition();
+
         ImageButton meepleImg = new ImageButton(
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)),
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)));
-        meepleImg.setSize(Gdx.graphics.getWidth()/18,Gdx.graphics.getHeight()/18);
-        float x = (pos.getX()*128f)+(128f/2f)-(meepleImg.getWidth()/2f);
-        float y = (pos.getY()*128f)+(128f/2f)-(meepleImg.getHeight()/2f);
+        meepleImg.setSize(Gdx.graphics.getWidth() / 18, Gdx.graphics.getHeight() / 18);
+        float x = (pos.getX() * 128f) + (128f / 2f) - (meepleImg.getWidth() / 2f);
+        float y = (pos.getY() * 128f) + (128f / 2f) - (meepleImg.getHeight() / 2f);
 
         switch (side) {
             case top:
