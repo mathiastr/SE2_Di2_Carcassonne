@@ -54,14 +54,13 @@ public class Player {
     // TODO meeples inactive and active
     public boolean checkIfMeepleAvailable(){
         for (int i = 0; i < meeples.size(); i++){
-            if(
-                    meeples.get(i).isBusy() == false){
+            if(!meeples.get(i).isBusy()){
                 meeples.get(i).makeBusy();
                 //TODO: Wenn Meeple abgezogen wird, muss er der Liste wieder hinzugefügt werden
                 meeples.remove(i);
                 return true;
             }
-        }return false;
+        } return false;
     }
 
     public Player(GameBoard.Color color, String name) {
@@ -73,6 +72,10 @@ public class Player {
         }
         this.name = name;
         this.photo = new Texture(Gdx.files.internal("profilePhoto.png"));
+    }
+
+    public Player() {
+
     }
 
     public void addScore(int score) {

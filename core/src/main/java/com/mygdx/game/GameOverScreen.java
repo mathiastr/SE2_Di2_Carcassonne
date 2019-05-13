@@ -52,7 +52,6 @@ public class GameOverScreen implements Screen {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font24;
 
-
         Label winTextLabel = new Label("winner with " + winner.getScore() + " points is ...", labelStyle);
         winTextLabel.setAlignment(Align.center);
         winTextLabel.setY(Gdx.graphics.getHeight()/1.2f);
