@@ -44,7 +44,6 @@ public class MeeplePlacement {
         }
 
         meepleImg.setPosition(x, y);
-        //meepleImg.setPosition(calculatePosition(gameboard.getPreviousTile()).getX(), calculatePosition(gameboard.getPreviousTile()).getY());
         gb.getStageOfBoard().addActor(meepleImg);
     }
 }
