@@ -24,10 +24,21 @@ public class MeeplePlacement {
         ImageButton meepleImg = new ImageButton(
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)),
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)));
-        meepleImg.setSize(Gdx.graphics.getWidth()/18,Gdx.graphics.getHeight()/18);
+        meepleImg.setSize(Gdx.graphics.getWidth()/18f,Gdx.graphics.getHeight()/18f);
         float x = (pos.getX()*128f)+(128f/2f)-(meepleImg.getWidth()/2f);
         float y = (pos.getY()*128f)+(128f/2f)-(meepleImg.getHeight()/2f);
 
+        if (side == Side.top){
+            y += 42f;
+        } else if (side == Side.left){
+            x -= 42f;
+        } else if (side == Side.right){
+            x += 42f;
+        } else if (side == Side.bottom){
+            y -= 42f;
+        }
+
+        /*
         switch (side) {
             case top:
                 y += 42f;
@@ -42,6 +53,7 @@ public class MeeplePlacement {
                 y -= 42f;
                 break;
         }
+        */
 
         meepleImg.setPosition(x, y);
         gb.getStageOfBoard().addActor(meepleImg);
