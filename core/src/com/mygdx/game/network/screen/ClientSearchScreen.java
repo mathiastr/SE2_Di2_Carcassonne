@@ -5,10 +5,12 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -16,8 +18,11 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
-import com.mygdx.game.screens.GameScreen;
-import com.mygdx.game.screens.MainMenuScreen;
+import com.mygdx.game.network.response.ConnectMessage;
+import com.mygdx.game.network.response.ErrorMessage;
+import com.mygdx.game.network.response.ErrorNumber;
+import com.mygdx.game.screen.GameScreen;
+import com.mygdx.game.screen.MainMenuScreen;
 import com.mygdx.game.Player;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
@@ -25,9 +30,12 @@ import com.mygdx.game.network.TestOutput;
 import com.mygdx.game.network.response.InitGameMessage;
 import com.mygdx.game.network.response.PlayerGameMessage;
 import com.mygdx.game.network.response.SimpleMessage;
+import com.mygdx.game.utility.Toast;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class ClientSearchScreen implements Screen {
@@ -37,6 +45,9 @@ public class ClientSearchScreen implements Screen {
     private Label output;
     private List<TextButton> server;
 
+    private final List<Toast> toasts = new LinkedList<Toast>();
+    private Toast.ToastFactory toastFactory;
+
 
     public ClientSearchScreen(final Game game) {
         this.game = game;
@@ -45,10 +56,14 @@ public class ClientSearchScreen implements Screen {
 
         output = new Label("Looking for Server", Carcassonne.skin);
         output.setAlignment(Align.center);
-        output.setY(Gdx.graphics.getHeight()/8*7);
+        output.setY(Gdx.graphics.getHeight() / 8 * 7);
         output.setWidth(Gdx.graphics.getWidth());
         output.setFontScale(3);
         stage.addActor(output);
+
+        toastFactory = new Toast.ToastFactory.Builder()
+                .font(Carcassonne.skin.getFont("font-big"))
+                .build();
 
         server = new ArrayList<TextButton>();
         final GameClient gameClient = new GameClient();
@@ -60,11 +75,11 @@ public class ClientSearchScreen implements Screen {
         }); */
         NetworkHelper.setGameManager(gameClient);
         List<InetAddress> hosts = gameClient.discover();
-        if(!hosts.isEmpty()){
+        if (!hosts.isEmpty()) {
             for (final InetAddress host : hosts
-                 ) {
+            ) {
                 TextButton serv = new TextButton(host.getHostName(), Carcassonne.skin);
-                serv.addListener(new InputListener(){
+                serv.addListener(new InputListener() {
                     @Override
                     public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                         return true;
@@ -72,11 +87,15 @@ public class ClientSearchScreen implements Screen {
 
                     @Override
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                        try{
+                        try {
                             //TODO send player name + color
-                            gameClient.initConnection(host,new TestOutput("Hugo"));
+                            if (NetworkHelper.getPlayer() == null) {
+                                gameClient.initConnection(host, new ConnectMessage(new Player(GameBoard.Color.getRandom(), "Guest")));
+                            } else {
+                                gameClient.initConnection(host, new ConnectMessage(NetworkHelper.getPlayer()));
+                            }
                             gameClient.addListener(new Listener() {
-                                public void received (Connection connection, Object object) {
+                                public void received(Connection connection, Object object) {
                                     if (object instanceof InitGameMessage) {
                                         // get the init info from here
                                         InitGameMessage response = (InitGameMessage) object;
@@ -93,6 +112,12 @@ public class ClientSearchScreen implements Screen {
                                             }
                                         });
                                     }
+                                    if (object instanceof ErrorMessage) {
+                                        ErrorMessage response = (ErrorMessage) object;
+                                        if (response.errorNumber == ErrorNumber.TOOMANYCLIENTS) {
+                                            toastLong(response.message);
+                                        }
+                                    }
                                 }
                             });
                         } catch (Exception e) {
@@ -102,8 +127,8 @@ public class ClientSearchScreen implements Screen {
                 });
                 server.add(serv);
             }
-        }else {
-            output.setText("nothing found");
+        } else {
+            toastShort("No game found.");
         }
 
         setServerTextButtons();
@@ -115,14 +140,15 @@ public class ClientSearchScreen implements Screen {
         start.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                //toastShort("Refresh");
                 return true;
             }
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                GameClient client = ((GameClient)NetworkHelper.getGameManager());
+                GameClient client = ((GameClient) NetworkHelper.getGameManager());
                 List<InetAddress> hosts = client.discover();
-                if(!hosts.isEmpty()){
+                if (!hosts.isEmpty()) {
                     server = new ArrayList<TextButton>();
                     for (InetAddress host : hosts
                     ) {
@@ -130,8 +156,8 @@ public class ClientSearchScreen implements Screen {
                         server.add(serv);
                     }
                     setServerTextButtons();
-                }else {
-                    output.setText("nothing found");
+                } else {
+                    toastShort("No game found.");
                 }
             }
         });
@@ -156,15 +182,16 @@ public class ClientSearchScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
+
     private void setServerTextButtons() {
         for (int i = 0; i < server.size() && i < 6; i++) {
             TextButton device = server.get(i);
             device.setWidth(Gdx.graphics.getWidth() / 2 - 40);
-            device.setHeight(Gdx.graphics.getHeight()/5 - 40);
-            if(i%2 == 0){
-                device.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5 * (i/2+2) + 40);
-            }else{
-                device.setPosition(20 + Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() /5 * (i/2+2) + 40);
+            device.setHeight(Gdx.graphics.getHeight() / 5 - 40);
+            if (i % 2 == 0) {
+                device.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5 * (i / 2 + 2) + 40);
+            } else {
+                device.setPosition(20 + Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5 * (i / 2 + 2) + 40);
             }
             stage.addActor(device);
         }
@@ -183,7 +210,34 @@ public class ClientSearchScreen implements Screen {
 
         stage.act();
         stage.draw();
+
+        // handle toast queue and display
+        Iterator<Toast> it = toasts.iterator();
+        while (it.hasNext()) {
+            Toast t = it.next();
+            if (!t.render(Gdx.graphics.getDeltaTime())) {
+                it.remove(); // toast finished -> remove
+            } else {
+                break; // first toast still active, break the loop
+            }
+        }
+
     }
+
+    /**
+     * Displays long toast
+     */
+    public void toastLong(String text) {
+        toasts.add(toastFactory.create(text, Toast.Length.LONG));
+    }
+
+    /**
+     * Displays short toast
+     */
+    public void toastShort(String text) {
+        toasts.add(toastFactory.create(text, Toast.Length.SHORT));
+    }
+
 
     @Override
     public void resize(int width, int height) {
@@ -209,23 +263,5 @@ public class ClientSearchScreen implements Screen {
     public void dispose() {
 
     }
-
-    //TODO Delete this method
-
-    public void receive(Connection connection, Object object){
-        if (object instanceof TestOutput) {
-            Gdx.app.postRunnable(new Runnable() {
-                @Override
-                public void run() {
-                    // TODO pass players
-                    System.out.println("we are somehow in client search");
-                    game.setScreen(new GameScreen(game, new ArrayList<>(), false, new Player(GameBoard.Color.green, "name"),null));
-                }
-            });
-        }
-
-        if (object instanceof SimpleMessage) {
-            System.out.println("huinya");
-        }
-    }
 }
+

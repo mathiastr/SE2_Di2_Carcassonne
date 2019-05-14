@@ -1,4 +1,4 @@
-package com.mygdx.game.screens;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -18,7 +18,7 @@ import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.tile.Side;
-import com.mygdx.game.actors.TileActor;
+import com.mygdx.game.actor.TileActor;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,7 +9,7 @@ import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.tile.Side;
-import com.mygdx.game.actors.TileActor;
+import com.mygdx.game.actor.TileActor;
 
 import java.util.ArrayList;
 

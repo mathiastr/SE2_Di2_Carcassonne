@@ -3,7 +3,8 @@ package com.mygdx.game;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.mygdx.game.screens.MainMenuScreen;
+import com.mygdx.game.network.NetworkHelper;
+import com.mygdx.game.screen.MainMenuScreen;
 
 
 public class Carcassonne extends Game {
@@ -27,6 +28,7 @@ public class Carcassonne extends Game {
     @Override
     public void create() {
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        NetworkHelper.setPlayer(new Player(GameBoard.Color.red, "Player"));
         this.setScreen(new MainMenuScreen(this));
     }
 

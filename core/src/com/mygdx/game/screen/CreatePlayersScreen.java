@@ -1,4 +1,4 @@
-package com.mygdx.game.screens;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
