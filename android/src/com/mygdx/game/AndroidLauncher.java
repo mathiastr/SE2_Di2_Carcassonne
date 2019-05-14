@@ -11,6 +11,8 @@ import com.badlogic.gdx.backends.android.AndroidEventListener;
 
 import java.io.ByteArrayOutputStream;
 
+import main.java.com.mygdx.game.Carcassonne;
+
 public class  AndroidLauncher extends AndroidApplication {
     static final int REQUEST_IMAGE_CAPTURE = 1;
     private Carcassonne.PhotoCallback lastPhotoCallback;
