@@ -42,7 +42,7 @@ public class Meeple {
         this.color = color;
     }
 
-    public void changeMeepleType(MeepleType mt) {
+    public void setMeepleType(MeepleType mt) {
         meepleType = mt;
     }
 
@@ -54,7 +54,7 @@ public class Meeple {
         return isBusy;
     }
 
-    public void free() {
+    public void setFree() {
         this.isBusy = false;
     }
 }

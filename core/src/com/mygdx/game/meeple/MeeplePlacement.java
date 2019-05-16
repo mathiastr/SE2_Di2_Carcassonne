@@ -28,16 +28,28 @@ public class MeeplePlacement {
             meepleForPlacement.setSide(side);
             meepleForPlacement.setFeature(feature);
             gb.getCurrentTile().addMeeple(meepleForPlacement);
+            drawMeeple(side, pos);
         } catch (Exception e) {
             // todo
         }
-
-        drawMeeple(side, pos);
     }
 
     public void drawMeeple(Side side, Position pos) {
 
-        Texture meepleTexture = new Texture(Gdx.files.internal("redmeeple.png"));
+        GameBoard.Color color = gb.getCurrentPlayer().getColor();
+        Texture meepleTexture;
+
+        switch (color){
+            case red: meepleTexture = new Texture(Gdx.files.internal("redmeeple.png")); break;
+            case blue: meepleTexture = new Texture(Gdx.files.internal("bluemeeple.png"));break;
+            case grey: meepleTexture = new Texture(Gdx.files.internal("greymeeple.png"));break;
+            case black: meepleTexture = new Texture(Gdx.files.internal("blackmeeple.png"));break;
+            case green: meepleTexture = new Texture(Gdx.files.internal("greenmeeple.png"));break;
+            case yellow: meepleTexture = new Texture(Gdx.files.internal("yellowmeeple.png"));break;
+            default: meepleTexture = new Texture(Gdx.files.internal("greenmeeple.png"));break;
+        }
+
+
         // Position pos = gb.getPreviousTile().getPosition();
 
         ImageButton meepleImg = new ImageButton(
