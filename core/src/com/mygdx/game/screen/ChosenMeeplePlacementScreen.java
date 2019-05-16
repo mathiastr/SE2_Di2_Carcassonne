@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -13,6 +13,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.Carcassonne;
+import com.mygdx.game.tile.Feature;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.meeple.MeeplePlacement;
+import com.mygdx.game.tile.Side;
+import com.mygdx.game.actor.TileActor;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -89,7 +96,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
                 Side side = sides.get(0);
                 currentTile = gb.getPreviousTile();
                 side = currentTile.getSideAfterRotation(side);
-                mp.placeMeeple(side);
+                mp.placeMeeple(side, feature, gb.getCurrentTile().getPosition());
                 game.setScreen(previousScreen);
             }
         });

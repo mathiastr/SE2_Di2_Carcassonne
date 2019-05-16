@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -22,6 +22,11 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
+import com.mygdx.game.Carcassonne;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.Player;
+import com.mygdx.game.Position;
+import com.mygdx.game.tile.Side;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;

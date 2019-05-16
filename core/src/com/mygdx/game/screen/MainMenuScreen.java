@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.screen;
 
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
@@ -6,8 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -16,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.mygdx.game.Carcassonne;
 import com.mygdx.game.network.screen.ClientSearchScreen;
 import com.mygdx.game.network.screen.ServerRoomScreen;
 
@@ -34,7 +33,6 @@ public class MainMenuScreen implements Screen {
         bg.setWidth(Gdx.graphics.getWidth());
         bg.setHeight(Gdx.graphics.getHeight());
         stage.addActor(bg);
-
 
         /* TODO: make labels less pixelated */
         Label title = new Label("CARCASSONNE", Carcassonne.skin, "menu" );
@@ -84,6 +82,13 @@ public class MainMenuScreen implements Screen {
         TextButton settButton = new TextButton("Settings", Carcassonne.skin, "menu");
         settButton.setWidth(Gdx.graphics.getWidth() / 4);
         settButton.setPosition(Gdx.graphics.getWidth() / 2-settButton.getWidth() / 2, Gdx.graphics.getHeight() * 6 / 9 - settButton.getHeight() * 3);
+        settButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.debug("touch", "start touch up");
+                game.setScreen(new SettingScreen(game));
+            }
+        });
         stage.addActor(settButton);
 
         Gdx.input.setInputProcessor(stage);

@@ -2,6 +2,7 @@ package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.PlayerGameMessage;
 
 import java.util.ArrayList;
@@ -74,6 +75,16 @@ public class Player {
         this.name = name;
     }
 
+    public Meeple getUnusedMeeple() throws Exception {
+        if (this.meeples.size() != 0) {
+            Meeple lastMeeple = this.meeples.get(this.meeples.size() - 1);
+            this.meeples.remove(this.meeples.size() - 1);
+            return lastMeeple;
+        } else {
+            throw new Exception("No more meeples");
+        }
+    }
+
     public void addScore(int score) {
         this.score += score;
     }
@@ -89,4 +100,6 @@ public class Player {
         //standart texture
         this.photo = new Texture(Gdx.files.internal("profilePhoto.png"));
     }
+
+    public Player(){}
 }

@@ -1,4 +1,4 @@
-package com.mygdx.game;
+package com.mygdx.game.meeple;
 
 public enum MeepleType {
     highwayman, knight, monk, farmer
