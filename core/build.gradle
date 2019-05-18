@@ -1,7 +1,5 @@
-targetCompatibility = '1.8'
 apply plugin: "java"
 
-sourceCompatibility = '1.8'
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
 sourceSets.main.java.srcDirs = [ "src/main/java" ]
@@ -12,9 +10,17 @@ eclipse.project {
     name = appName + "-core"
 }
 
-/* ???????????????
-dependencies {
-    // Required for local unit tests (JUnit 4 framework)
-    testImplementation 'junit:junit:4.12'
+jacocoTestReport {
+    reports {
+        html {
+            enabled true
+        }
+    }
+    afterEvaluate {
+        classDirectories = files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+
+            ])
+        })
+    }
 }
-*/
