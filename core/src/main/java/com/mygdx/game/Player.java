@@ -73,6 +73,7 @@ public class Player {
             this.meeples.add(new Meeple(this.color));
         }
         this.name = name;
+        this.photo = new Texture(Gdx.files.internal("profilePhoto.png"));
     }
 
     public Meeple getUnusedMeeple() throws Exception {

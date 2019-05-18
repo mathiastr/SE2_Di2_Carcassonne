@@ -29,6 +29,8 @@ import com.mygdx.game.tile.Side;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -491,10 +493,6 @@ public class GameBoard {
         return availableTiles.size();
     }
 
-    public void gameEnds() {
-        // TODO
-    }
-
     public void placeTileAt(TileActor tileToPlace, Position position) {
         if (!tileIsPlaced) {
             stageOfBoard.addActor(tileToPlace);
@@ -542,13 +540,6 @@ public class GameBoard {
             /*-----------------------------*/
 
             removeOldHints();
-
-            if (availableTiles.isEmpty()) {
-                Gdx.app.log("hmmmm", "No Tiles left, game ends");
-                gameEnds();
-            } else {
-                // nextCurrentTile();
-            }
 
         }
 
@@ -705,5 +696,9 @@ public class GameBoard {
       public TileActor getPreviousTile(){
         int lastElement = usedTiles.size()-1;
         return usedTiles.get(lastElement);
+    }
+
+    public Player getWinningPlayer() {
+        return Collections.max(players, Comparator.comparing(Player::getScore));
     }
 }
