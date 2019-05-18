@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class TileActorTest {
 
-    TileActor tile = new TileActor(new Position(0, 0), null);
+    private TileActor tile = new TileActor(new Position(0, 0));
 
     @Before
     public void setUp() throws Exception {
