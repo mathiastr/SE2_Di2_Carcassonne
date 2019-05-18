@@ -1,7 +1,0 @@
-#Wed Apr 03 18:53:31 CEST 2019
-base.0=/home/whoami/AndroidStudioProjects/SE2_Di2_Carcassonne/app/build/intermediates/transforms/dexMerger/debug/0
-path.1=classes.dex
-renamed.1=classes2.dex
-path.0=classes.dex
-renamed.0=classes.dex
-base.1=/home/whoami/AndroidStudioProjects/SE2_Di2_Carcassonne/app/build/intermediates/transforms/dexMerger/debug/1
