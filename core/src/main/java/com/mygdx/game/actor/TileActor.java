@@ -21,7 +21,6 @@ public class TileActor extends Actor {
     private Texture texture;
     private Texture textureBig;
     private Position position;
-    private static GameBoard board;
 
     public ArrayList<Meeple> getMeeples() {
         return meeples;
@@ -45,10 +44,6 @@ public class TileActor extends Actor {
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
     private boolean monastery = false;
     private Player player1;
-
-    public static GameBoard getGameboard(){
-        return board;
-    }
 
     public void setRotation(int rotation) {
         this.rotation = rotation;
@@ -81,8 +76,7 @@ public class TileActor extends Actor {
         return features;
     }
 
-    public TileActor(Position aPosition, final GameBoard gameBoard) {
-        board = gameBoard;
+    public TileActor(Position aPosition) {
         /* Position is the position of the tile on the 2D-Map [base-tile has (0, 0), upwards is (0, 1) etc.] */
         position = aPosition;
         setWidth(SIZE);
@@ -90,8 +84,8 @@ public class TileActor extends Actor {
         setPosition(position.getX() * SIZE, position.getY() * SIZE);
     }
 
-    public TileActor(final GameBoard gameBoard) {
-        this(new Position(0, 0), gameBoard);
+    public TileActor() {
+        this(new Position(0, 0));
     }
 
     public TileActor(TilePlacementMessage tilePlacementMessage) {
@@ -159,10 +153,6 @@ public class TileActor extends Actor {
     public void setPosition(Position position) {
         this.position = position;
         setPosition(position.getX() * SIZE, position.getY() * SIZE);
-    }
-
-    public GameBoard getBoard() {
-        return board;
     }
 
     public void setMonastery() {
