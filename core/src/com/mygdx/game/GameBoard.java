@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
@@ -59,14 +58,9 @@ public class GameBoard {
     private Stage stageOfBoard;
     private Stage stageOfUI;
     public final static int MAX_NUM_OF_PLAYERS = 6;
-    private final TextButton finishTurnButton;
+    private TextButton finishTurnButton;
     private boolean tileIsPlaced = false;
-    private boolean turnIsFinished = false;
-    private boolean isLocal;
     private Player me;
-    private int lastTileNumber;
-    private Position lastTilePosition;
-    private int currentTileNumber;
     private GameClient gameClient;
 
     private int numberOfPlayers;
@@ -120,8 +114,7 @@ public class GameBoard {
             straightRoadUnderCity.addFeature(new Road(Arrays.asList(Side.left, Side.right)));
             if (i != 0) availableTiles.add(straightRoadUnderCity);
             else {
-                tiles.put(new Position(0, 0), straightRoadUnderCity);
-                stageOfBoard.addActor(straightRoadUnderCity);
+                addTileOnBoard(straightRoadUnderCity, new Position(0, 0));
             }
         }
 
@@ -320,7 +313,6 @@ public class GameBoard {
 
     public void nextTurn() {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
-        turnIsFinished = false;
         tileIsPlaced = false;
         update();
     }
@@ -439,18 +431,17 @@ public class GameBoard {
 
 
     public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
 
         numberOfPlayers = players.size();
         this.players = players;
-        this.isLocal = isLocal;
         currentPlayer = players.get(0);
         this.me = me;
         this.gameClient = gameClient;
+    }
 
-
+    public void init() {
         createDeckTilesAndStartTile();
 
         if (gameClient != null) {
@@ -492,24 +483,22 @@ public class GameBoard {
             public void clicked(InputEvent event, float x, float y) {
                 if (gameClient != null && isMyTurn()) {
                     if (tileIsPlaced) {
-                        turnIsFinished = true;
                         endMyTurn();
                     }
                 } else if (gameClient == null) {
-                    turnIsFinished = true;
                     endMyTurn();
                 }
 
             }
         });
 
-        stageUI.addActor(finishTurnButton);
+        stageOfUI.addActor(finishTurnButton);
 
         for (Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
             statuses.add(playerStatusActor);
             playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
-            stageUI.addActor(playerStatusActor);
+            stageOfUI.addActor(playerStatusActor);
         }
     }
 
@@ -523,9 +512,7 @@ public class GameBoard {
 
     public void placeTileAt(TileActor tileToPlace, Position position) {
         if (!tileIsPlaced) {
-            stageOfBoard.addActor(tileToPlace);
-            tileToPlace.setPosition(position);
-            tiles.put(position, tileToPlace);
+            addTileOnBoard(tileToPlace, position);
             tileIsPlaced = true;
 
             DelayedRemovalArray<EventListener> listeners = tileToPlace.getListeners();
@@ -534,6 +521,12 @@ public class GameBoard {
                 tileToPlace.removeListener(listeners.peek());
             }
         }
+    }
+
+    public void addTileOnBoard(TileActor tileToPlace, Position position) {
+        tileToPlace.setPosition(position);
+        tiles.put(position, tileToPlace);
+        stageOfBoard.addActor(tileToPlace);
     }
 
     public void placeCurrentTileAt(Position position) {
