@@ -314,7 +314,7 @@ public class GameBoard {
             }
         });
         usedTiles.add(currentTile);
-        availableTiles.remove(availableTiles.size()-1); // TODO
+        availableTiles.remove(availableTiles.indexOf(currentTile)); 
         stageOfUI.addActor(currentTile);
     }
 
