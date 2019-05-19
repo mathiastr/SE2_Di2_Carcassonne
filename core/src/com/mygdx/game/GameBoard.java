@@ -239,22 +239,22 @@ public class GameBoard {
             availableTiles.add(fullCityLeftTopRightWithRoad);
         }
 */
-        /* monastery
+        // monastery
         for (int i = 0; i < monasteryCount; ++i) {
             TileActor monastery = new TileActor(this);
             monastery.setTexture(new Texture(Gdx.files.internal("monastery_128.jpg")));
             monastery.setMonastery();
             availableTiles.add(monastery);
-        } */
+        }
 
-        /* monastery with road
+        // monastery with road
         for (int i = 0; i < monasteryWithRoadCount; ++i) {
             TileActor monasteryWithRoad = new TileActor(this);
             monasteryWithRoad.setTexture(new Texture(Gdx.files.internal("monastery_with_road_128.jpg")));
             monasteryWithRoad.setMonastery();
             monasteryWithRoad.addFeature(new Road(Side.bottom));
             availableTiles.add(monasteryWithRoad);
-        } */
+        }
 
         /* triple road */
         for (int i = 0; i < tripleRoadCount; ++i) {
@@ -628,6 +628,16 @@ public class GameBoard {
                 score += scoreMonastery(tile);
             }
             // TODO check for monastery around
+        }
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                TileActor tileAround = tiles.get(tile.getPosition().add(new Position(i, j)));
+                if ( tileAround != null) {
+                    if (tileAround.isMonastery()) {
+                        score += scoreMonastery(tileAround);
+                    }
+                }
+            }
         }
         return score;
     }
