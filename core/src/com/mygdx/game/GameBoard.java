@@ -27,6 +27,7 @@ import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
+import java.io.OptionalDataException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,6 +36,9 @@ import java.util.List;
 import java.util.Random;
 
 public class GameBoard {
+
+    ArrayList<PlayerStatusActor> playerActorList;
+
     public enum Color {
         yellow, red, green, blue, black, grey;
 
@@ -85,6 +89,10 @@ public class GameBoard {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 
     public void createDeckTilesAndStartTile() {
@@ -480,10 +488,13 @@ public class GameBoard {
 
         stageUI.addActor(finishTurnButton);
 
+        playerActorList = new ArrayList<PlayerStatusActor>();
+
         for (Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
             playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
             stageUI.addActor(playerStatusActor);
+            playerActorList.add(playerStatusActor);
         }
     }
 
@@ -521,7 +532,7 @@ public class GameBoard {
             placeTileAt(currentTile, position);
 
 
-            /*-----------------------------*/
+            /*-----------------------------/
             // Testing the road/city scoring
             // for every placed tile
             /*
@@ -541,7 +552,7 @@ public class GameBoard {
             } */
             /*-----------------------------*/
 
-            removeOldHints();
+                    removeOldHints();
 
             if (availableTiles.isEmpty()) {
                 Gdx.app.log("hmmmm", "No Tiles left, game ends");
@@ -702,8 +713,12 @@ public class GameBoard {
     public ArrayList<TileActor> getUsedTiles() {
         return usedTiles;
     }
-      public TileActor getPreviousTile(){
+    public TileActor getPreviousTile(){
         int lastElement = usedTiles.size()-1;
         return usedTiles.get(lastElement);
+    }
+
+    public List<PlayerStatusActor> getPlayerActorList() {
+        return playerActorList;
     }
 }

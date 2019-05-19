@@ -22,6 +22,11 @@ public class PlayerStatusActor extends Actor {
     private Texture meeple;
     private Texture score;
     private Label.LabelStyle textStyle;
+    private Label meepleLabel;
+    private Image meepleImg;
+    private Image scoreImg;
+    private Label scoreLabel;
+    private Label nameLabel;
 
     public PlayerStatusActor(Player player) {
         this.texture = new Texture("playerStatusBackground.jpg");
@@ -43,15 +48,28 @@ public class PlayerStatusActor extends Actor {
         textStyle.font = font;
         textStyle.fontColor = Color.BLACK;
 
-        info = new Table();
-        info.add(new Label("" + player.getName(), textStyle)).colspan(4).center();
-        info.row();
-        info.add(new Image(meeple)).width(50).height(50);
-        info.add(new Label("" + player.getNumberOfMeeples(), textStyle))/*.width(WIDTH / 4).height(50)*/.padLeft(20);
-        info.add(new Image(score)).width(50).height(50);
-        info.add(new Label("" + player.getScore(), textStyle))/*.width(WIDTH / 4).height(50)*/.padLeft(20);
+        update();
 
         info.setDebug(true);
+    }
+
+    public void update(){
+
+        info = new Table();
+
+
+        nameLabel = new Label("" + player.getName(), textStyle);
+        info.add(nameLabel).colspan(4).center();
+        info.row();
+        meepleImg = new Image(meeple);
+        info.add(meepleImg).width(50).height(50);
+        meepleLabel = new Label("" + player.getNumberOfMeeples(), textStyle);
+        info.add(meepleLabel).padLeft(20);
+        scoreImg = new Image(score);
+        info.add(scoreImg).width(50).height(50);
+        scoreLabel = new Label("" + player.getScore(), textStyle);
+        info.add(scoreLabel)/*.width(WIDTH / 4).height(50)*/.padLeft(20);
+
     }
 
     @Override
@@ -64,6 +82,7 @@ public class PlayerStatusActor extends Actor {
         batch.draw(profilePhoto, getX() + (WIDTH - expectedProfilePhotoWidth) / 2f, getY() + 120, expectedProfilePhotoWidth, expectedProfilePhotoHeight);
 
         info.draw(batch, parentAlpha);
+
 
 /*
         batch.draw(meeple, getX() + 20, getY() + 100, 50, 50);

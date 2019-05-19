@@ -5,13 +5,17 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mygdx.game.Player;
+import com.mygdx.game.actor.PlayerStatusActor;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.tile.Side;
 import com.mygdx.game.actor.TileActor;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MeeplePlacement {
     ArrayList<TileActor> usedTiles;
@@ -39,14 +43,28 @@ public class MeeplePlacement {
         GameBoard.Color color = gb.getCurrentPlayer().getColor();
         Texture meepleTexture;
 
-        switch (color){
-            case red: meepleTexture = new Texture(Gdx.files.internal("redmeeple.png")); break;
-            case blue: meepleTexture = new Texture(Gdx.files.internal("bluemeeple.png"));break;
-            case grey: meepleTexture = new Texture(Gdx.files.internal("greymeeple.png"));break;
-            case black: meepleTexture = new Texture(Gdx.files.internal("blackmeeple.png"));break;
-            case green: meepleTexture = new Texture(Gdx.files.internal("greenmeeple.png"));break;
-            case yellow: meepleTexture = new Texture(Gdx.files.internal("yellowmeeple.png"));break;
-            default: meepleTexture = new Texture(Gdx.files.internal("greenmeeple.png"));break;
+        switch (color) {
+            case red:
+                meepleTexture = new Texture(Gdx.files.internal("redmeeple.png"));
+                break;
+            case blue:
+                meepleTexture = new Texture(Gdx.files.internal("bluemeeple.png"));
+                break;
+            case grey:
+                meepleTexture = new Texture(Gdx.files.internal("greymeeple.png"));
+                break;
+            case black:
+                meepleTexture = new Texture(Gdx.files.internal("blackmeeple.png"));
+                break;
+            case green:
+                meepleTexture = new Texture(Gdx.files.internal("greenmeeple.png"));
+                break;
+            case yellow:
+                meepleTexture = new Texture(Gdx.files.internal("yellowmeeple.png"));
+                break;
+            default:
+                meepleTexture = new Texture(Gdx.files.internal("greenmeeple.png"));
+                break;
         }
 
 
@@ -75,6 +93,16 @@ public class MeeplePlacement {
         }
 
         meepleImg.setPosition(x, y);
+
+
+
+        for(int i=0; i<gb.getPlayers().size()
+                ; i++){
+            gb.getPlayerActorList().get(i).update();
+        }
+
         gb.getStageOfBoard().addActor(meepleImg);
+
+
     }
 }
