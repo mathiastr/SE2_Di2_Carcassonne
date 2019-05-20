@@ -77,8 +77,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         stage.addActor(back);
      }
 
-    public TextButton createMeeplePlacementButton(Feature feature)
-    {
+    public TextButton createMeeplePlacementButton(Feature feature){
         TextButton placeMeepleButton = new TextButton("On " + feature.getClass().getSimpleName() + " " +feature.getSides(), Carcassonne.skin);
         placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8f);
         placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8f);

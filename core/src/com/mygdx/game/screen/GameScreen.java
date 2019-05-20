@@ -44,6 +44,8 @@ public class GameScreen implements Screen {
     private Stage stageUI;
     private OrthographicCamera camera;
     private GameBoard gameBoard;
+
+
     private Skin skin;
     private boolean isLocal;
     private GameClient gameClient;
@@ -52,6 +54,7 @@ public class GameScreen implements Screen {
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
+    public  static TextButton placeMeeple;
 
     public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
@@ -62,12 +65,11 @@ public class GameScreen implements Screen {
         this.isLocal = isLocal;
         this.gameClient = gameClient;
 
-        TextButton placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
+        placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
         placeMeeple.setWidth(Gdx.graphics.getWidth() / 4f);
         placeMeeple.setHeight(Gdx.graphics.getHeight() / 8f);
         placeMeeple.getLabel().setFontScale(0.8f);
         placeMeeple.setPosition(10, 0);
-
         placeMeeple.addListener(new ClickListener() {
 
             @Override
@@ -77,6 +79,12 @@ public class GameScreen implements Screen {
             }
         });
         stageUI.addActor(placeMeeple);
+
+        placeMeeple.setVisible(false);
+
+
+
+
         Gdx.input.setInputProcessor(stage);
 
         if (NetworkHelper.getGameManager() != null) {
@@ -143,6 +151,8 @@ public class GameScreen implements Screen {
         stageUI.addActor(labelTilesLeft);
         stageUI.addActor(currentPlayerLabel);
     }
+
+
 
     @Override
     public void show() {
