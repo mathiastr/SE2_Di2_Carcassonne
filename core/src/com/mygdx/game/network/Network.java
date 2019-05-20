@@ -3,6 +3,7 @@ package com.mygdx.game.network;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.mygdx.game.Player;
+import com.mygdx.game.network.response.CheatOnScoreMessage;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Field;
 import com.mygdx.game.GameBoard;
@@ -51,6 +52,7 @@ public class Network {
         kryo.register(ErrorMessage.class);
         kryo.register(ConnectMessage.class);
         kryo.register(Player.class);
+        kryo.register(CheatOnScoreMessage.class);
     }
 }
 

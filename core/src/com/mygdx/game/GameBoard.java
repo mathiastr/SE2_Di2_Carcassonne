@@ -3,10 +3,13 @@ package com.mygdx.game;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.DelayedRemovalArray;
@@ -19,6 +22,7 @@ import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
+import com.mygdx.game.network.response.CheatOnScoreMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
@@ -339,6 +343,7 @@ public class GameBoard {
 
     public void onTurnBegin(CurrentTileMessage cm) {
         currentTile = availableTiles.get(cm.tileNumber);
+        Gdx.app.debug("DEBUG", " " + currentTile.getName() + " " + currentTile.toString());
         showCurrentTile();
     }
 
@@ -384,9 +389,17 @@ public class GameBoard {
                 }
             });
         }
+        reduceCheatTime();
         nextTurn();
         if (isMyTurn()) {
             beginMyTurn();
+        }
+    }
+
+    private void reduceCheatTime() {
+        for (Player p :
+                players) {
+            p.reduceCheatTimeByOne();
         }
     }
 
@@ -416,7 +429,7 @@ public class GameBoard {
     public boolean isMyTurn() {
 
         // TODO check not for name but for an ID (add id to a Player class)
-        return (currentPlayer.getName().equals(me.getName()) || gameClient == null);
+        return (currentPlayer.getId() == NetworkHelper.getPlayer().getId() || gameClient == null);
     }
 
 
@@ -448,6 +461,10 @@ public class GameBoard {
                     }
                     if (object instanceof TurnEndMessage) {
                         onTurnEnd((TurnEndMessage)object);
+                    }
+
+                    if (object instanceof CheatOnScoreMessage) {
+                        onCheatOnScore((CheatOnScoreMessage)object);
                     }
                 }
             });
@@ -492,8 +509,59 @@ public class GameBoard {
         for (Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
             playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
+            if(p == NetworkHelper.getPlayer()){
+                playerStatusActor.addListener(new ActorGestureListener(20,0.4f,5f,0.15f){
+                    @Override
+                    public boolean longPress(Actor actor, float x, float  y) {
+                        Gdx.app.debug("DEBUG","Long Press");
+                        CheatOnScore();
+                        return false;
+                    }
+
+                    @Override
+                    public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+
+                        Gdx.app.debug("DEBUG","Touch Down");
+                    }
+                });
+            }
             stageUI.addActor(playerStatusActor);
             playerActorList.add(playerStatusActor);
+        }
+    }
+
+    private void onCheatOnScore(CheatOnScoreMessage message) {
+        for (Player p :
+                players) {
+            if(p.equals(message.getPlayer())){
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        p.addScore(100);
+                        p.addTimeToDetectUsedCheats(message.getCheatTime());
+                    }
+                });
+            }
+        }
+
+    }
+
+    private void CheatOnScore() {
+        for (Player p : players
+                ) {
+            if(p.equals(NetworkHelper.getPlayer())){
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        p.addScore(100);
+                        p.setTimeToDetectUsedCheats(3);
+                        if(NetworkHelper.getGameManager() != null){
+                            NetworkHelper.getGameManager().sendToServer(new CheatOnScoreMessage(3,NetworkHelper.getPlayer()));
+                        }
+                    }
+                });
+
+            }
         }
     }
 
@@ -729,5 +797,27 @@ public class GameBoard {
 
     public List<PlayerStatusActor> getPlayerActorList() {
         return playerActorList;
+    }
+
+    public int getScoreFromPlayer(Player p){
+        int score = 0;
+        for (Player player: players
+             ) {
+            if(p.equals(player)){
+                score = player.getScore();
+            }
+        }
+        return score;
+    }
+
+    public int getCheatTimeFromPlayer(Player p){
+        int time = 0;
+        for (Player player: players
+        ) {
+            if(p.equals(player)){
+                time = player.getTimeToDetectUsedCheats();
+            }
+        }
+        return time;
     }
 }

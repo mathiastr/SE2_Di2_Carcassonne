@@ -96,26 +96,41 @@ public class ClientSearchScreen implements Screen {
                             }
                             gameClient.addListener(new Listener() {
                                 public void received(Connection connection, Object object) {
+                                    System.out.println("DEBUG ::: Client received: " + object.toString());
                                     if (object instanceof InitGameMessage) {
                                         // get the init info from here
                                         InitGameMessage response = (InitGameMessage) object;
-                                        ArrayList<Player> players = new ArrayList<>();
-                                        for (PlayerGameMessage p : response.getPlayers()) {
-                                            players.add(new Player(p));
+                                        ArrayList<Player> players = response.getPlayers();
+                                        for (Player p :
+                                                players) {
+                                            if(p.getId() == NetworkHelper.getPlayer().getId()){
+                                                NetworkHelper.setPlayer(p);
+                                            }
                                         }
                                         System.out.println("info is here");
                                         Gdx.app.postRunnable(new Runnable() {
                                             @Override
                                             public void run() {
                                                 // TODO get "me" from settings (your user name and etc.)
-                                                game.setScreen(new GameScreen(game, players, false, players.get(0), gameClient));
+                                                game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
                                             }
                                         });
+                                    }
+                                    if (object instanceof ConnectMessage) {
+                                        ConnectMessage response = (ConnectMessage) object;
+                                        NetworkHelper.setPlayer(response.player);
+                                        Gdx.app.postRunnable(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                toastLong("You are now " + NetworkHelper.getPlayer().getName());
+                                            }
+                                        });
+                                        //
                                     }
                                     if (object instanceof ErrorMessage) {
                                         ErrorMessage response = (ErrorMessage) object;
                                         if (response.errorNumber == ErrorNumber.TOOMANYCLIENTS) {
-                                            toastLong(response.message);
+                                            //toastLong(response.message);
                                         }
                                     }
                                 }
