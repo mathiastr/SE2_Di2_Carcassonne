@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 
-import com.badlogic.gdx.Application;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.backends.android.AndroidEventListener;
@@ -20,7 +18,6 @@ public class  AndroidLauncher extends AndroidApplication {
 	@Override
 	protected void onCreate (Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
         AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		initialize(new Carcassonne(new Carcassonne.NativeInterface() {
 			@Override
