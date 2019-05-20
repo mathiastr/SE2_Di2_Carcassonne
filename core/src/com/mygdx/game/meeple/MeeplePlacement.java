@@ -5,17 +5,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.mygdx.game.Player;
-import com.mygdx.game.actor.PlayerStatusActor;
+import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.tile.Side;
 import com.mygdx.game.actor.TileActor;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class MeeplePlacement {
     ArrayList<TileActor> usedTiles;
@@ -33,6 +30,7 @@ public class MeeplePlacement {
             meepleForPlacement.setFeature(feature);
             gb.getCurrentTile().addMeeple(meepleForPlacement);
             drawMeeple(side, pos);
+            GameScreen.placeMeeple.setVisible(false);
         } catch (Exception e) {
             // todo
         }
@@ -73,7 +71,7 @@ public class MeeplePlacement {
         ImageButton meepleImg = new ImageButton(
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)),
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)));
-        meepleImg.setSize(Gdx.graphics.getWidth() / 18, Gdx.graphics.getHeight() / 18);
+        meepleImg.setSize(Gdx.graphics.getWidth() / 18f, Gdx.graphics.getHeight() / 18f);
         float x = (pos.getX() * 128f) + (128f / 2f) - (meepleImg.getWidth() / 2f);
         float y = (pos.getY() * 128f) + (128f / 2f) - (meepleImg.getHeight() / 2f);
 

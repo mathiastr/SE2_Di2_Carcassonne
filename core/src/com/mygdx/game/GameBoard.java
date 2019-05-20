@@ -22,12 +22,11 @@ import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
+import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
-
-import java.io.OptionalDataException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -71,7 +70,7 @@ public class GameBoard {
     private Position lastTilePosition;
     private int currentTileNumber;
     private GameClient gameClient;
-
+    private boolean meepleIsPlaced;
     private int numberOfPlayers;
     private Player currentPlayer;
     private List<Player> players;
@@ -488,7 +487,7 @@ public class GameBoard {
 
         stageUI.addActor(finishTurnButton);
 
-        playerActorList = new ArrayList<PlayerStatusActor>();
+        playerActorList = new ArrayList<>();
 
         for (Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
@@ -530,6 +529,8 @@ public class GameBoard {
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
 
             placeTileAt(currentTile, position);
+            GameScreen.placeMeeple.setVisible(true);
+
 
 
             /*-----------------------------/
@@ -563,6 +564,10 @@ public class GameBoard {
 
         }
 
+    }
+
+    public boolean meepleIsPlaced(){
+        return meepleIsPlaced;
     }
 
     public void clickForRotation() {
@@ -696,6 +701,10 @@ public class GameBoard {
             stageOfBoard.addActor(newHint);
             hints.add(newHint);
         }
+    }
+
+    public void setMeepleIsPlaced(boolean meepleIsPlaced) {
+        this.meepleIsPlaced = meepleIsPlaced;
     }
 
     public Stage getStageOfBoard() {

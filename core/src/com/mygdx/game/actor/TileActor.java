@@ -44,7 +44,6 @@ public class TileActor extends Actor {
     private ArrayList<Meeple> meeples = new ArrayList<>(); // TODO: maybe add meeple field to Feature class
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
     private boolean monastery = false;
-    private Player player1;
 
     public static GameBoard getGameboard(){
         return board;
