@@ -22,11 +22,7 @@ public class PlayerStatusActor extends Actor {
     private Texture meeple;
     private Texture score;
     private Label.LabelStyle textStyle;
-    private Label meepleLabel;
-    private Image meepleImg;
-    private Image scoreImg;
-    private Label scoreLabel;
-    private Label nameLabel;
+
 
     public PlayerStatusActor(Player player) {
         this.texture = new Texture("playerStatusBackground.jpg");
@@ -55,8 +51,13 @@ public class PlayerStatusActor extends Actor {
 
     public void update(){
 
-        info = new Table();
+         Label meepleLabel;
+         Image meepleImg;
+         Image scoreImg;
+         Label scoreLabel;
+         Label nameLabel;
 
+        info = new Table();
 
         nameLabel = new Label("" + player.getName(), textStyle);
         info.add(nameLabel).colspan(4).center();
