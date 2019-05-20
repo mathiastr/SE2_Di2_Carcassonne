@@ -110,5 +110,15 @@ public class PlayerStatusActor extends Actor {
         return HEIGHT;
     }
 
-
+    public void updateInfo() {
+        this.info.remove();
+        info = new Table();
+        info.add(new Label("" + player.getName(), textStyle)).colspan(4).center();
+        info.row();
+        info.add(new Image(meeple)).width(50).height(50);
+        info.add(new Label("" + player.getNumberOfMeeples(), textStyle)).padLeft(20);
+        info.add(new Image(score)).width(50).height(50);
+        info.add(new Label("" + player.getScore(), textStyle)).padLeft(20);
+    }
 }
+
