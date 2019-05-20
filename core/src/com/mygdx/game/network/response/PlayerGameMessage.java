@@ -12,8 +12,4 @@ public class PlayerGameMessage {
         this.name = player.getName();
        // this.color = player.getColor();
     }
-
-    public PlayerGameMessage() {
-
-    }
 }

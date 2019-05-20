@@ -44,6 +44,8 @@ public class GameScreen implements Screen {
     private Stage stageUI;
     private OrthographicCamera camera;
     private GameBoard gameBoard;
+
+
     private Skin skin;
     private boolean isLocal;
     private GameClient gameClient;
@@ -52,6 +54,7 @@ public class GameScreen implements Screen {
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
+    public  static TextButton placeMeeple;
 
     public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
@@ -63,27 +66,32 @@ public class GameScreen implements Screen {
         this.isLocal = isLocal;
         this.gameClient = gameClient;
 
-        TextButton placeMeeple = new TextButton("place Meeple",  Carcassonne.skin, "default");
-        placeMeeple.setWidth(Gdx.graphics.getWidth()/4f);
-        placeMeeple.setHeight(Gdx.graphics.getHeight()/8f);
+        placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
+        placeMeeple.setWidth(Gdx.graphics.getWidth() / 4f);
+        placeMeeple.setHeight(Gdx.graphics.getHeight() / 8f);
         placeMeeple.getLabel().setFontScale(0.8f);
         placeMeeple.setPosition(10, 0);
-
         placeMeeple.addListener(new ClickListener() {
 
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start touch up");
-                game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this,game, gameBoard));
+                game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this, game, gameBoard));
             }
         });
         stageUI.addActor(placeMeeple);
+
+        placeMeeple.setVisible(false);
+
+
+
+
         Gdx.input.setInputProcessor(stage);
 
         if (NetworkHelper.getGameManager() != null) {
-            NetworkHelper.getGameManager().addListener(new Listener(){
-                public void received (Connection connection, Object object) {
-                    receive(connection,object);
+            NetworkHelper.getGameManager().addListener(new Listener() {
+                public void received(Connection connection, Object object) {
+                    receive(connection, object);
                 }
             });
         }
@@ -94,6 +102,7 @@ public class GameScreen implements Screen {
                 return true;
                 //return false;
             }
+
             /* handle swipe camera movement */
             @Override
             public void touchDragged(InputEvent event, float x, float y, int pointer) {
@@ -115,7 +124,7 @@ public class GameScreen implements Screen {
         });
 
         camera = (OrthographicCamera) stage.getViewport().getCamera();
-        camera.translate(-Gdx.graphics.getWidth()/2, -Gdx.graphics.getHeight()/2);
+        camera.translate(-Gdx.graphics.getWidth() / 2, -Gdx.graphics.getHeight() / 2);
 
 
         // TODO currently so we can differentiate between board tiles and currentTile.
@@ -143,6 +152,8 @@ public class GameScreen implements Screen {
         stageUI.addActor(labelTilesLeft);
         stageUI.addActor(currentPlayerLabel);
     }
+
+
 
     @Override
     public void show() {
@@ -190,42 +201,12 @@ public class GameScreen implements Screen {
         stageUI.dispose();
     }
 
-    public void receive(Connection connection, Object object){
+    public void receive(Connection connection, Object object) {
         //do here what should happen if you get a message of type ...
         //send message with "Networkhelper.getGameManager.sentToAll(message)
         //before register the class in the Network class
         if (object instanceof TestOutput) {
             //do something
         }
-    }
-    public static void placeMeeple(GameBoard gameboard, Side side){
-
-        Texture meepleTexture= new Texture(Gdx.files.internal("redmeeple.png"));
-        Position pos = gameboard.getPreviousTile().getPosition();
-        ImageButton meepleImg = new ImageButton(
-                new TextureRegionDrawable(new TextureRegion(meepleTexture)),
-                new TextureRegionDrawable(new TextureRegion(meepleTexture)));
-        meepleImg.setSize(Gdx.graphics.getWidth()/18f,Gdx.graphics.getHeight()/18f);
-        float x = (pos.getX()*128f)+(128f/2f)-(meepleImg.getWidth()/2f);
-        float y = (pos.getY()*128f)+(128f/2f)-(meepleImg.getHeight()/2f);
-
-        switch (side) {
-            case top:
-                y += 42f;
-                break;
-            case left:
-                x -= 42f;
-                break;
-            case right:
-                x += 42f;
-                break;
-            case bottom:
-                y -= 42f;
-                break;
-        }
-
-        meepleImg.setPosition(x, y);
-        //meepleImg.setPosition(calculatePosition(gameboard.getPreviousTile()).getX(), calculatePosition(gameboard.getPreviousTile()).getY());
-        gameboard.getStageOfBoard().addActor(meepleImg);
     }
 }

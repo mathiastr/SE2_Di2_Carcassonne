@@ -51,20 +51,6 @@ public class Player {
         this.name = name;
     }
 
-
-    // TODO meeples inactive and active
-    public boolean checkIfMeepleAvailable(){
-        for (int i = 0; i < meeples.size(); i++){
-            if(
-                    meeples.get(i).isBusy() == false){
-                meeples.get(i).makeBusy();
-                //TODO: Wenn Meeple abgezogen wird, muss er der Liste wieder hinzugefügt werden
-                meeples.remove(i);
-                return true;
-            }
-        }return false;
-    }
-
     public Player(GameBoard.Color color, String name) {
         this.score = 0;
         this.color = color;
@@ -73,20 +59,6 @@ public class Player {
             this.meeples.add(new Meeple(this.color));
         }
         this.name = name;
-    }
-
-    public Meeple getUnusedMeeple() throws Exception {
-        if (this.meeples.size() != 0) {
-            Meeple lastMeeple = this.meeples.get(this.meeples.size() - 1);
-            this.meeples.remove(this.meeples.size() - 1);
-            return lastMeeple;
-        } else {
-            throw new Exception("No more meeples");
-        }
-    }
-
-    public void addScore(int score) {
-        this.score += score;
     }
 
     public Player(PlayerGameMessage p) {
@@ -100,6 +72,22 @@ public class Player {
         //standart texture
         this.photo = new Texture(Gdx.files.internal("profilePhoto.png"));
     }
+    public Meeple getUnusedMeeple() throws Exception {
+        if (this.meeples.size() != 0) {
+            Meeple lastMeeple = this.meeples.get(this.meeples.size() - 1);
+            this.meeples.remove(this.meeples.size() - 1);
+            return lastMeeple;
+        } else {
+            //TODO: PopUp No more Meeple
+            throw new Exception("No more meeples");
+        }
+    }
+
+    public void addScore(int score) {
+        this.score += score;
+    }
+
+
 
     public Player(){}
 }

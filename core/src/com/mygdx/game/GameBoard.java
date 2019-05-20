@@ -21,12 +21,12 @@ import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
+import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -35,6 +35,9 @@ import java.util.List;
 import java.util.Random;
 
 public class GameBoard {
+
+    ArrayList<PlayerStatusActor> playerActorList;
+
     public enum Color {
         yellow, red, green, blue, black, grey;
 
@@ -62,7 +65,7 @@ public class GameBoard {
     private boolean tileIsPlaced = false;
     private Player me;
     private GameClient gameClient;
-
+    private boolean meepleIsPlaced;
     private int numberOfPlayers;
     private Player currentPlayer;
     private List<Player> players;
@@ -81,6 +84,10 @@ public class GameBoard {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public List<Player> getPlayers() {
+        return players;
     }
 
     public void createDeckTilesAndStartTile() {
@@ -538,9 +545,11 @@ public class GameBoard {
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
 
             placeTileAt(currentTile, position);
+            GameScreen.placeMeeple.setVisible(true);
 
 
-            /*-----------------------------*/
+
+            /*-----------------------------/
             // Testing the road/city scoring
             // for every placed tile
             /*
@@ -560,7 +569,7 @@ public class GameBoard {
             } */
             /*-----------------------------*/
 
-            removeOldHints();
+                    removeOldHints();
 
             if (availableTiles.isEmpty()) {
                 Gdx.app.log("hmmmm", "No Tiles left, game ends");
@@ -571,6 +580,10 @@ public class GameBoard {
 
         }
 
+    }
+
+    public boolean meepleIsPlaced(){
+        return meepleIsPlaced;
     }
 
     public void clickForRotation() {
@@ -731,6 +744,10 @@ public class GameBoard {
         }
     }
 
+    public void setMeepleIsPlaced(boolean meepleIsPlaced) {
+        this.meepleIsPlaced = meepleIsPlaced;
+    }
+
     public Stage getStageOfBoard() {
         return stageOfBoard;
     }
@@ -746,8 +763,12 @@ public class GameBoard {
     public ArrayList<TileActor> getUsedTiles() {
         return usedTiles;
     }
-      public TileActor getPreviousTile(){
+    public TileActor getPreviousTile(){
         int lastElement = usedTiles.size()-1;
         return usedTiles.get(lastElement);
+    }
+
+    public List<PlayerStatusActor> getPlayerActorList() {
+        return playerActorList;
     }
 }

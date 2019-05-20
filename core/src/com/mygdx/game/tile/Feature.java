@@ -9,7 +9,6 @@ public class Feature {
     private ArrayList<Side> sides; //Changed Set to ArrayList
     private  HashMap<Side, Side> connections; // probably don't need that
     private boolean hasMeepleOnIt;
-    //private Player player1;
 
     public Feature() {
         this.sides = new ArrayList<>();
