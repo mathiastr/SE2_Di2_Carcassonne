@@ -86,6 +86,10 @@ public class GameBoard {
         return currentPlayer;
     }
 
+    public void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
+    }
+
     public List<Player> getPlayers() {
         return players;
     }

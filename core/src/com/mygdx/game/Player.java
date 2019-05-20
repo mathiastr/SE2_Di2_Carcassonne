@@ -8,6 +8,7 @@ import com.mygdx.game.network.response.PlayerGameMessage;
 import java.util.ArrayList;
 
 public class Player {
+    public static final int MEEPLE_COUNT = 7;
     private int score;
     private GameBoard.Color color;
     private ArrayList<Meeple> meeples;
@@ -60,7 +61,7 @@ public class Player {
         this.score = 0;
         this.color = color;
         this.meeples = new ArrayList<Meeple>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < MEEPLE_COUNT; i++) {
             this.meeples.add(new Meeple(this.color));
         }
         this.name = name;
@@ -72,7 +73,7 @@ public class Player {
         this.name = p.name;
         this.color = GameBoard.Color.green;
         this.meeples = new ArrayList<Meeple>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < MEEPLE_COUNT; i++) {
             this.meeples.add(new Meeple(this.color));
         }
         //standart texture
