@@ -86,6 +86,10 @@ public class GameBoard {
         return currentPlayer;
     }
 
+    public void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
+    }
+
     public List<Player> getPlayers() {
         return players;
     }
@@ -505,8 +509,26 @@ public class GameBoard {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
             statuses.add(playerStatusActor);
             playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
+            playerStatusActor.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.debug("touch", "player" + p.getName() + "is touched");
+                    performCheatAction(p);
+                }
+            });
             stageOfUI.addActor(playerStatusActor);
         }
+    }
+
+    public void performCheatAction(Player p) {
+        if (p.equals(currentPlayer)) {
+            p.cheatMeeple();
+        } else if (p.isCheater()) {
+            p.detectCheat();
+        } else {
+            currentPlayer.detectCheat();
+        }
+        updatePlayersInfo();
     }
 
     public int tilesLeft() {

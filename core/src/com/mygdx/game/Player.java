@@ -8,11 +8,17 @@ import com.mygdx.game.network.response.PlayerGameMessage;
 import java.util.ArrayList;
 
 public class Player {
+    public static final int MEEPLE_COUNT = 7;
     private int score;
     private GameBoard.Color color;
     private ArrayList<Meeple> meeples;
     private Texture photo;
     private String name;
+    private boolean cheater;
+
+    public boolean isCheater() {
+        return cheater;
+    }
 
     public Texture getPhoto() {
         return photo;
@@ -55,10 +61,11 @@ public class Player {
         this.score = 0;
         this.color = color;
         this.meeples = new ArrayList<Meeple>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < MEEPLE_COUNT; i++) {
             this.meeples.add(new Meeple(this.color));
         }
         this.name = name;
+        this.cheater = false;
     }
 
     public Player(PlayerGameMessage p) {
@@ -66,11 +73,12 @@ public class Player {
         this.name = p.name;
         this.color = GameBoard.Color.green;
         this.meeples = new ArrayList<Meeple>();
-        for (int i = 0; i < 7; i++) {
+        for (int i = 0; i < MEEPLE_COUNT; i++) {
             this.meeples.add(new Meeple(this.color));
         }
         //standart texture
         this.photo = new Texture(Gdx.files.internal("profilePhoto.png"));
+        this.cheater = false;
     }
     public Meeple getUnusedMeeple() throws Exception {
         if (this.meeples.size() != 0) {
@@ -81,6 +89,18 @@ public class Player {
             //TODO: PopUp No more Meeple
             throw new Exception("No more meeples");
         }
+    }
+
+    public void cheatMeeple() {
+        if (meeples != null) {
+            meeples.add(new Meeple(color));
+            cheater = true;
+        }
+    }
+
+    public void detectCheat() {
+        meeples = new ArrayList<>();
+        cheater = false;
     }
 
     public void addScore(int score) {
