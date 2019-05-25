@@ -29,6 +29,8 @@ import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -535,10 +537,6 @@ public class GameBoard {
         return availableTiles.size();
     }
 
-    public void gameEnds() {
-        // TODO
-    }
-
     public void placeTileAt(TileActor tileToPlace, Position position) {
         if (!tileIsPlaced) {
             addTileOnBoard(tileToPlace, position);
@@ -591,14 +589,7 @@ public class GameBoard {
             } */
             /*-----------------------------*/
 
-                    removeOldHints();
-
-            if (availableTiles.isEmpty()) {
-                Gdx.app.log("hmmmm", "No Tiles left, game ends");
-                gameEnds();
-            } else {
-                // nextCurrentTile();
-            }
+            removeOldHints();
 
         }
 
@@ -792,5 +783,9 @@ public class GameBoard {
 
     public List<PlayerStatusActor> getPlayerActorList() {
         return playerActorList;
+    }
+
+    public Player getWinningPlayer() {
+        return Collections.max(players, Comparator.comparing(Player::getScore));
     }
 }

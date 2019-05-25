@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.PlayerGameMessage;
@@ -66,6 +67,9 @@ public class Player {
         }
         this.name = name;
         this.cheater = false;
+        // default picture
+        FileHandle defaultPicture = Gdx.files.internal("profilePhoto.png");
+        if (defaultPicture != null) this.photo = new Texture(defaultPicture);
     }
 
     public Player(PlayerGameMessage p) {
