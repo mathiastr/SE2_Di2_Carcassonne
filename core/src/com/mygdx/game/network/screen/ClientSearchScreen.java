@@ -19,6 +19,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.network.response.ConnectMessage;
+import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.screen.GameScreen;
@@ -116,6 +117,7 @@ public class ClientSearchScreen implements Screen {
                                             }
                                         });
                                     }
+
                                     if (object instanceof ConnectMessage) {
                                         ConnectMessage response = (ConnectMessage) object;
                                         NetworkHelper.setPlayer(response.player);
@@ -127,11 +129,17 @@ public class ClientSearchScreen implements Screen {
                                         });
                                         //
                                     }
+
                                     if (object instanceof ErrorMessage) {
                                         ErrorMessage response = (ErrorMessage) object;
                                         if (response.errorNumber == ErrorNumber.TOOMANYCLIENTS) {
                                             //toastLong(response.message);
                                         }
+                                    }
+
+                                    if (object instanceof CurrentTileMessage) {
+                                        NetworkHelper.setLastMessage(object);
+                                        NetworkHelper.getGameManager().sendToServer(new ErrorMessage("Game not started", ErrorNumber.GAMENOTSTARTED));
                                     }
                                 }
                             });

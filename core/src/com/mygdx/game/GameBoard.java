@@ -24,6 +24,8 @@ import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.CheatOnScoreMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
+import com.mygdx.game.network.response.ErrorMessage;
+import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
@@ -357,14 +359,16 @@ public class GameBoard {
     }
 
     public void onTilePlaced(TilePlacementMessage tilePlacementMessage) {
-        currentTile.setRotation(tilePlacementMessage.rotation);
 
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                placeCurrentTileAt(tilePlacementMessage.position);
-            }
-        });
+            Gdx.app.debug("DEBUG", " " + tilePlacementMessage.rotation + " " + currentTile.toString());
+            currentTile.setRotation(tilePlacementMessage.rotation);
+
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    placeCurrentTileAt(tilePlacementMessage.position);
+                }
+            });
     }
 
     public void endMyTurn() {
@@ -452,19 +456,24 @@ public class GameBoard {
 
             gameClient.getClient().addListener(new Listener() {
                 public void received(Connection connection, Object object) {
+                    if (object instanceof CurrentTileMessage) {
+                        onTurnBegin((CurrentTileMessage) object);
+                    }
+
                     if (object instanceof TilePlacementMessage) {
                         onTilePlaced((TilePlacementMessage) object);
                     }
 
-                    if (object instanceof CurrentTileMessage) {
-                        onTurnBegin((CurrentTileMessage) object);
-                    }
                     if (object instanceof TurnEndMessage) {
                         onTurnEnd((TurnEndMessage)object);
                     }
 
                     if (object instanceof CheatOnScoreMessage) {
                         onCheatOnScore((CheatOnScoreMessage)object);
+                    }
+
+                    if (object instanceof ErrorMessage) {
+                        errorHandling((ErrorMessage)object, connection);
                     }
                 }
             });
@@ -479,6 +488,13 @@ public class GameBoard {
 
         if (isMyTurn()) {
             beginMyTurn();
+        }
+
+        if(NetworkHelper.getLastMessage() != null) {
+            if(NetworkHelper.getLastMessage() instanceof CurrentTileMessage){
+                onTurnBegin((CurrentTileMessage)NetworkHelper.getLastMessage());
+                NetworkHelper.setLastMessage(null);
+            }
         }
 
         finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
@@ -527,6 +543,13 @@ public class GameBoard {
             }
             stageUI.addActor(playerStatusActor);
             playerActorList.add(playerStatusActor);
+        }
+    }
+
+    private void errorHandling(ErrorMessage error, Connection connection) {
+        if(error.errorNumber == ErrorNumber.GAMENOTSTARTED){
+
+            Gdx.app.debug("DEBUG","Game was not initialized by " + connection.getID());
         }
     }
 
