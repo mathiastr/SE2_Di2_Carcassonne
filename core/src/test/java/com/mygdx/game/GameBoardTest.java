@@ -30,8 +30,8 @@ public class GameBoardTest {
 
     private void preparePlayers() {
         players = new ArrayList<>();
-        players.add(new Player());
-        players.add(new Player());
+        players.add(new Player(GameBoard.Color.black, "A"));
+        players.add(new Player(GameBoard.Color.blue, "B"));
     }
 
     @Test
@@ -81,8 +81,8 @@ public class GameBoardTest {
 
     @Test
     public void testCheating() {
+        preparePlayers();
         GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
-
         gb.performCheatAction(players.get(0)); //cheat Meeple
         assert players.get(0).getNumberOfMeeples() == Player.MEEPLE_COUNT + 1;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
