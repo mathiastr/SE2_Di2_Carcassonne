@@ -8,6 +8,16 @@ import java.util.List;
 public class TurnEndMessage {
     private List<Meeple> meeples;
 
+    private int playerScore;
+
+    public int getPlayerScore() {
+        return playerScore;
+    }
+
+    public void setPlayerScore(int playerScore) {
+        this.playerScore = playerScore;
+    }
+
     public TurnEndMessage() {
         this.meeples = new ArrayList();
     }
@@ -19,4 +29,5 @@ public class TurnEndMessage {
     public void setMeeples(List<Meeple> meeples) {
         this.meeples = meeples;
     }
+
 }

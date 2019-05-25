@@ -61,6 +61,7 @@ public class GameScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
         gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient);
+        gameBoard.init();
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         this.isLocal = isLocal;
         this.gameClient = gameClient;

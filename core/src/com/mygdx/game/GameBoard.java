@@ -1,6 +1,5 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -31,6 +30,7 @@ import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 import java.util.ArrayList;
@@ -67,14 +67,9 @@ public class GameBoard {
     private Stage stageOfBoard;
     private Stage stageOfUI;
     public final static int MAX_NUM_OF_PLAYERS = 6;
-    private final TextButton finishTurnButton;
+    private TextButton finishTurnButton;
     private boolean tileIsPlaced = false;
-    private boolean turnIsFinished = false;
-    private boolean isLocal;
     private Player me;
-    private int lastTileNumber;
-    private Position lastTilePosition;
-    private int currentTileNumber;
     private GameClient gameClient;
     private boolean meepleIsPlaced;
     private int numberOfPlayers;
@@ -82,6 +77,7 @@ public class GameBoard {
     private List<Player> players;
     private ArrayList<TileActor> hints = new ArrayList<>();
     private ArrayList<TileActor> usedTiles = new ArrayList<>();
+    private ArrayList<PlayerStatusActor> statuses = new ArrayList<>();
 
     /* is the deck of tiles */
     private ArrayList<TileActor> availableTiles = new ArrayList<>();
@@ -94,6 +90,10 @@ public class GameBoard {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public void setCurrentPlayer(Player player) {
+        this.currentPlayer = player;
     }
 
     public List<Player> getPlayers() {
@@ -131,13 +131,11 @@ public class GameBoard {
             straightRoadUnderCity.addFeature(new Road(Arrays.asList(Side.left, Side.right)));
             if (i != 0) availableTiles.add(straightRoadUnderCity);
             else {
-                /* setup the start tile */
-                tiles.put(new Position(0, 0), straightRoadUnderCity);
-                stageOfBoard.addActor(straightRoadUnderCity);
+                addTileOnBoard(straightRoadUnderCity, new Position(0, 0));
             }
         }
 
-        /* diagonal city */
+        // diagonal city
         for (int i = 0; i < diagCityCount; ++i) {
             TileActor diagCity = new TileActor(this);
             diagCity.setTexture(new Texture(Gdx.files.internal("diagonal_city_128.jpg")));
@@ -145,7 +143,7 @@ public class GameBoard {
             availableTiles.add(diagCity);
         }
 
-        /* straight road */
+        // straight road
         for (int i = 0; i < straightRoadCount; ++i) {
             TileActor straightRoad = new TileActor(this);
             straightRoad.setTexture(new Texture(Gdx.files.internal("straight_road_128.jpg")));
@@ -153,7 +151,7 @@ public class GameBoard {
             availableTiles.add(straightRoad);
         }
 
-        /* city left right */
+        // city left right
         for (int i = 0; i < cityLeftRightCount; ++i) {
             TileActor cityLeftRight = new TileActor(this);
             cityLeftRight.setTexture(new Texture(Gdx.files.internal("city_left_right_128.jpg")));
@@ -162,7 +160,7 @@ public class GameBoard {
             availableTiles.add(cityLeftRight);
         }
 
-        /* city top */
+        // city top
         for (int i = 0; i < cityTopCount; ++i) {
             TileActor cityTop = new TileActor(this);
             cityTop.setTexture(new Texture(Gdx.files.internal("city_top_128.jpg")));
@@ -170,7 +168,7 @@ public class GameBoard {
             availableTiles.add(cityTop);
         }
 
-        /* city top right */
+        /* city top right
         for (int i = 0; i < cityTopRightCount; ++i) {
             TileActor cityTopRight = new TileActor(this);
             cityTopRight.setTexture(new Texture(Gdx.files.internal("city_top_right_128.jpg")));
@@ -178,8 +176,8 @@ public class GameBoard {
             cityTopRight.addFeature(new City(Side.right));
             availableTiles.add(cityTopRight);
         }
-
-        /* city top with left road */
+*/
+        /* city top with left road
         for (int i = 0; i < cityTopWithLeftRoadCount; ++i) {
             TileActor cityTopWithLeftRoad = new TileActor(this);
             cityTopWithLeftRoad.setTexture(new Texture(Gdx.files.internal("city_top_with_left_road_128.jpg")));
@@ -187,8 +185,9 @@ public class GameBoard {
             cityTopWithLeftRoad.addFeature(new Road(Arrays.asList(Side.left, Side.bottom)));
             availableTiles.add(cityTopWithLeftRoad);
         }
+        */
 
-        /* city top with right road */
+        // city top with right road
         for (int i = 0; i < cityTopWithRightRoadCount; ++i) {
             TileActor cityTopWithRightRoad = new TileActor(this);
             cityTopWithRightRoad.setTexture(new Texture(Gdx.files.internal("city_top_with_right_road_128.jpg")));
@@ -197,7 +196,7 @@ public class GameBoard {
             availableTiles.add(cityTopWithRightRoad);
         }
 
-        /* city with triple road */
+        // city with triple road
         for (int i = 0; i < cityWithTripleRoadCount; ++i) {
             TileActor cityWithTripleRoad = new TileActor(this);
             cityWithTripleRoad.setTexture(new Texture(Gdx.files.internal("city_with_triple_road_128.jpg")));
@@ -208,7 +207,7 @@ public class GameBoard {
             availableTiles.add(cityWithTripleRoad);
         }
 
-        /* diagonal city with road */
+        /* diagonal city with road
         for (int i = 0; i < diagCityWithRoadCount; ++i) {
             TileActor diagCityWithRoad = new TileActor(this);
             diagCityWithRoad.setTexture(new Texture(Gdx.files.internal("diagonal_city_with_road_128.jpg")));
@@ -216,32 +215,32 @@ public class GameBoard {
             diagCityWithRoad.addFeature(new Road(Arrays.asList(Side.bottom, Side.right)));
             availableTiles.add(diagCityWithRoad);
         }
-
-        /* full city */
+    */
+        /* full city
         for (int i = 0; i < fullCityCount; ++i) {
             TileActor fullCity = new TileActor(this);
             fullCity.setTexture(new Texture(Gdx.files.internal("full_city_128.jpg")));
             fullCity.addFeature(new City(Arrays.asList(Side.left, Side.top, Side.right, Side.bottom)));
             availableTiles.add(fullCity);
         }
-
-        /* full city left/right */
+    */
+        /* full city left/right
         for (int i = 0; i < fullCityLeftRightCount; ++i) {
             TileActor fullCityLeftRight = new TileActor(this);
             fullCityLeftRight.setTexture(new Texture(Gdx.files.internal("full_city_left_right_128.jpg")));
             fullCityLeftRight.addFeature(new City(Arrays.asList(Side.left, Side.right)));
             availableTiles.add(fullCityLeftRight);
         }
-
-        /* full city left/top/right */
+*/
+        /* full city left/top/right
         for (int i = 0; i < fullCityLeftTopRightCount; ++i) {
             TileActor fullCityLeftTopRight = new TileActor(this);
             fullCityLeftTopRight.setTexture(new Texture(Gdx.files.internal("full_city_left_top_right_128.jpg")));
             fullCityLeftTopRight.addFeature(new City(Arrays.asList(Side.left, Side.top, Side.right)));
             availableTiles.add(fullCityLeftTopRight);
         }
-
-        /* full city left/top/right with road */
+*/
+        /* full city left/top/right with road
         for (int i = 0; i < fullCityLeftTopRightWithRoadCount; ++i) {
             TileActor fullCityLeftTopRightWithRoad = new TileActor(this);
             fullCityLeftTopRightWithRoad.setTexture(new Texture(Gdx.files.internal("full_city_left_top_right_with_road_128.jpg")));
@@ -249,8 +248,8 @@ public class GameBoard {
             fullCityLeftTopRightWithRoad.addFeature(new Road(Side.bottom));
             availableTiles.add(fullCityLeftTopRightWithRoad);
         }
-
-        /* monastery */
+*/
+        // monastery
         for (int i = 0; i < monasteryCount; ++i) {
             TileActor monastery = new TileActor(this);
             monastery.setTexture(new Texture(Gdx.files.internal("monastery_128.jpg")));
@@ -258,7 +257,7 @@ public class GameBoard {
             availableTiles.add(monastery);
         }
 
-        /* monastery with road */
+        // monastery with road
         for (int i = 0; i < monasteryWithRoadCount; ++i) {
             TileActor monasteryWithRoad = new TileActor(this);
             monasteryWithRoad.setTexture(new Texture(Gdx.files.internal("monastery_with_road_128.jpg")));
@@ -277,15 +276,15 @@ public class GameBoard {
             availableTiles.add(tripleRoad);
         }
 
-        /* turning road */
+        /* turning road
         for (int i = 0; i < turningRoadCount; ++i) {
             TileActor turningRoad = new TileActor(this);
             turningRoad.setTexture(new Texture(Gdx.files.internal("turning_road_128.jpg")));
             turningRoad.addFeature(new Road(Arrays.asList(Side.left, Side.bottom)));
             availableTiles.add(turningRoad);
-        }
+        }*/
 
-        /* triple road */
+        /* triple road
         for (int i = 0; i < quadRoadCount; ++i) {
             TileActor quadRoad = new TileActor(this);
             quadRoad.setTexture(new Texture(Gdx.files.internal("quad_road_128.jpg")));
@@ -295,11 +294,16 @@ public class GameBoard {
             quadRoad.addFeature(new Road(Side.top));
             availableTiles.add(quadRoad);
         }
+        */
     }
 
-    public TileActor getRandomElement(List<TileActor> list) {
+    public TileActor getRandomElement(List<TileActor> list) throws Exception {
         Random rand = new Random();
-        return list.get(rand.nextInt(list.size()));
+        if (list.size() == 0) {
+            throw new Exception("No more tiles");
+        }
+        int randNumber = rand.nextInt(list.size());
+        return list.get(randNumber);
     }
 
     public void showCurrentTile() {
@@ -320,19 +324,23 @@ public class GameBoard {
             }
         });
         usedTiles.add(currentTile);
-        availableTiles.remove(availableTiles.size()-1); // TODO
+        availableTiles.remove(availableTiles.indexOf(currentTile));
         stageOfUI.addActor(currentTile);
     }
 
     public void nextTurn() {
         currentPlayer = players.get((players.indexOf(currentPlayer) + 1) % players.size());
-        turnIsFinished = false;
         tileIsPlaced = false;
         update();
     }
 
     public void beginMyTurn() {
-        TileActor nextTile = getRandomElement(availableTiles);
+        TileActor nextTile = null;
+        try {
+            nextTile = getRandomElement(availableTiles);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         CurrentTileMessage cm = new CurrentTileMessage();
         cm.tileNumber = availableTiles.indexOf(nextTile);
 
@@ -374,16 +382,23 @@ public class GameBoard {
     public void endMyTurn() {
         TurnEndMessage turnEndMessage = new TurnEndMessage();
         turnEndMessage.setMeeples(currentTile.getMeeples());
+        int score = getScore(currentTile);
+        turnEndMessage.setPlayerScore(currentPlayer.getScore() + score);
+
         if (gameClient != null) {
             NetworkHelper.getGameManager().sendToServer(turnEndMessage);
         }
+
         onTurnEnd(turnEndMessage);
     }
 
     public void onTurnEnd(TurnEndMessage turnEndMessage) {
+        this.currentPlayer.setScore(turnEndMessage.getPlayerScore());
+        updatePlayersInfo();
         if (gameClient != null) {
             GameBoard that = this;
             Position pos = currentTile.getPosition();
+
             Gdx.app.postRunnable(new Runnable() {
                 @Override
                 public void run() {
@@ -404,6 +419,11 @@ public class GameBoard {
         for (Player p :
                 players) {
             p.reduceCheatTimeByOne();
+        }
+    }
+    public void updatePlayersInfo() {
+        for (PlayerStatusActor status : statuses) {
+            status.updateInfo();
         }
     }
 
@@ -438,18 +458,17 @@ public class GameBoard {
 
 
     public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
 
         numberOfPlayers = players.size();
         this.players = players;
-        this.isLocal = isLocal;
         currentPlayer = players.get(0);
         this.me = me;
         this.gameClient = gameClient;
+    }
 
-
+    public void init() {
         createDeckTilesAndStartTile();
 
         if (gameClient != null) {
@@ -507,23 +526,20 @@ public class GameBoard {
             public void clicked(InputEvent event, float x, float y) {
                 if (gameClient != null && isMyTurn()) {
                     if (tileIsPlaced) {
-                        turnIsFinished = true;
                         endMyTurn();
                     }
                 } else if (gameClient == null) {
-                    turnIsFinished = true;
                     endMyTurn();
                 }
 
             }
         });
 
-        stageUI.addActor(finishTurnButton);
-
-        playerActorList = new ArrayList<>();
+        stageOfUI.addActor(finishTurnButton);
 
         for (Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
+            statuses.add(playerStatusActor);
             playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
             if(p == NetworkHelper.getPlayer()){
                 playerStatusActor.addListener(new ActorGestureListener(20,0.4f,5f,0.15f){
@@ -588,6 +604,17 @@ public class GameBoard {
         }
     }
 
+    public void performCheatAction(Player p) {
+        if (p.equals(currentPlayer)) {
+            p.cheatMeeple();
+        } else if (p.isCheater()) {
+            p.detectCheat();
+        } else {
+            currentPlayer.detectCheat();
+        }
+        updatePlayersInfo();
+    }
+
     public int tilesLeft() {
         return availableTiles.size();
     }
@@ -598,9 +625,7 @@ public class GameBoard {
 
     public void placeTileAt(TileActor tileToPlace, Position position) {
         if (!tileIsPlaced) {
-            stageOfBoard.addActor(tileToPlace);
-            tileToPlace.setPosition(position);
-            tiles.put(position, tileToPlace);
+            addTileOnBoard(tileToPlace, position);
             tileIsPlaced = true;
 
             DelayedRemovalArray<EventListener> listeners = tileToPlace.getListeners();
@@ -609,6 +634,12 @@ public class GameBoard {
                 tileToPlace.removeListener(listeners.peek());
             }
         }
+    }
+
+    public void addTileOnBoard(TileActor tileToPlace, Position position) {
+        tileToPlace.setPosition(position);
+        tiles.put(position, tileToPlace);
+        stageOfBoard.addActor(tileToPlace);
     }
 
     public void placeCurrentTileAt(Position position) {
@@ -696,6 +727,31 @@ public class GameBoard {
             default:
                 return null;
         }
+    }
+
+
+    public int getScore(TileActor tile) {
+        int score = 0;
+        for (Feature feature: tile.getFeatures()) {
+            if(feature instanceof City || feature instanceof Road) {
+                score += scoreRoadOrCity(tile, feature);
+            }
+            else if (feature instanceof Monastery) {
+                score += scoreMonastery(tile);
+            }
+            // TODO check for monastery around
+        }
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                TileActor tileAround = tiles.get(tile.getPosition().add(new Position(i, j)));
+                if ( tileAround != null) {
+                    if (tileAround.isMonastery()) {
+                        score += scoreMonastery(tileAround);
+                    }
+                }
+            }
+        }
+        return score;
     }
 
     // TODO maybe adjust scoring methods for the end of game partial scoring...
