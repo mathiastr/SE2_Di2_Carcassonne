@@ -13,12 +13,7 @@ import static org.junit.Assert.*;
 
 public class TileActorTest {
 
-    TileActor tile = new TileActor(new Position(0, 0), null);
-
-    @Before
-    public void setUp() throws Exception {
-
-    }
+    TileActor tile = new TileActor(new Position(0, 0));
 
     @Test
     public void testRotation() {
