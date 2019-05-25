@@ -536,6 +536,7 @@ public class GameBoard {
         });
 
         stageOfUI.addActor(finishTurnButton);
+        playerActorList = new ArrayList<>();
 
         for (Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
@@ -557,7 +558,7 @@ public class GameBoard {
                     }
                 });
             }
-            stageUI.addActor(playerStatusActor);
+            stageOfUI.addActor(playerStatusActor);
             playerActorList.add(playerStatusActor);
         }
     }
@@ -573,13 +574,9 @@ public class GameBoard {
         for (Player p :
                 players) {
             if(p.equals(message.getPlayer())){
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        p.addScore(100);
-                        p.addTimeToDetectUsedCheats(message.getCheatTime());
-                    }
-                });
+                p.addScore(100);
+                p.addTimeToDetectUsedCheats(message.getCheatTime());
+                updatePlayersInfo();
             }
         }
 
@@ -589,17 +586,12 @@ public class GameBoard {
         for (Player p : players
                 ) {
             if(p.equals(NetworkHelper.getPlayer())){
-                Gdx.app.postRunnable(new Runnable() {
-                    @Override
-                    public void run() {
-                        p.addScore(100);
-                        p.setTimeToDetectUsedCheats(3);
-                        if(NetworkHelper.getGameManager() != null){
-                            NetworkHelper.getGameManager().sendToServer(new CheatOnScoreMessage(3,NetworkHelper.getPlayer()));
-                        }
-                    }
-                });
-
+                p.addScore(100);
+                p.setTimeToDetectUsedCheats(3);
+                if(NetworkHelper.getGameManager() != null){
+                    NetworkHelper.getGameManager().sendToServer(new CheatOnScoreMessage(3,NetworkHelper.getPlayer()));
+                }
+                updatePlayersInfo();
             }
         }
     }
