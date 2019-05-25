@@ -22,7 +22,7 @@ public class GameClient extends AbstractGameManager{
             ArrayList<InetAddress> l = new ArrayList<>();
             // 192.168.1.2 home
             //143.205.187.139 uni
-            //l.add(InetAddress.getByName("143.205.187.139"));
+            l.add(InetAddress.getByName("10.0.0.6"));
             //return l;
         } catch (Exception e) {
             e.printStackTrace();

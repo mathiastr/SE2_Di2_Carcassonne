@@ -102,12 +102,6 @@ public class ClientSearchScreen implements Screen {
                                         // get the init info from here
                                         InitGameMessage response = (InitGameMessage) object;
                                         ArrayList<Player> players = response.getPlayers();
-                                        for (Player p :
-                                                players) {
-                                            if(p.getId() == NetworkHelper.getPlayer().getId()){
-                                                NetworkHelper.setPlayer(p);
-                                            }
-                                        }
                                         System.out.println("info is here");
                                         Gdx.app.postRunnable(new Runnable() {
                                             @Override
@@ -120,14 +114,17 @@ public class ClientSearchScreen implements Screen {
 
                                     if (object instanceof ConnectMessage) {
                                         ConnectMessage response = (ConnectMessage) object;
-                                        NetworkHelper.setPlayer(response.player);
-                                        Gdx.app.postRunnable(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                toastLong("You are now " + NetworkHelper.getPlayer().getName());
-                                            }
-                                        });
-                                        //
+                                        if(NetworkHelper.getPlayer().getId() == 0){
+                                            NetworkHelper.setPlayer(response.player);
+
+                                            System.out.println("DEBUG ::: Client is now: " + response.player.getName() + " " + connection.getID());
+                                            Gdx.app.postRunnable(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    toastLong("You are now " + NetworkHelper.getPlayer().getName());
+                                                }
+                                            });
+                                        }
                                     }
 
                                     if (object instanceof ErrorMessage) {

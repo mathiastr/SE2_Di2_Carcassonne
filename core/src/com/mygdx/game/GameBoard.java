@@ -512,6 +512,8 @@ public class GameBoard {
         if(NetworkHelper.getLastMessage() != null) {
             if(NetworkHelper.getLastMessage() instanceof CurrentTileMessage){
                 onTurnBegin((CurrentTileMessage)NetworkHelper.getLastMessage());
+
+                Gdx.app.debug("DEBUG", "Restore Game init error: " + NetworkHelper.getLastMessage().toString());
                 NetworkHelper.setLastMessage(null);
             }
         }
