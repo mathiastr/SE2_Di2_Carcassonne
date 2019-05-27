@@ -29,7 +29,7 @@ public class GameClient extends AbstractGameManager{
             e.printStackTrace();
         }
 
-        return client.discoverHosts(Network.UDP, 2000);
+        return client.discoverHosts(Network.UDP, 5000);
     }
 
     public Client getClient() {

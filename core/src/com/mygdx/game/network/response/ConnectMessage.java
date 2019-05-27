@@ -11,6 +11,7 @@ public class ConnectMessage {
 
     public ConnectMessage(Player player){
         this.player = player;
+
     }
 
     public Player getPlayer() {
