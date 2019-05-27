@@ -71,8 +71,9 @@ public class Player {
         this.timeToDetectUsedCheats = 0;
         this.cheater = false;
         // default picture
-        FileHandle defaultPicture = Gdx.files.internal("profilePhoto.png");
-        if (defaultPicture != null) this.photo = new Texture(defaultPicture);
+        // TODO change Texture to byte-array, otherwise Texture gets registered.
+        //FileHandle defaultPicture = Gdx.files.internal("profilePhoto.png");
+        //if (defaultPicture != null) this.photo = new Texture(defaultPicture);
     }
 
     public Player(PlayerGameMessage p) {

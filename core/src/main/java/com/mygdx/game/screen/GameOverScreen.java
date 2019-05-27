@@ -66,8 +66,9 @@ public class GameOverScreen implements Screen {
         winnerLabel.setWidth(Gdx.graphics.getWidth());
         stage.addActor(winnerLabel);
 
-
-        Image winnerImage = new Image(winner.getPhoto());
+        Image winnerImage;
+        if (winner.getPhoto() == null) winnerImage = new Image(new Texture(Gdx.files.internal("profilePhoto.png")));
+        else winnerImage = new Image(winner.getPhoto());
         winnerImage.setSize(Gdx.app.getGraphics().getHeight()/2.5f, Gdx.app.getGraphics().getHeight()/2.5f);
         winnerImage.setPosition(Gdx.app.getGraphics().getWidth()/2f-Gdx.app.getGraphics().getHeight()/2.5f/2f, Gdx.app.getGraphics().getHeight()/7f);
         stage.addActor(winnerImage);
