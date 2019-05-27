@@ -71,6 +71,11 @@ public class GameBoard {
     private List<Player> players;
     private ArrayList<TileActor> hints = new ArrayList<>();
     private ArrayList<TileActor> usedTiles = new ArrayList<>();
+
+    public ArrayList<PlayerStatusActor> getStatuses() {
+        return statuses;
+    }
+
     private ArrayList<PlayerStatusActor> statuses = new ArrayList<>();
 
     /* is the deck of tiles */
@@ -382,7 +387,8 @@ public class GameBoard {
     public void onTurnEnd(TurnEndMessage turnEndMessage) {
         this.currentPlayer.setScore(turnEndMessage.getPlayerScore());
         updatePlayersInfo();
-        if (gameClient != null) {
+        if (gameClient !=
+                null) {
             GameBoard that = this;
             Position pos = currentTile.getPosition();
 
