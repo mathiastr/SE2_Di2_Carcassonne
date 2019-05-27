@@ -21,6 +21,7 @@ public class TileActor extends Actor {
     private Texture texture;
     private Texture textureBig;
     private Position position;
+    private boolean hasMeeple;
     private static GameBoard board;
 
     public ArrayList<Meeple> getMeeples() {
@@ -188,4 +189,34 @@ public class TileActor extends Actor {
     public void placeMeepleOnFeature(Feature feature, Meeple meeple) {
 
     }
+    /**
+     * Gets the tile that is next to this one on the given side.
+     * @param side The side to get the tile from.
+     * @return The tile that borders this one on the given side.
+     */
+    public TileActor getTileOnSide(Side side)
+    {
+        return board.getUsedTileHash().get(this.position.getPositionOnSide(side));
+    }
+
+    public void updateTileFeatures()
+    {
+        for(Side side : Side.values())
+        {
+            TileActor borderingTile = this.getTileOnSide(side);
+            Feature feature = this.getFeatureAtSide(side);
+            if(borderingTile != null) {
+                Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
+
+                // if features are of the same type
+                if (feature.getClass().equals(borderingFeature.getClass())) {
+                    // then act like the feature of this tile has a meeple on it
+                    // if the bordering feature has a meeple on it.
+                    feature.setHasMeepleOnIt(borderingFeature.hasMeepleOnIt());
+                }
+            }
+        }
+    }
+
 }
+

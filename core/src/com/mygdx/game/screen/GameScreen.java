@@ -127,8 +127,8 @@ public class GameScreen implements Screen {
         camera.translate(-Gdx.graphics.getWidth() / 2, -Gdx.graphics.getHeight() / 2);
 
 
-        // TODO currently so we can differentiate between board tiles and currentTile.
-        // TODO show currentTile in right corner and make it bigger.
+        // TODO currently so we can differentiate between board tiles and newestTile.
+        // TODO show newestTile in right corner and make it bigger.
         camera.zoom *= 1.2;
         camera.update();
 

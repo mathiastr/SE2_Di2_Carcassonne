@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.mygdx.game.tile.Side;
+
 import java.util.Objects;
 
 public class Position {
@@ -24,6 +26,27 @@ public class Position {
                 new Position(x+1, y),
                 new Position(x, y-1),
                 new Position(x-1, y)};
+    }
+
+    /**
+     * Gets the discrete position that is next to this one.
+     * @param side The side of the position that is next to this one.
+     * @return The position next to this on one the given side.
+     */
+    public Position getPositionOnSide(Side side){
+        switch (side)
+        {
+            case top:
+                return new Position(x, y+1);
+            case right:
+                return new Position(x + 1, y);
+            case bottom:
+                return new Position( x, y-1);
+            case left:
+                return new Position( x - 1, y);
+            default:
+                throw new IllegalArgumentException("Cannot get position from this side.");
+        }
     }
 
     @Override

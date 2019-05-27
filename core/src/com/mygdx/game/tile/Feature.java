@@ -46,7 +46,7 @@ public class Feature {
                 '}';
     }
 
-    public boolean isHasMeepleOnIt(){
+    public boolean hasMeepleOnIt(){
         return hasMeepleOnIt;
     }
 

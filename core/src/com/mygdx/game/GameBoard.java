@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -64,6 +63,7 @@ public class GameBoard {
     }
 
     private HashMap<Position, TileActor> tiles = new HashMap<>();
+    private HashMap<Position, TileActor> usedTileHash = new HashMap<>();
     private Stage stageOfBoard;
     private Stage stageOfUI;
     public final static int MAX_NUM_OF_PLAYERS = 6;
@@ -90,10 +90,6 @@ public class GameBoard {
 
     public Player getCurrentPlayer() {
         return currentPlayer;
-    }
-
-    public void setCurrentPlayer(Player player) {
-        this.currentPlayer = player;
     }
 
     public List<Player> getPlayers() {
@@ -253,7 +249,8 @@ public class GameBoard {
         for (int i = 0; i < monasteryCount; ++i) {
             TileActor monastery = new TileActor(this);
             monastery.setTexture(new Texture(Gdx.files.internal("monastery_128.jpg")));
-            monastery.setMonastery();
+            monastery.addFeature(new Monastery(Side.top));
+            //monastery.setMonastery();
             availableTiles.add(monastery);
         }
 
@@ -261,7 +258,8 @@ public class GameBoard {
         for (int i = 0; i < monasteryWithRoadCount; ++i) {
             TileActor monasteryWithRoad = new TileActor(this);
             monasteryWithRoad.setTexture(new Texture(Gdx.files.internal("monastery_with_road_128.jpg")));
-            monasteryWithRoad.setMonastery();
+            monasteryWithRoad.addFeature(new Monastery(Side.top));
+            //monasteryWithRoad.setMonastery();
             monasteryWithRoad.addFeature(new Road(Side.bottom));
             availableTiles.add(monasteryWithRoad);
         }
@@ -533,7 +531,7 @@ public class GameBoard {
                 } else if (gameClient == null) {
                     endMyTurn();
                 }
-
+                GameScreen.placeMeeple.setVisible(false);
             }
         });
 
@@ -620,6 +618,7 @@ public class GameBoard {
     public void placeTileAt(TileActor tileToPlace, Position position) {
         if (!tileIsPlaced) {
             addTileOnBoard(tileToPlace, position);
+            usedTileHash.put(position, tileToPlace);
             tileIsPlaced = true;
 
             DelayedRemovalArray<EventListener> listeners = tileToPlace.getListeners();
@@ -863,11 +862,18 @@ public class GameBoard {
     public ArrayList<TileActor> getUsedTiles() {
         return usedTiles;
     }
-    public TileActor getPreviousTile(){
+    /**
+     * get the tile whats placed in this turn
+     * @return TileActor that was placed in the current turn.
+     */
+    public TileActor getNewestTile(){
         int lastElement = usedTiles.size()-1;
         return usedTiles.get(lastElement);
     }
 
+    public HashMap<Position, TileActor> getUsedTileHash() {
+        return usedTileHash;
+    }
     public List<PlayerStatusActor> getPlayerActorList() {
         return playerActorList;
     }

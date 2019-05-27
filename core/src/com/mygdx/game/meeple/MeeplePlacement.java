@@ -17,6 +17,12 @@ import java.util.ArrayList;
 public class MeeplePlacement {
     ArrayList<TileActor> usedTiles;
     GameBoard gb;
+    Position[] positions;
+    private Boolean feature1 = true;
+    private Boolean feature2 = true;
+    private Boolean feature3 = true;
+    private Boolean feature4 = true;
+    Boolean[] booleans;
 
     public MeeplePlacement(GameBoard gb) {
         this.gb = gb;
@@ -29,6 +35,7 @@ public class MeeplePlacement {
             meepleForPlacement.setSide(side);
             meepleForPlacement.setFeature(feature);
             gb.getCurrentTile().addMeeple(meepleForPlacement);
+            feature.setHasMeepleOnIt(true);
             drawMeeple(side, pos);
             GameScreen.placeMeeple.setVisible(false);
         } catch (Exception e) {
@@ -65,9 +72,6 @@ public class MeeplePlacement {
                 break;
         }
 
-
-        // Position pos = gb.getPreviousTile().getPosition();
-
         ImageButton meepleImg = new ImageButton(
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)),
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)));
@@ -89,7 +93,6 @@ public class MeeplePlacement {
                 y -= 42f;
                 break;
         }
-
         meepleImg.setPosition(x, y);
 
 
