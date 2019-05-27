@@ -8,8 +8,10 @@ import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 
 public class AddTileActor extends TileActor {
-    public AddTileActor(Position aPosition, final GameBoard gameBoard) {
-        super(aPosition, gameBoard);
+    private GameBoard gameBoard;
+    public AddTileActor(Position aPosition, final GameBoard gb) {
+        super(aPosition);
+        gameBoard = gb;
         setTexture(new Texture(Gdx.files.internal("addtile3.png")));
 
         addListener(new ClickListener() {

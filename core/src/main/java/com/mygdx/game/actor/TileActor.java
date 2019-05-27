@@ -3,7 +3,6 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.TilePlacementMessage;
@@ -20,7 +19,6 @@ public class TileActor extends Actor {
     private Texture texture;
     private Texture textureBig;
     private Position position;
-    private static GameBoard board;
 
     public ArrayList<Meeple> getMeeples() {
         return meeples;
@@ -43,10 +41,6 @@ public class TileActor extends Actor {
     private ArrayList<Meeple> meeples = new ArrayList<>();
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
     private boolean monastery = false;
-
-    public static GameBoard getGameboard(){
-        return board;
-    }
 
     public void setRotation(int rotation) {
         this.rotation = rotation;
@@ -79,8 +73,7 @@ public class TileActor extends Actor {
         return features;
     }
 
-    public TileActor(Position aPosition, final GameBoard gameBoard) {
-        board = gameBoard;
+    public TileActor(Position aPosition) {
         /* Position is the position of the tile on the 2D-Map [base-tile has (0, 0), upwards is (0, 1) etc.] */
         position = aPosition;
         setWidth(SIZE);
@@ -88,8 +81,8 @@ public class TileActor extends Actor {
         setPosition(position.getX() * SIZE, position.getY() * SIZE);
     }
 
-    public TileActor(final GameBoard gameBoard) {
-        this(new Position(0, 0), gameBoard);
+    public TileActor() {
+        this(new Position(0, 0));
     }
 
     public TileActor(TilePlacementMessage tilePlacementMessage) {
@@ -158,11 +151,6 @@ public class TileActor extends Actor {
         this.position = position;
         setPosition(position.getX() * SIZE, position.getY() * SIZE);
     }
-
-    public GameBoard getBoard() {
-        return board;
-    }
-
     public void setMonastery() {
         monastery = true;
     }
