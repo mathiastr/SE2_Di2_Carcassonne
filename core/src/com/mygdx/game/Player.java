@@ -12,6 +12,11 @@ public class Player {
     public static final int MEEPLE_COUNT = 7;
     private int score;
     private GameBoard.Color color;
+
+    public ArrayList<Meeple> getMeeples() {
+        return meeples;
+    }
+
     private ArrayList<Meeple> meeples;
     private Texture photo;
     private String name;

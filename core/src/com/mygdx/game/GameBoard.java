@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
@@ -33,8 +32,10 @@ import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -141,7 +142,7 @@ public class GameBoard {
         }
 
         // diagonal city
-        for (int i = 0; i < diagCityCount; ++i) {
+        /*for (int i = 0; i < diagCityCount; ++i) {
             TileActor diagCity = new TileActor(this);
             diagCity.setTexture(new Texture(Gdx.files.internal("diagonal_city_128.jpg")));
             diagCity.addFeature(new City(Arrays.asList(Side.top, Side.right)));
@@ -172,6 +173,7 @@ public class GameBoard {
             cityTop.addFeature(new City(Side.top));
             availableTiles.add(cityTop);
         }
+        */
 
         /* city top right
         for (int i = 0; i < cityTopRightCount; ++i) {
@@ -191,7 +193,7 @@ public class GameBoard {
             availableTiles.add(cityTopWithLeftRoad);
         }
         */
-
+/*
         // city top with right road
         for (int i = 0; i < cityTopWithRightRoadCount; ++i) {
             TileActor cityTopWithRightRoad = new TileActor(this);
@@ -200,7 +202,7 @@ public class GameBoard {
             cityTopWithRightRoad.addFeature(new Road(Arrays.asList(Side.right, Side.bottom)));
             availableTiles.add(cityTopWithRightRoad);
         }
-
+*/
         // city with triple road
         for (int i = 0; i < cityWithTripleRoadCount; ++i) {
             TileActor cityWithTripleRoad = new TileActor(this);
@@ -245,7 +247,7 @@ public class GameBoard {
             availableTiles.add(fullCityLeftTopRight);
         }
 */
-        /* full city left/top/right with road
+    /*    // full city left/top/right with road
         for (int i = 0; i < fullCityLeftTopRightWithRoadCount; ++i) {
             TileActor fullCityLeftTopRightWithRoad = new TileActor(this);
             fullCityLeftTopRightWithRoad.setTexture(new Texture(Gdx.files.internal("full_city_left_top_right_with_road_128.jpg")));
@@ -281,15 +283,15 @@ public class GameBoard {
             availableTiles.add(tripleRoad);
         }
 
-        /* turning road
+        // turning road
         for (int i = 0; i < turningRoadCount; ++i) {
             TileActor turningRoad = new TileActor(this);
             turningRoad.setTexture(new Texture(Gdx.files.internal("turning_road_128.jpg")));
             turningRoad.addFeature(new Road(Arrays.asList(Side.left, Side.bottom)));
             availableTiles.add(turningRoad);
-        }*/
+        }
 
-        /* triple road
+        // triple road
         for (int i = 0; i < quadRoadCount; ++i) {
             TileActor quadRoad = new TileActor(this);
             quadRoad.setTexture(new Texture(Gdx.files.internal("quad_road_128.jpg")));
@@ -299,7 +301,7 @@ public class GameBoard {
             quadRoad.addFeature(new Road(Side.top));
             availableTiles.add(quadRoad);
         }
-        */
+
     }
 
     public TileActor getRandomElement(List<TileActor> list) throws Exception {
@@ -387,8 +389,19 @@ public class GameBoard {
     public void endMyTurn() {
         TurnEndMessage turnEndMessage = new TurnEndMessage();
         turnEndMessage.setMeeples(currentTile.getMeeples());
-        int score = getScore(currentTile);
-        turnEndMessage.setPlayerScore(currentPlayer.getScore() + score);
+
+        for (Feature feature : currentTile.getFeatures()) {
+            int score = getScore(currentTile, feature);
+            List<Player> owners = getFeatureOwner(currentTile, feature);
+
+            for (Player p: owners) {
+                if (turnEndMessage.getScoreChanges().containsKey(p)) {
+                    turnEndMessage.getScoreChanges().put(p, turnEndMessage.getScoreChanges().get(p) + score);
+                } else {
+                    turnEndMessage.getScoreChanges().put(p, score);
+                }
+            }
+        }
 
         if (gameClient != null) {
             NetworkHelper.getGameManager().sendToServer(turnEndMessage);
@@ -398,10 +411,11 @@ public class GameBoard {
     }
 
     public void onTurnEnd(TurnEndMessage turnEndMessage) {
-        this.currentPlayer.setScore(turnEndMessage.getPlayerScore());
+        for (Player p : turnEndMessage.getScoreChanges().keySet()) {
+            getPlayer(p.getColor()).addScore(turnEndMessage.getScoreChanges().get(p));
+        }
         updatePlayersInfo();
-        if (gameClient !=
-                null) {
+        if (gameClient != null) {
             GameBoard that = this;
             Position pos = currentTile.getPosition();
 
@@ -730,17 +744,15 @@ public class GameBoard {
     }
 
 
-    public int getScore(TileActor tile) {
+    public int getScore(TileActor tile, Feature feature) {
         int score = 0;
-        for (Feature feature: tile.getFeatures()) {
-            if(feature instanceof City || feature instanceof Road) {
-                score += scoreRoadOrCity(tile, feature);
-            }
-            else if (feature instanceof Monastery) {
-                score += scoreMonastery(tile);
-            }
-            // TODO check for monastery around
+        if((feature instanceof City || feature instanceof Road)) {
+            score += scoreRoadOrCity(tile, feature);
         }
+        else if (feature instanceof Monastery) {
+            score += scoreMonastery(tile);
+        }
+        // TODO check for monastery around
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 TileActor tileAround = tiles.get(tile.getPosition().add(new Position(i, j)));
@@ -752,6 +764,25 @@ public class GameBoard {
             }
         }
         return score;
+    }
+
+    public List<Player> getFeatureOwner(TileActor tile, Feature feature) {
+        HashMap<Player, Integer> owners = new HashMap<>();
+        for (Player p: players) {
+            owners.put(p, 0);
+        }
+
+        collectOwners(tile, feature, owners, new HashSet<>(), null);
+
+        List<Player> players = new ArrayList<>();
+        // get players with max value of meeples
+        int maxScore = Collections.max(owners.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getValue();
+        for (Player player: owners.keySet()) {
+            if (owners.get(player) == maxScore) {
+                players.add(player);
+            }
+        }
+        return players;
     }
 
     // TODO maybe adjust scoring methods for the end of game partial scoring...
@@ -782,6 +813,38 @@ public class GameBoard {
         int score = scoreRoadOrCityRec(tile, feature, null, visited);
         return score == -1 ? 0 : score;
     }
+
+    public Player getPlayer(GameBoard.Color color) {
+        for (Player p: players) {
+            if (p.getColor() == color) {
+                return p;
+            }
+        }
+        return null;
+    }
+
+
+    public void collectOwners(TileActor tile, Feature feature, HashMap<Player, Integer> owners, HashSet<TileActor> visited, TileActor parent) {
+        if (!visited.add(tile)) return;
+        for (Side side : feature.getSides()) {
+            side = tile.getSideAfterRotation(side);
+            TileActor nextTile = getTileInDirectionOfSide(tile, side);
+            if (nextTile == null) return;
+            if (nextTile == parent) continue;
+
+            for (Meeple meeple: tile.getMeeples()) {
+                if (meeple.getFeature().getClass() == feature.getClass()) {
+                    Player player = getPlayer(meeple.getColor());
+                    int meeplesNumber = owners.get(player);
+                    owners.put(player, meeplesNumber + 1);
+                }
+            }
+
+            Feature nextFeature = nextTile.getFeatureAtSide(getFacingSideOfSurroundingTile(side));
+            collectOwners(nextTile, nextFeature, owners, visited, tile);
+        }
+    }
+
 
     public int scoreRoadOrCityRec(TileActor tile, Feature feature, TileActor parent, HashSet<TileActor> visited) {
         int score = feature instanceof City ? 2 : 1; // tile itself

@@ -20,10 +20,11 @@ public class GameClient extends AbstractGameManager{
     public List<InetAddress> discover() {
         try {
             ArrayList<InetAddress> l = new ArrayList<>();
-            // 192.168.1.2 home
-            //143.205.187.139 uni
-            // 192.168.43.187
-            l.add(InetAddress.getByName("10.74.199.188"));
+            // home         192.168.1.2
+            // uni          143.205.187.139
+            // other uni    192.168.43.187
+            // mobile       10.74.199.188
+            l.add(InetAddress.getByName("192.168.1.2"));
             return l;
         } catch (Exception e) {
             e.printStackTrace();

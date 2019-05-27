@@ -1,22 +1,20 @@
 package com.mygdx.game.network.response;
 
+import com.mygdx.game.Player;
 import com.mygdx.game.meeple.Meeple;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TurnEndMessage {
     private List<Meeple> meeples;
 
-    private int playerScore;
-
-    public int getPlayerScore() {
-        return playerScore;
+    public HashMap<Player, Integer> getScoreChanges() {
+        return scoreChanges;
     }
 
-    public void setPlayerScore(int playerScore) {
-        this.playerScore = playerScore;
-    }
+    private HashMap<Player, Integer> scoreChanges = new HashMap<>();
 
     public TurnEndMessage() {
         this.meeples = new ArrayList();
