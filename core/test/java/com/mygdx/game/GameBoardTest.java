@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
@@ -13,6 +14,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
@@ -76,6 +78,64 @@ public class GameBoardTest {
         Assert.assertEquals(4, result);
 
 
+    }
+
+    @Test
+    public void roadOwners() {
+
+        players = new ArrayList<>();
+        Player player1 = new Player();
+        Player player2 = new Player();
+
+        player1.setColor(GameBoard.Color.black);
+        player2.setColor(GameBoard.Color.green);
+
+        player1.getMeeples().add(new Meeple(GameBoard.Color.black));
+        player2.getMeeples().add(new Meeple(GameBoard.Color.green));
+
+        players.add(player1);
+        players.add(player2);
+
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+
+
+        {
+            TileActor t = new TileActor(gb);
+            t.addFeature(new Road(Arrays.asList(Side.right)));
+            Meeple meeple = player1.getUnusedMeeple();
+            meeple.setFeature(t.getFeatures().get(0));
+            meeple.setSide(Side.right);
+            t.addMeeple(meeple);
+            gb.addTileOnBoard(t, new Position(-1, 0));
+        }
+
+        {
+            TileActor t = new TileActor(gb);
+            t.addFeature(new Road(Arrays.asList(Side.left, Side.right)));
+            Meeple meeple = player2.getUnusedMeeple();
+            meeple.setFeature(t.getFeatures().get(0));
+            meeple.setSide(Side.right);
+            t.addMeeple(meeple);
+            gb.addTileOnBoard(t, new Position(0, 0));
+        }
+
+        {
+            TileActor t = new TileActor(gb);
+            t.addFeature(new Road(Arrays.asList(Side.left, Side.bottom)));
+            gb.addTileOnBoard(t, new Position(1, 0));
+        }
+
+        TileActor t = new TileActor(gb);
+        {
+            t.addFeature(new Road(Arrays.asList(Side.top)));
+            t.addFeature(new Road(Arrays.asList(Side.right)));
+            t.addFeature(new Road(Arrays.asList(Side.bottom)));
+            gb.addTileOnBoard(t, new Position(1, -1));
+        }
+
+        List<Player> owners = gb.getFeatureOwners(t, t.getFeatureAtSide(Side.top));
+        Assert.assertTrue(owners.contains(player1));
+        Assert.assertTrue(owners.contains(player2));
     }
 
     // @Test

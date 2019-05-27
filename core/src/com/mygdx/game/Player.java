@@ -17,7 +17,7 @@ public class Player {
         return meeples;
     }
 
-    private ArrayList<Meeple> meeples;
+    private ArrayList<Meeple> meeples = new ArrayList<>();
     private Texture photo;
     private String name;
     private int timeToDetectUsedCheats;
@@ -90,14 +90,14 @@ public class Player {
         this.timeToDetectUsedCheats = 0;
         this.cheater = false;
     }
-    public Meeple getUnusedMeeple() throws Exception {
+    public Meeple getUnusedMeeple() {
         if (this.meeples.size() != 0) {
             Meeple lastMeeple = this.meeples.get(this.meeples.size() - 1);
             this.meeples.remove(this.meeples.size() - 1);
             return lastMeeple;
         } else {
             //TODO: PopUp No more Meeple
-            throw new Exception("No more meeples");
+            throw new RuntimeException("No more meeples");
         }
     }
 

@@ -392,7 +392,7 @@ public class GameBoard {
 
         for (Feature feature : currentTile.getFeatures()) {
             int score = getScore(currentTile, feature);
-            List<Player> owners = getFeatureOwner(currentTile, feature);
+            List<Player> owners = getFeatureOwners(currentTile, feature);
 
             for (Player p: owners) {
                 if (turnEndMessage.getScoreChanges().containsKey(p)) {
@@ -714,17 +714,6 @@ public class GameBoard {
         //}
     }
 
-    /*
-        method for dynamic checking owners of the city/road/field
-        if two or more players own the same property, score is splitted between
-     */
-    public ArrayList<Player> getFeatureOwners(Feature feature, Side side, TileActor tile) {
-
-        // count number of meeples of each player
-
-        return new ArrayList<Player>();
-    }
-
     /* -------------------------------------------------------------------- */
     /* -------------------------------------------------------------------- */
 
@@ -766,7 +755,7 @@ public class GameBoard {
         return score;
     }
 
-    public List<Player> getFeatureOwner(TileActor tile, Feature feature) {
+    public List<Player> getFeatureOwners(TileActor tile, Feature feature) {
         HashMap<Player, Integer> owners = new HashMap<>();
         for (Player p: players) {
             owners.put(p, 0);
@@ -828,17 +817,18 @@ public class GameBoard {
         if (!visited.add(tile)) return;
         for (Side side : feature.getSides()) {
             side = tile.getSideAfterRotation(side);
-            TileActor nextTile = getTileInDirectionOfSide(tile, side);
-            if (nextTile == null) return;
-            if (nextTile == parent) continue;
 
             for (Meeple meeple: tile.getMeeples()) {
-                if (meeple.getFeature().getClass() == feature.getClass()) {
+                if (meeple.getFeature().getClass() == feature.getClass() && meeple.getSide() == side) {
                     Player player = getPlayer(meeple.getColor());
                     int meeplesNumber = owners.get(player);
                     owners.put(player, meeplesNumber + 1);
                 }
             }
+
+            TileActor nextTile = getTileInDirectionOfSide(tile, side);
+            if (nextTile == null) return;
+            if (nextTile == parent) continue;
 
             Feature nextFeature = nextTile.getFeatureAtSide(getFacingSideOfSurroundingTile(side));
             collectOwners(nextTile, nextFeature, owners, visited, tile);
