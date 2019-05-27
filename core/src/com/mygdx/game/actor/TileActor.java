@@ -60,7 +60,7 @@ public class TileActor extends Actor {
                 2 - 180
                 3 - 270
              */
-    private int rotation;
+    private int rotation = 0;
 
     /* what does this tile have: (city, road, monastery) */
     private List<Feature> features = new ArrayList<>();

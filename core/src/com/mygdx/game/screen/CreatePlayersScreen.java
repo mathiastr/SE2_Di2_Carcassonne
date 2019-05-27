@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
+import com.mygdx.game.network.NetworkHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -126,6 +127,8 @@ public class CreatePlayersScreen implements Screen {
 
         players.add(new Player(GameBoard.Color.red, "Player 1"));
         players.add(new Player(GameBoard.Color.blue, "Player 2"));
+
+        NetworkHelper.setPlayer(players.get(0));
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 

@@ -8,12 +8,14 @@ import com.mygdx.game.network.response.PlayerGameMessage;
 import java.util.ArrayList;
 
 public class Player {
+    private int id;
     public static final int MEEPLE_COUNT = 7;
     private int score;
     private GameBoard.Color color;
     private ArrayList<Meeple> meeples;
     private Texture photo;
     private String name;
+    private int timeToDetectUsedCheats;
     private boolean cheater;
 
     public boolean isCheater() {
@@ -65,6 +67,7 @@ public class Player {
             this.meeples.add(new Meeple(this.color));
         }
         this.name = name;
+        this.timeToDetectUsedCheats = 0;
         this.cheater = false;
     }
 
@@ -78,6 +81,8 @@ public class Player {
         }
         //standart texture
         this.photo = new Texture(Gdx.files.internal("profilePhoto.png"));
+
+        this.timeToDetectUsedCheats = 0;
         this.cheater = false;
     }
     public Meeple getUnusedMeeple() throws Exception {
@@ -107,7 +112,31 @@ public class Player {
         this.score += score;
     }
 
+    public int getTimeToDetectUsedCheats() {
+        return timeToDetectUsedCheats;
+    }
 
+    public void setTimeToDetectUsedCheats(int timeToDetectUsedCheats) {
+        this.timeToDetectUsedCheats = timeToDetectUsedCheats;
+    }
+
+    public void reduceCheatTimeByOne(){
+        if (timeToDetectUsedCheats > 0) {
+            timeToDetectUsedCheats--;
+        }
+    }
+
+    public void addTimeToDetectUsedCheats(int time) {
+        this.timeToDetectUsedCheats += time;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Player(){}
 }
