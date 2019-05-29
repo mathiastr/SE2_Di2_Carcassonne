@@ -300,7 +300,7 @@ public class Board {
         for (int i = 0; i < monasteryCount; ++i) {
             TileActor monastery = new TileActor();
             monastery.setTexture(new Texture(Gdx.files.internal("monastery_128.jpg")));
-            monastery.setMonastery();
+            monastery.addFeature(new Monastery(Side.top));
             availableTiles.add(monastery);
         }
 
@@ -308,7 +308,7 @@ public class Board {
         for (int i = 0; i < monasteryWithRoadCount; ++i) {
             TileActor monasteryWithRoad = new TileActor();
             monasteryWithRoad.setTexture(new Texture(Gdx.files.internal("monastery_with_road_128.jpg")));
-            monasteryWithRoad.setMonastery();
+            monasteryWithRoad.addFeature(new Monastery(Side.top));
             monasteryWithRoad.addFeature(new Road(Side.bottom));
             availableTiles.add(monasteryWithRoad);
         }

@@ -21,6 +21,9 @@ public class TileActor extends Actor {
     private Texture texture;
     private Texture textureBig;
     private Position position;
+    private ArrayList<Meeple> meeples = new ArrayList<>(); // TODO: maybe add meeple field to Feature class
+    private HashMap<Side, Feature> featureAtSide = new HashMap<>();
+    private boolean monastery = false;
 
     public ArrayList<Meeple> getMeeples() {
         return meeples;
@@ -39,10 +42,6 @@ public class TileActor extends Actor {
             // todo
         }
     }
-
-    private ArrayList<Meeple> meeples = new ArrayList<>(); // TODO: maybe add meeple field to Feature class
-    private HashMap<Side, Feature> featureAtSide = new HashMap<>();
-    private boolean monastery = false;
 
     public void setRotation(int rotation) {
         this.rotation = rotation;
@@ -106,6 +105,30 @@ public class TileActor extends Actor {
             else
                 featureAtSide.put(side, feature);
         this.features.add(feature);
+    }
+
+    public TileActor getTileOnSide(Side side)
+    {
+        return GameBoard.getUsedTileHash().get(this.position.getPositionOnSide(side));
+    }
+
+    public void updateTileFeatures()
+    {
+        for(Side side : Side.values())
+        {
+            TileActor borderingTile = this.getTileOnSide(side);
+            Feature feature = this.getFeatureAtSide(side);
+            if(borderingTile != null) {
+                Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
+
+                // if features are of the same type
+                if (feature.getClass().equals(borderingFeature.getClass())) {
+                    // then act like the feature of this tile has a meeple on it
+                    // if the bordering feature has a meeple on it.
+                    feature.setHasMeepleOnIt(borderingFeature.hasMeepleOnIt());
+                }
+            }
+        }
     }
 
     public Feature getFeatureAtSide(Side side) {

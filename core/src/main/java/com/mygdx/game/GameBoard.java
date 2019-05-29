@@ -73,6 +73,7 @@ public class GameBoard {
     private GameClient gameClient;
     private boolean meepleIsPlaced;
     private int numberOfPlayers;
+    private static HashMap<Position, TileActor> usedTileHash = new HashMap<>();
     private Player currentPlayer;
     private List<Player> players;
     private ArrayList<TileActor> hints = new ArrayList<>();
@@ -419,6 +420,7 @@ public class GameBoard {
     public void placeTileAt(TileActor tileToPlace, Position position) {
         if (!tileIsPlaced) {
             addTileOnBoard(tileToPlace, position);
+            usedTileHash.put(position, tileToPlace);
             tileIsPlaced = true;
 
             DelayedRemovalArray<EventListener> listeners = tileToPlace.getListeners();
@@ -522,12 +524,22 @@ public class GameBoard {
         for (TileActor a : hints) a.remove();
         hints.clear();
     }
-    public ArrayList<TileActor> getUsedTiles() {
+    public TileActor getNewestTile() {
+        int lastElement = usedTiles.size()-1;
+        return usedTiles.get(lastElement);
+    }
+
+    public ArrayList<TileActor> getNewestTileList() {
         return usedTiles;
     }
+
     public TileActor getPreviousTile(){
         int lastElement = usedTiles.size()-1;
         return usedTiles.get(lastElement);
+    }
+
+    public static HashMap<Position, TileActor> getUsedTileHash() {
+        return usedTileHash;
     }
 
     public List<PlayerStatusActor> getPlayerActorList() {

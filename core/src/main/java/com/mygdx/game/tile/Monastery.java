@@ -1,5 +1,7 @@
 package com.mygdx.game.tile;
 
+import java.util.List;
+
 public class Monastery extends Feature {
 
     public Monastery() {
@@ -7,11 +9,11 @@ public class Monastery extends Feature {
 
     }
 
-    /*public Monastary(List<Side> addSides) {
+    public Monastery(List<Side> addSides) {
         super(addSides);
     }
 
-    public Monastary(Side side) {
+    public Monastery(Side side) {
         super(side);
-    }*/
+    }
 }
