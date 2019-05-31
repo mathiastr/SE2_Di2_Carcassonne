@@ -6,11 +6,14 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -21,12 +24,16 @@ import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
+import com.mygdx.game.emotes.Emote;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // TODO: add the current Tile view (first add UI stage)
 // TODO: add Players and turnbased game (also add the playerUIs with scores...)
@@ -153,8 +160,6 @@ public class GameScreen implements Screen {
         stageUI.addActor(labelTilesLeft);
         stageUI.addActor(currentPlayerLabel);
     }
-
-
 
     @Override
     public void show() {

@@ -15,12 +15,15 @@ import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.actor.AddTileActor;
 import com.mygdx.game.actor.PlayerStatusActor;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.emotes.Emote;
+import com.mygdx.game.emotes.EmoteManager;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.CheatOnScoreMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
+import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.TilePlacementMessage;
@@ -28,6 +31,7 @@ import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Side;
+import com.mygdx.game.utility.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,6 +84,7 @@ public class GameBoard {
 
     private ArrayList<PlayerStatusActor> statuses = new ArrayList<>();
     private com.mygdx.game.Board board;
+    private EmoteManager emoteManager;
 
     private TileActor currentTile;
 
@@ -307,9 +312,11 @@ public class GameBoard {
                     if (object instanceof CheatOnScoreMessage) {
                         onCheatOnScore((CheatOnScoreMessage)object);
                     }
-
                     if (object instanceof ErrorMessage) {
                         errorHandling((ErrorMessage)object, connection);
+                    }
+                    if (object instanceof EmoteMessage) {
+                        onEmote((EmoteMessage)object);
                     }
                 }
             });
@@ -380,6 +387,8 @@ public class GameBoard {
             stageOfUI.addActor(playerStatusActor);
             playerActorList.add(playerStatusActor);
         }
+        emoteManager = new EmoteManager(this);
+        emoteManager.init(statuses);
     }
 
     public List<com.mygdx.game.Player> getFeatureOwners(TileActor tile, Feature feature) {
@@ -430,6 +439,21 @@ public class GameBoard {
             Gdx.app.debug("DEBUG","Game was not initialized by " + connection.getID());
         }
     }
+
+    private void onEmote(EmoteMessage emoteMessage) {
+        Player player = players.stream().filter(p -> p.getId() == (emoteMessage.getPlayer().getId())).findAny().orElse(null);
+        if (player != null) {
+            emoteManager.showEmoteFromPlayer(emoteMessage.getEmote(), emoteMessage.getPlayer());
+        }
+    }
+
+    public void showEmote(Emote emote) {
+        Gdx.app.debug("DEBUG", "show emote " + emote.toString());
+        if(gameClient != null && NetworkHelper.getGameManager() != null){
+            NetworkHelper.getGameManager().sendToServer(new EmoteMessage(emote, me));
+        }
+    }
+
 
     private void onCheatOnScore(CheatOnScoreMessage message) {
         for (com.mygdx.game.Player p :
