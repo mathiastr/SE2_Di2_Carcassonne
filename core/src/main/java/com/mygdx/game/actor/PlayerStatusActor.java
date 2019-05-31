@@ -80,7 +80,7 @@ public class PlayerStatusActor extends Actor {
 
         int expectedProfilePhotoWidth = 150;
         int expectedProfilePhotoHeight = 150;
-        batch.draw(profilePhoto, getX() + (WIDTH - expectedProfilePhotoWidth) / 2f, getY() + 120, expectedProfilePhotoWidth, expectedProfilePhotoHeight);
+        //batch.draw(profilePhoto, getX() + (WIDTH - expectedProfilePhotoWidth) / 2f, getY() + 120, expectedProfilePhotoWidth, expectedProfilePhotoHeight);
 
         info.draw(batch, parentAlpha);
 

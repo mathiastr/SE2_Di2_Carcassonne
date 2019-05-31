@@ -101,7 +101,7 @@ public class Board {
     }
 
     // e.g. for top we want bottom, for right we want left ...
-    private Side getFacingSideOfSurroundingTile(Side side) {
+    public Side getFacingSideOfSurroundingTile(Side side) {
         return Side.values()[side.ordinal() ^ 2];
     }
 
@@ -138,7 +138,7 @@ public class Board {
         return validPositions;
     }
 
-    private TileActor getTileInDirectionOfSide(TileActor tile, Side side) {
+    public TileActor getTileInDirectionOfSide(TileActor tile, Side side) {
         switch (side) {
             case top:
                 return placedTiles.get(tile.getPosition().add(new Position(0, 1)));
@@ -151,6 +151,28 @@ public class Board {
             default:
                 return null;
         }
+    }
+
+    public int getScore(TileActor tile, Feature feature) {
+        int score = 0;
+        if((feature instanceof City || feature instanceof Road)) {
+            score += scoreRoadOrCity(tile, feature);
+        }
+        else if (feature instanceof Monastery) {
+            score += scoreMonastery(tile);
+        }
+        // TODO check for monastery around
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                TileActor tileAround = placedTiles.get(tile.getPosition().add(new Position(i, j)));
+                if ( tileAround != null) {
+                    if (tileAround.isMonastery()) {
+                        score += scoreMonastery(tileAround);
+                    }
+                }
+            }
+        }
+        return score;
     }
 
     public void createDeckTilesAndStartTile() {

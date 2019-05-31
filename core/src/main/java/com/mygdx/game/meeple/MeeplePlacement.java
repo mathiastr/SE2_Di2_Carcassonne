@@ -33,6 +33,7 @@ public class MeeplePlacement {
             GameScreen.placeMeeple.setVisible(false);
         } catch (Exception e) {
             // todo
+            int a = 5;
         }
     }
 
@@ -93,10 +94,9 @@ public class MeeplePlacement {
         meepleImg.setPosition(x, y);
 
 
-
-        for(int i=0; i<gb.getPlayers().size()
-                ; i++){
-            gb.getPlayerActorList().get(i).update();
+        for (int i = 0; i < gb.getPlayers().size()
+                ; i++) {
+            gb.getStatuses().get(i).update();
         }
 
         gb.getStageOfBoard().addActor(meepleImg);
