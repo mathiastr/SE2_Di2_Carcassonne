@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
+import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
@@ -155,6 +156,24 @@ public class GameBoardTest {
         gb.performCheatAction(players.get(0)); //detect cheat wrongfully
         assert players.get(0).getNumberOfMeeples() == 0;
         assert players.get(1).getNumberOfMeeples() == 0;
+
+    }
+
+    @Test
+    public void cheatOnScore() {
+        preparePlayers();
+
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+
+        NetworkHelper.setPlayer(players.get(0));
+
+        {
+            gb.CheatOnScore();
+        }
+
+        Assert.assertEquals(100, gb.getScoreFromPlayer(players.get(0)));
+        Assert.assertEquals(3, gb.getCheatTimeFromPlayer(players.get(0)));
+
 
     }
 }

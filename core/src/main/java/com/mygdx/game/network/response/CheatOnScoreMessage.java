@@ -4,14 +4,14 @@ import com.mygdx.game.Player;
 
 public class CheatOnScoreMessage {
     private int cheatTime;
-    private Player player;
+    private int targetId;
 
     public CheatOnScoreMessage() {
     }
 
-    public CheatOnScoreMessage(int cheatTime, Player player) {
+    public CheatOnScoreMessage(int cheatTime, int id) {
         this.cheatTime = cheatTime;
-        this.player = player;
+        this.targetId = id;
     }
 
     public int getCheatTime() {
@@ -22,11 +22,11 @@ public class CheatOnScoreMessage {
         this.cheatTime = cheatTime;
     }
 
-    public Player getPlayer() {
-        return player;
+    public int getTargetId() {
+        return targetId;
     }
 
-    public void setPlayer(Player player) {
-        this.player = player;
+    public void setTargetId(int targetId) {
+        this.targetId = targetId;
     }
 }
