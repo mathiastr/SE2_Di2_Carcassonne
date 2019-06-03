@@ -72,7 +72,6 @@ public class GameBoard {
     private boolean tileIsPlaced = false;
     private com.mygdx.game.Player me;
     private final boolean isLocal;
-    private Player me;
     private GameClient gameClient;
     private final GameScreen gameScreen;
     private boolean meepleIsPlaced;
@@ -80,16 +79,21 @@ public class GameBoard {
     private com.mygdx.game.Player currentPlayer;
     private List<com.mygdx.game.Player> players;
     private static HashMap<Position, TileActor> usedTileHash = new HashMap<>();
-    private Player currentPlayer;
-    private List<Player> players;
     private ArrayList<TileActor> hints = new ArrayList<>();
     private ArrayList<TileActor> usedTiles = new ArrayList<>();
     private Random rand;
 
+    public void addMeepleOnCurrentTile(Meeple meeple)
+    {
+        currentTile.addMeeple(meeple);
+    }
     public ArrayList<PlayerStatusActor> getStatuses() {
         return statuses;
     }
 
+    public Meeple getUnusedCurrentPlayerMeeple() throws Exception {
+        return currentPlayer.getUnusedMeeple();
+    }
     private ArrayList<PlayerStatusActor> statuses = new ArrayList<>();
     private com.mygdx.game.Board board;
 

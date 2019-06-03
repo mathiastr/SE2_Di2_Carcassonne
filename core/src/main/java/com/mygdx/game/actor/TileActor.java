@@ -3,6 +3,7 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.TilePlacementMessage;
@@ -43,9 +44,6 @@ public class TileActor extends Actor {
         }
     }
 
-    private ArrayList<Meeple> meeples = new ArrayList<>();
-    private HashMap<Side, Feature> featureAtSide = new HashMap<>();
-    private boolean monastery = false;
 
     public void setRotation(int rotation) {
         this.rotation = rotation;

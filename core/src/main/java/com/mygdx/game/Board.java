@@ -104,7 +104,7 @@ public class Board {
     }
 
     // e.g. for TOP we want BOTTOM, for RIGHT we want LEFT ...
-    private Side getFacingSideOfSurroundingTile(Side side) {
+    public Side getFacingSideOfSurroundingTile(Side side) {
         return Side.values()[side.ordinal() ^ 2];
     }
 
