@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.PlayerGameMessage;
@@ -13,7 +12,12 @@ public class Player {
     public static final int MEEPLE_COUNT = 7;
     private int score;
     private GameBoard.Color color;
-    private ArrayList<Meeple> meeples;
+
+    public ArrayList<Meeple> getMeeples() {
+        return meeples;
+    }
+
+    private ArrayList<Meeple> meeples = new ArrayList<>();
     private Texture photo;
     private String name;
     private int timeToDetectUsedCheats;
@@ -77,7 +81,7 @@ public class Player {
     }
 
     public Player(PlayerGameMessage p) {
-        this.score = p.score;
+        this.score = p.getScore();
         this.name = p.name;
         this.color = GameBoard.Color.green;
         this.meeples = new ArrayList<Meeple>();
@@ -90,13 +94,13 @@ public class Player {
         this.timeToDetectUsedCheats = 0;
         this.cheater = false;
     }
-    public Meeple getUnusedMeeple() throws Exception {
+    public Meeple getUnusedMeeple() {
         if (this.meeples.size() != 0) {
             Meeple lastMeeple = this.meeples.get(this.meeples.size() - 1);
             this.meeples.remove(this.meeples.size() - 1);
             return lastMeeple;
         } else {
-            throw new Exception("No more meeples");
+            throw new RuntimeException("No more meeples");
         }
     }
 

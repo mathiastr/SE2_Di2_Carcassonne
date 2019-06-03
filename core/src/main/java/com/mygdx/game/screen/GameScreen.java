@@ -6,18 +6,14 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.esotericsoftware.kryonet.Connection;
@@ -25,8 +21,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
-import com.mygdx.game.Position;
-import com.mygdx.game.tile.Side;
+import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
@@ -45,11 +40,7 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private GameBoard gameBoard;
 
-
     private Skin skin;
-    private boolean isLocal;
-    private GameClient gameClient;
-
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
@@ -60,11 +51,15 @@ public class GameScreen implements Screen {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
+        for (Player player : players) {
+            player.setColor(GameBoard.Color.values()[players.indexOf(player)]);
+            for (Meeple m : player.getMeeples()) {
+                m.setColor(player.getColor());
+            }
+        }
         gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient, this);
         gameBoard.init();
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        this.isLocal = isLocal;
-        this.gameClient = gameClient;
 
         placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
         placeMeeple.setWidth(Gdx.graphics.getWidth() / 4f);
@@ -82,8 +77,6 @@ public class GameScreen implements Screen {
         stageUI.addActor(placeMeeple);
 
         placeMeeple.setVisible(false);
-
-
 
 
         Gdx.input.setInputProcessor(stage);
@@ -124,7 +117,7 @@ public class GameScreen implements Screen {
         });
 
         camera = (OrthographicCamera) stage.getViewport().getCamera();
-        camera.translate(-Gdx.graphics.getWidth() / 2, -Gdx.graphics.getHeight() / 2);
+        camera.translate((float) -Gdx.graphics.getWidth() / 2, (float) -Gdx.graphics.getHeight() / 2);
 
 
         // TODO currently so we can differentiate between board tiles and newestTile.
@@ -152,7 +145,6 @@ public class GameScreen implements Screen {
         stageUI.addActor(labelTilesLeft);
         stageUI.addActor(currentPlayerLabel);
     }
-
 
 
     @Override

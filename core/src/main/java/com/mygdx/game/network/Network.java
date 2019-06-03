@@ -19,7 +19,6 @@ import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.InitGameMessage;
 import com.mygdx.game.network.response.PlayerGameMessage;
-import com.mygdx.game.network.response.SimpleMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 
@@ -39,7 +38,6 @@ public class Network {
         kryo.register(TilePlacementMessage.class);
         kryo.register(Position.class);
         kryo.register(Meeple.class);
-        kryo.register(SimpleMessage.class);
         kryo.register(CurrentTileMessage.class);
         kryo.register(TurnEndMessage.class);
         kryo.register(GameBoard.Color.class);

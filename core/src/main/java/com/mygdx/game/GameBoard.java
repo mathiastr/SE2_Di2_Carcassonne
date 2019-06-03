@@ -27,12 +27,17 @@ import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
+import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.Monastery;
+import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -65,19 +70,28 @@ public class GameBoard {
     public final static int MAX_NUM_OF_PLAYERS = 6;
     private TextButton finishTurnButton;
     private boolean tileIsPlaced = false;
+    private com.mygdx.game.Player me;
     private final boolean isLocal;
     private Player me;
     private GameClient gameClient;
     private final GameScreen gameScreen;
     private boolean meepleIsPlaced;
     private int numberOfPlayers;
+    private com.mygdx.game.Player currentPlayer;
+    private List<com.mygdx.game.Player> players;
     private static HashMap<Position, TileActor> usedTileHash = new HashMap<>();
     private Player currentPlayer;
     private List<Player> players;
     private ArrayList<TileActor> hints = new ArrayList<>();
     private ArrayList<TileActor> usedTiles = new ArrayList<>();
+    private Random rand;
+
+    public ArrayList<PlayerStatusActor> getStatuses() {
+        return statuses;
+    }
+
     private ArrayList<PlayerStatusActor> statuses = new ArrayList<>();
-    private Board board;
+    private com.mygdx.game.Board board;
 
     private TileActor currentTile;
 
@@ -85,31 +99,21 @@ public class GameBoard {
         return currentTile;
     }
 
-    public void addMeepleOnCurrentTile(Meeple meeple)
-    {
-        currentTile.addMeeple(meeple);
-    }
-
-    public Player getCurrentPlayer() {
+    public com.mygdx.game.Player getCurrentPlayer() {
         return currentPlayer;
     }
 
-    public Meeple getUnusedCurrentPlayerMeeple() throws Exception {
-        return currentPlayer.getUnusedMeeple();
-    }
+    public com.mygdx.game.Board getBoard() { return board; }
 
-    public Board getBoard() { return board; }
-
-    public void setCurrentPlayer(Player player) {
+    public void setCurrentPlayer(com.mygdx.game.Player player) {
         this.currentPlayer = player;
     }
 
-    public List<Player> getPlayers() {
+    public List<com.mygdx.game.Player> getPlayers() {
         return players;
     }
 
     public TileActor getRandomElement(List<TileActor> list) throws Exception {
-        Random rand = new Random();
         if (list.size() == 0) {
             throw new Exception("No more tiles");
         }
@@ -153,7 +157,7 @@ public class GameBoard {
             e.printStackTrace();
         }
         CurrentTileMessage cm = new CurrentTileMessage();
-        cm.tileNumber = board.getAvailableTiles().indexOf(nextTile);
+        cm.setTileNumber(board.getAvailableTiles().indexOf(nextTile));
 
         if (gameClient != null) {
             NetworkHelper.getGameManager().sendToServer(cm);
@@ -163,7 +167,7 @@ public class GameBoard {
     }
 
     public void onTurnBegin(CurrentTileMessage cm) {
-        currentTile = board.getAvailableTiles().get(cm.tileNumber);
+        currentTile = board.getAvailableTiles().get(cm.getTileNumber());
         Gdx.app.debug("DEBUG", " " + currentTile.getName() + " " + currentTile.toString());
         showCurrentTile();
     }
@@ -178,13 +182,13 @@ public class GameBoard {
     }
 
     public void onTilePlaced(TilePlacementMessage tilePlacementMessage) {
-        Gdx.app.debug("DEBUG", " " + tilePlacementMessage.rotation + " " + currentTile.toString());
-        currentTile.setRotation(tilePlacementMessage.rotation);
+        Gdx.app.debug("DEBUG", " " + tilePlacementMessage.getRotation() + " " + currentTile.toString());
+        currentTile.setRotation(tilePlacementMessage.getRotation());
 
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                placeCurrentTileAt(tilePlacementMessage.position);
+                placeCurrentTileAt(tilePlacementMessage.getPosition());
             }
         });
     }
@@ -192,8 +196,19 @@ public class GameBoard {
     public void endMyTurn() {
         TurnEndMessage turnEndMessage = new TurnEndMessage();
         turnEndMessage.setMeeples(currentTile.getMeeples());
-        int score = board.getScore(currentTile);
-        turnEndMessage.setPlayerScore(currentPlayer.getScore() + score);
+
+        for (Feature feature : currentTile.getFeatures()) {
+            int score = board.getScore(currentTile, feature);
+            List<com.mygdx.game.Player> owners = getFeatureOwners(currentTile, feature);
+
+            for (com.mygdx.game.Player p: owners) {
+                if (turnEndMessage.getScoreChanges().containsKey(p)) {
+                    turnEndMessage.getScoreChanges().put(p, turnEndMessage.getScoreChanges().get(p) + score);
+                } else {
+                    turnEndMessage.getScoreChanges().put(p, score);
+                }
+            }
+        }
 
         if (gameClient != null) {
             NetworkHelper.getGameManager().sendToServer(turnEndMessage);
@@ -203,7 +218,9 @@ public class GameBoard {
     }
 
     public void onTurnEnd(TurnEndMessage turnEndMessage) {
-        this.currentPlayer.setScore(turnEndMessage.getPlayerScore());
+        for (Player p : turnEndMessage.getScoreChanges().keySet()) {
+            getPlayer(p.getColor()).addScore(turnEndMessage.getScoreChanges().get(p));
+        }
         updatePlayersInfo();
         if (gameClient != null) {
             GameBoard that = this;
@@ -279,6 +296,8 @@ public class GameBoard {
         this.gameClient = gameClient;
         this.gameScreen = gameScreen;
         this.board = new Board();
+        this.rand = new Random();
+
     }
 
     public void init() {
@@ -335,7 +354,7 @@ public class GameBoard {
 
         finishTurnButton.setWidth(300);
         finishTurnButton.getLabel().setFontScale(0.8f);
-        finishTurnButton.setPosition((float)Gdx.graphics.getWidth() - 300 - 100, 0);
+        finishTurnButton.setPosition((float)Gdx.graphics.getWidth() - 300f - 100f, 0);
         finishTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -353,7 +372,7 @@ public class GameBoard {
         stageOfUI.addActor(finishTurnButton);
         playerActorList = new ArrayList<>();
 
-        for (Player p : players) {
+        for (com.mygdx.game.Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
             statuses.add(playerStatusActor);
             playerStatusActor.setPosition((float) players.indexOf(p) * PlayerStatusActor.WIDTH , Gdx.graphics.getHeight(), Align.topLeft);
@@ -378,6 +397,48 @@ public class GameBoard {
         }
     }
 
+    public List<com.mygdx.game.Player> getFeatureOwners(TileActor tile, Feature feature) {
+        HashMap<Player, Integer> owners = new HashMap<>();
+        for (com.mygdx.game.Player p: players) {
+            owners.put(p, 0);
+        }
+
+        collectOwners(tile, feature, owners, new HashSet<>(), null);
+
+        List<com.mygdx.game.Player> players = new ArrayList<>();
+        // get players with max value of meeples
+        int maxScore = Collections.max(owners.entrySet(), (entry1, entry2) -> entry1.getValue() - entry2.getValue()).getValue();
+        for (com.mygdx.game.Player player: owners.keySet()) {
+            if (owners.get(player) == maxScore) {
+                players.add(player);
+            }
+        }
+        return players;
+    }
+
+
+    public void collectOwners(TileActor tile, Feature feature, HashMap<com.mygdx.game.Player, Integer> owners, HashSet<TileActor> visited, TileActor parent) {
+        if (!visited.add(tile)) return;
+        for (Side side : feature.getSides()) {
+            side = tile.getSideAfterRotation(side);
+
+            for (com.mygdx.game.meeple.Meeple meeple: tile.getMeeples()) {
+                if (meeple.getFeature().getClass() == feature.getClass() && meeple.getSide() == side) {
+                    com.mygdx.game.Player player = getPlayer(meeple.getColor());
+                    int meeplesNumber = owners.get(player);
+                    owners.put(player, meeplesNumber + 1);
+                }
+            }
+
+            TileActor nextTile = board.getTileInDirectionOfSide(tile, side);
+            if (nextTile == null) return;
+            if (nextTile == parent) continue;
+
+            Feature nextFeature = nextTile.getFeatureAtSide(board.getFacingSideOfSurroundingTile(side));
+            collectOwners(nextTile, nextFeature, owners, visited, tile);
+        }
+    }
+
     private void errorHandling(ErrorMessage error, Connection connection) {
         if(error.errorNumber == ErrorNumber.GAMENOTSTARTED){
 
@@ -386,7 +447,7 @@ public class GameBoard {
     }
 
     private void onCheatOnScore(CheatOnScoreMessage message) {
-        for (Player p :
+        for (com.mygdx.game.Player p :
                 players) {
             if(p.equals(message.getPlayer())){
                 p.addScore(100);
@@ -398,7 +459,7 @@ public class GameBoard {
     }
 
     private void CheatOnScore() {
-        for (Player p : players
+        for (com.mygdx.game.Player p : players
         ) {
             if(p.equals(NetworkHelper.getPlayer())){
                 p.addScore(100);
@@ -411,7 +472,7 @@ public class GameBoard {
         }
     }
 
-    public void performCheatAction(Player p) {
+    public void performCheatAction(com.mygdx.game.Player p) {
         if (p.equals(currentPlayer)) {
             p.cheatMeeple();
         } else if (p.isCheater()) {
@@ -518,6 +579,14 @@ public class GameBoard {
         }
     }
 
+    public Player getPlayer(GameBoard.Color color) {
+        for (com.mygdx.game.Player p: players) {
+            if (p.getColor() == color) {
+                return p;
+            }
+        }
+        return null;
+    }
     public void setMeepleIsPlaced(boolean meepleIsPlaced) {
         this.meepleIsPlaced = meepleIsPlaced;
     }
@@ -562,9 +631,9 @@ public class GameBoard {
         return playerActorList.get(i);
     }
 
-    public int getScoreFromPlayer(Player p){
+    public int getScoreFromPlayer(com.mygdx.game.Player p){
         int score = 0;
-        for (Player player: players
+        for (com.mygdx.game.Player player: players
         ) {
             if(p.equals(player)){
                 score = player.getScore();
@@ -573,9 +642,9 @@ public class GameBoard {
         return score;
     }
 
-    public int getCheatTimeFromPlayer(Player p){
+    public int getCheatTimeFromPlayer(com.mygdx.game.Player p){
         int time = 0;
-        for (Player player: players
+        for (com.mygdx.game.Player player: players
         ) {
             if(p.equals(player)){
                 time = player.getTimeToDetectUsedCheats();
@@ -584,8 +653,8 @@ public class GameBoard {
         return time;
     }
 
-    public Player getWinningPlayer() {
-        return Collections.max(players, Comparator.comparing(Player::getScore));
+    public com.mygdx.game.Player getWinningPlayer() {
+        return Collections.max(players, Comparator.comparing(com.mygdx.game.Player::getScore));
     }
 
     public void setCurrentTile (TileActor tile){

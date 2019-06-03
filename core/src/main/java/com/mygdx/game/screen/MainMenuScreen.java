@@ -23,6 +23,7 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     private String touch = "touch";
     private String start = "start touch up";
+    private Texture background;
 
     public MainMenuScreen(final Game game1) {
         game = game1;
@@ -36,16 +37,16 @@ public class MainMenuScreen implements Screen {
         stage.addActor(bg);
 
         /* TODO: make labels less pixelated */
-        Label title = new Label("CARCASSONNE", Carcassonne.skin, "menu" );
+        Label title = new Label("CARCASSONNE", Carcassonne.skin, "menu");
         title.setAlignment(Align.center);
-        title.setY(Gdx.graphics.getHeight()*7f/8);
+        title.setY((float) Gdx.graphics.getHeight() * 7f / 8);
         title.setWidth(Gdx.graphics.getWidth());
         title.setFontScale(5);
         stage.addActor(title);
 
         TextButton jgButton = new TextButton("Join Game", Carcassonne.skin, "menu");
-        jgButton.setWidth(Gdx.graphics.getWidth()/4f);
-        jgButton.setPosition(Gdx.graphics.getWidth()/2f-jgButton.getWidth()/2, Gdx.graphics.getHeight()*6f/9);
+        jgButton.setWidth((float) Gdx.graphics.getWidth() / 4f);
+        jgButton.setPosition((float) Gdx.graphics.getWidth() / 2f - jgButton.getWidth() / 2, (float) Gdx.graphics.getHeight() * 6f / 9);
         jgButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -56,8 +57,8 @@ public class MainMenuScreen implements Screen {
         stage.addActor(jgButton);
 
         TextButton lgButton = new TextButton("Local Game", Carcassonne.skin, "menu");
-        lgButton.setWidth(Gdx.graphics.getWidth()/4f);
-        lgButton.setPosition(Gdx.graphics.getWidth()/ 2f - jgButton.getWidth()/2, Gdx.graphics.getHeight()*6f/9 - lgButton.getHeight() * 9 / 2);
+        lgButton.setWidth((float) Gdx.graphics.getWidth() / 4f);
+        lgButton.setPosition((float)Gdx.graphics.getWidth() / 2f - jgButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6f / 9 - lgButton.getHeight() * 9 / 2);
         lgButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -69,8 +70,8 @@ public class MainMenuScreen implements Screen {
         stage.addActor(lgButton);
 
         TextButton cgButton = new TextButton("Create Game", Carcassonne.skin, "menu");
-        cgButton.setWidth(Gdx.graphics.getWidth() / 4f);
-        cgButton.setPosition(Gdx.graphics.getWidth() / 2f - cgButton.getWidth() / 2, Gdx.graphics.getHeight() * 6f / 9 - cgButton.getHeight() * 3 / 2);
+        cgButton.setWidth((float)Gdx.graphics.getWidth() / 4f);
+        cgButton.setPosition((float)Gdx.graphics.getWidth() / 2f - cgButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6f / 9 - cgButton.getHeight() * 3 / 2);
         cgButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -81,8 +82,8 @@ public class MainMenuScreen implements Screen {
         stage.addActor(cgButton);
 
         TextButton settButton = new TextButton("Settings", Carcassonne.skin, "menu");
-        settButton.setWidth(Gdx.graphics.getWidth() / 4f);
-        settButton.setPosition(Gdx.graphics.getWidth() / 2f-settButton.getWidth() / 2, Gdx.graphics.getHeight() * 6f / 9 - settButton.getHeight() * 3);
+        settButton.setWidth((float)Gdx.graphics.getWidth() / 4f);
+        settButton.setPosition((float)Gdx.graphics.getWidth() / 2f - settButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6f / 9 - settButton.getHeight() * 3);
         settButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

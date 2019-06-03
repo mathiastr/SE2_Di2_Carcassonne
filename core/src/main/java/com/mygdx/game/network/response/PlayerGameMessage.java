@@ -3,8 +3,16 @@ package com.mygdx.game.network.response;
 import com.mygdx.game.Player;
 
 public class PlayerGameMessage {
-    public int score;
-    // public GameBoard.Color color;
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    private int score;
+
     public String name;
 
     public PlayerGameMessage(Player player) {

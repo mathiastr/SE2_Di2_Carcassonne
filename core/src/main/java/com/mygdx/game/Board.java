@@ -129,7 +129,7 @@ public class Board {
         return connected; // if the position was not connected to the current board -> return false
     }
 
-    HashSet<Position> getValidPositionsForTile(TileActor placedTile) {
+    public HashSet<Position> getValidPositionsForTile(TileActor placedTile) {
         HashSet<Position> validPositions = new HashSet<>();
         for (TileActor tile : placedTiles.values()) {
             for (Position pos : tile.getPosition().getSurroundingPositions()) {
@@ -141,7 +141,7 @@ public class Board {
         return validPositions;
     }
 
-    private TileActor getTileInDirectionOfSide(TileActor tile, Side side) {
+    public TileActor getTileInDirectionOfSide(TileActor tile, Side side) {
         switch (side) {
             case TOP:
                 return placedTiles.get(tile.getPosition().add(new Position(0, 1)));
@@ -156,7 +156,29 @@ public class Board {
         }
     }
 
-    void createDeckTilesAndStartTile() {
+    public int getScore(TileActor tile, Feature feature) {
+        int score = 0;
+        if((feature instanceof City || feature instanceof Road)) {
+            score += scoreRoadOrCity(tile, feature);
+        }
+        else if (feature instanceof Monastery) {
+            score += scoreMonastery(tile);
+        }
+        // TODO check for monastery around
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                TileActor tileAround = placedTiles.get(tile.getPosition().add(new Position(i, j)));
+                if ( tileAround != null) {
+                    if (tileAround.isMonastery()) {
+                        score += scoreMonastery(tileAround);
+                    }
+                }
+            }
+        }
+        return score;
+    }
+
+    public void createDeckTilesAndStartTile() {
         int straightRoadUnderCityCount = 4; // 3 + (1 start-tile)
         int diagCityCount = 5;
         int straightRoadCount = 8;
