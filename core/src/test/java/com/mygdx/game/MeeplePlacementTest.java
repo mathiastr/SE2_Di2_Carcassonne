@@ -28,7 +28,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class MeepleTest {
+public class MeeplePlacementTest {
 
     private Stage stageMock;
     private ArrayList<Player> players;
@@ -36,7 +36,7 @@ public class MeepleTest {
     private Texture meepleTexture;
     private GameScreen gameScreen;
 
-    public MeepleTest() {
+    public MeeplePlacementTest() {
         stageMock = mock(Stage.class);
         Gdx.files = mock(Files.class);
         Gdx.gl = mock(GL20.class);
@@ -53,7 +53,7 @@ public class MeepleTest {
 
 
     /**
-     * Test throws an exception cause of UI in the code in MeeplePlacement.class and GameBoard.class
+     * Test if the hasMeepleOnIt() works
      */
     @Test
     public void hasMeepleOnItTest() throws Exception {
@@ -85,19 +85,12 @@ public class MeepleTest {
         mp.placeMeeple(Side.RIGHT, city, t.getPosition());
         Assert.assertTrue(city.hasMeepleOnIt());
 
+        verify(player, times(1)).getColor();
         verify(factoryMock, times(1)).createMeepleImage(GameBoard.Color.black);
-    }
-
-    @Test
-    public void drawMeepleTest(){
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null, gameScreen);
-
-
-        GameBoard.Color color = gb.getCurrentPlayer().getColor();
-        //meepleTexture = new Texture();
+        verify(gb, times(1)).getCurrentPlayer();
+        verify(gb, times(1)).getUnusedCurrentPlayerMeeple();
 
     }
-
 
 }
 
