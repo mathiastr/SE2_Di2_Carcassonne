@@ -5,12 +5,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -18,19 +16,16 @@ import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
+import com.mygdx.game.Player;
+import com.mygdx.game.network.GameClient;
+import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.ConnectMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
+import com.mygdx.game.network.response.InitGameMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.screen.MainMenuScreen;
-import com.mygdx.game.Player;
-import com.mygdx.game.network.GameClient;
-import com.mygdx.game.network.NetworkHelper;
-import com.mygdx.game.network.TestOutput;
-import com.mygdx.game.network.response.InitGameMessage;
-import com.mygdx.game.network.response.PlayerGameMessage;
-import com.mygdx.game.network.response.SimpleMessage;
 import com.mygdx.game.utility.Toast;
 
 import java.net.InetAddress;
@@ -57,7 +52,7 @@ public class ClientSearchScreen implements Screen {
 
         output = new Label("Looking for Server", Carcassonne.skin);
         output.setAlignment(Align.center);
-        output.setY(Gdx.graphics.getHeight() / 8 * 7);
+        output.setY((float)Gdx.graphics.getHeight() / 8 * 7);
         output.setWidth(Gdx.graphics.getWidth());
         output.setFontScale(3);
         stage.addActor(output);
@@ -154,9 +149,9 @@ public class ClientSearchScreen implements Screen {
         setServerTextButtons();
 
         TextButton start = new TextButton("Refresh", Carcassonne.skin);
-        start.setWidth(Gdx.graphics.getWidth() / 5 * 2 - 40);
-        start.setHeight(Gdx.graphics.getHeight() / 5 - 60);
-        start.setPosition(Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 - 20, 40);
+        start.setWidth((float)Gdx.graphics.getWidth() / 5 * 2 - 40);
+        start.setHeight((float)Gdx.graphics.getHeight() / 5 - 60);
+        start.setPosition((float)Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 - 20, 40);
         start.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -184,7 +179,7 @@ public class ClientSearchScreen implements Screen {
         stage.addActor(start);
 
         TextButton back = new TextButton("Back", Carcassonne.skin);
-        back.setWidth(Gdx.graphics.getWidth() / 5 - 40);
+        back.setWidth((float)Gdx.graphics.getWidth() / 5 - 40);
         back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
         back.addListener(new InputListener() {
             @Override
@@ -206,12 +201,12 @@ public class ClientSearchScreen implements Screen {
     private void setServerTextButtons() {
         for (int i = 0; i < server.size() && i < 6; i++) {
             TextButton device = server.get(i);
-            device.setWidth(Gdx.graphics.getWidth() / 2 - 40);
-            device.setHeight(Gdx.graphics.getHeight() / 5 - 40);
+            device.setWidth((float)Gdx.graphics.getWidth() / 2 - 40);
+            device.setHeight((float)Gdx.graphics.getHeight() / 5 - 40);
             if (i % 2 == 0) {
-                device.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5 * (i / 2 + 2) + 40);
+                device.setPosition(20, Gdx.graphics.getHeight() - (float)Gdx.graphics.getHeight() / 5 * ((float)i / 2 + 2) + 40);
             } else {
-                device.setPosition(20 + Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5 * (i / 2 + 2) + 40);
+                device.setPosition(20 + (float)Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - (float)Gdx.graphics.getHeight() / 5 * ((float)i / 2 + 2) + 40);
             }
             stage.addActor(device);
         }
