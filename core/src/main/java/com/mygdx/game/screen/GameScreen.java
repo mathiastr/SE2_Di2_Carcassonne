@@ -128,7 +128,7 @@ public class GameScreen implements Screen {
 
 
         // TODO currently so we can differentiate between board tiles and newestTile.
-        // TODO show newestTile in right corner and make it bigger.
+        // TODO show newestTile in RIGHT corner and make it bigger.
         camera.zoom *= 1.2;
         camera.update();
 
@@ -169,7 +169,7 @@ public class GameScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        labelTilesLeft.setText("Tiles left: " + gameBoard.tilesLeft());
+        labelTilesLeft.setText("Tiles LEFT: " + gameBoard.tilesLeft());
         currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer().getName());
 
         stage.act();

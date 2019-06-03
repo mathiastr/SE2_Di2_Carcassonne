@@ -54,8 +54,8 @@ public class Toast {
     private int toastWidth;
     private int toastHeight;
     private float timeToLive;
-    private float positionX, positionY; // left bottom corner
-    private float fontX, fontY; // left top corner
+    private float positionX, positionY; // LEFT BOTTOM corner
+    private float fontX, fontY; // LEFT TOP corner
     private int fontWidth;
 
     Toast(
@@ -225,8 +225,8 @@ public class Toast {
 
             /**
              * Specify vertical position for toasts<br/>
-             * Default: bottom part
-             * @param positionY vertical position of bottom left corner
+             * Default: BOTTOM part
+             * @param positionY vertical position of BOTTOM LEFT corner
              * @return this
              */
             public Builder positionY(float positionY) {

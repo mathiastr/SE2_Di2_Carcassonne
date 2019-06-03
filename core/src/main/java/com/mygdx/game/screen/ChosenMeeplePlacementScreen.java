@@ -27,25 +27,22 @@ import java.util.List;
 public class ChosenMeeplePlacementScreen extends Actor implements Screen{
 
     private Stage stage;
-    GameBoard gb;
-    TileActor newestTile;
+    private GameBoard gb;
+    private TileActor newestTile;
     private List<Feature> features;
     private Label output;
     private List<TextButton> meepleButtons;
     private Game game;
     private Screen previousScreen;
-    MeeplePlacement mp;
-    private Boolean[] booleans;
+    private MeeplePlacement mp;
 
 
-    public  ChosenMeeplePlacementScreen(Screen previousScreen, Game game, GameBoard gb) {
+    public ChosenMeeplePlacementScreen(Screen previousScreen, Game game, GameBoard gb) {
         this.gb = gb;
         this.previousScreen = previousScreen;
         this.game = game;
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stage = new Stage(new ScreenViewport());
-        newestTile = gb.getPreviousTile(); //current Tile for Placing Meeple
-        features = newestTile.getFeatures();
         newestTile = gb.getNewestTile(); //current Tile for Placing Meeple
         features = newestTile.getFeatures();
         meepleButtons = new ArrayList<>();
@@ -87,7 +84,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         stage.addActor(back);
     }
 
-    public TextButton createMeeplePlacementButton(Feature feature){
+    private TextButton createMeeplePlacementButton(Feature feature){
         TextButton placeMeepleButton = new TextButton("On " + feature.getClass().getSimpleName() + " " +feature.getSides(), Carcassonne.skin);
         placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8f);
         placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8f);
@@ -102,7 +99,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 ArrayList<Side> sides;
                 Side side = null;
-                if(newestTile.isMonastery() == false) {
+                if(!newestTile.isMonastery() ) {
                     sides = feature.getSides();
                     side = sides.get(0);
                     newestTile = gb.getNewestTile();
@@ -115,7 +112,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
                             side = newestTile.getSideAfterRotation(side);
                         }
                         else {
-                            side = Side.top;
+                            side = Side.TOP;
                         }
                     }
 

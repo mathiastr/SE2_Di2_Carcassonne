@@ -31,13 +31,13 @@ public class Position {
     public Position getPositionOnSide(Side side){
         switch (side)
         {
-            case top:
+            case TOP:
                 return new Position(x, y+1);
-            case right:
+            case RIGHT:
                 return new Position(x + 1, y);
-            case bottom:
+            case BOTTOM:
                 return new Position( x, y-1);
-            case left:
+            case LEFT:
                 return new Position( x - 1, y);
             default:
                 throw new IllegalArgumentException("Cannot get position from this side.");

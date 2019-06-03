@@ -96,7 +96,6 @@ public class Player {
             this.meeples.remove(this.meeples.size() - 1);
             return lastMeeple;
         } else {
-            //TODO: PopUp No more Meeple
             throw new Exception("No more meeples");
         }
     }

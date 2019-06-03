@@ -13,7 +13,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
@@ -48,31 +47,31 @@ public class GameBoardTest {
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new Road(Arrays.asList(Side.right)));
+            t.addFeature(new Road(Arrays.asList(Side.RIGHT)));
             gb.addTileOnBoard(t, new Position(-1, 0));
         }
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new Road(Arrays.asList(Side.left, Side.right)));
+            t.addFeature(new Road(Arrays.asList(Side.LEFT, Side.RIGHT)));
             gb.addTileOnBoard(t, new Position(0, 0));
         }
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new Road(Arrays.asList(Side.left, Side.bottom)));
+            t.addFeature(new Road(Arrays.asList(Side.LEFT, Side.BOTTOM)));
             gb.addTileOnBoard(t, new Position(1, 0));
         }
 
         TileActor t = new TileActor();
         {
-            t.addFeature(new Road(Arrays.asList(Side.top)));
-            t.addFeature(new Road(Arrays.asList(Side.right)));
-            t.addFeature(new Road(Arrays.asList(Side.bottom)));
+            t.addFeature(new Road(Arrays.asList(Side.TOP)));
+            t.addFeature(new Road(Arrays.asList(Side.RIGHT)));
+            t.addFeature(new Road(Arrays.asList(Side.BOTTOM)));
             gb.addTileOnBoard(t, new Position(1, -1));
         }
 
-        int result = gb.getBoard().scoreRoadOrCity(t, t.getFeatureAtSide(Side.top));
+        int result = gb.getBoard().scoreRoadOrCity(t, t.getFeatureAtSide(Side.TOP));
 
         Assert.assertEquals(4, result);
 

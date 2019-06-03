@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -27,23 +26,19 @@ import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
-import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
-import com.mygdx.game.tile.Monastery;
-import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class GameBoard {
 
-    ArrayList<PlayerStatusActor> playerActorList;
+   private ArrayList<PlayerStatusActor> playerActorList;
 
     public enum Color {
         yellow, red, green, blue, black, grey;
@@ -326,7 +321,7 @@ public class GameBoard {
 
         finishTurnButton.setWidth(300);
         finishTurnButton.getLabel().setFontScale(0.8f);
-        finishTurnButton.setPosition(Gdx.graphics.getWidth() - 300 - 100, 0);
+        finishTurnButton.setPosition((float)Gdx.graphics.getWidth() - 300 - 100, 0);
         finishTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -347,7 +342,7 @@ public class GameBoard {
         for (Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
             statuses.add(playerStatusActor);
-            playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
+            playerStatusActor.setPosition((float) players.indexOf(p) * PlayerStatusActor.WIDTH , Gdx.graphics.getHeight(), Align.topLeft);
             if(p == NetworkHelper.getPlayer()){
                 playerStatusActor.addListener(new ActorGestureListener(20,0.4f,5f,0.15f){
                     @Override
@@ -446,7 +441,7 @@ public class GameBoard {
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
 
             placeTileAt(currentTile, position);
-            GameScreen.placeMeeple.setVisible(true);
+            //GameScreen.placeMeeple.setVisible(true);
 
 
 
@@ -529,16 +524,12 @@ public class GameBoard {
         return usedTiles.get(lastElement);
     }
 
-    public ArrayList<TileActor> getNewestTileList() {
+    public List<TileActor> getNewestTileList() {
         return usedTiles;
     }
 
-    public TileActor getPreviousTile(){
-        int lastElement = usedTiles.size()-1;
-        return usedTiles.get(lastElement);
-    }
 
-    public static HashMap<Position, TileActor> getUsedTileHash() {
+    public static Map<Position, TileActor> getUsedTileHash() {
         return usedTileHash;
     }
 
@@ -570,5 +561,9 @@ public class GameBoard {
 
     public Player getWinningPlayer() {
         return Collections.max(players, Comparator.comparing(Player::getScore));
+    }
+
+    public void setCurrentTile (TileActor tile){
+        currentTile = tile;
     }
 }

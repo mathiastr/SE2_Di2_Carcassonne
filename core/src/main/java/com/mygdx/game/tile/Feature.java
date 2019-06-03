@@ -8,7 +8,7 @@ public class Feature {
 
     private ArrayList<Side> sides; //Changed Set to ArrayList
     private  HashMap<Side, Side> connections; // probably don't need that
-    public boolean hasMeepleOnIt;
+    private boolean hasMeepleOnIt;
 
     public Feature() {
         this.sides = new ArrayList<>();
@@ -55,7 +55,7 @@ public class Feature {
     }
 
     public void addMeeple(){
-        if(hasMeepleOnIt == false ){
+        if(!hasMeepleOnIt){
             setHasMeepleOnIt(true);
         }
     }

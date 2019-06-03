@@ -15,8 +15,10 @@ import com.mygdx.game.tile.Side;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TileActor extends Actor {
+    private static final Logger LOGGER = Logger.getLogger(TileActor.class.getSimpleName());
     private int SIZE = 128;
     private Texture texture;
     private Texture textureBig;
@@ -79,7 +81,7 @@ public class TileActor extends Actor {
         position = aPosition;
         setWidth(SIZE);
         setHeight(SIZE);
-        setPosition(position.getX() * SIZE, position.getY() * SIZE);
+        setPosition((float)position.getX() * SIZE, (float)position.getY() * SIZE);
     }
 
     public TileActor() {
@@ -114,19 +116,24 @@ public class TileActor extends Actor {
 
     public void updateTileFeatures()
     {
-        for(Side side : Side.values())
-        {
+        for(Side side : Side.values()) {
             TileActor borderingTile = this.getTileOnSide(side);
             Feature feature = this.getFeatureAtSide(side);
-            if(borderingTile != null) {
-                Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
+            try {
+                if (borderingTile != null) {
+                    Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
 
-                // if features are of the same type
-                if (feature.getClass().equals(borderingFeature.getClass())) {
-                    // then act like the feature of this tile has a meeple on it
-                    // if the bordering feature has a meeple on it.
-                    feature.setHasMeepleOnIt(borderingFeature.hasMeepleOnIt());
+                    // if features are of the same type
+                    if (feature.getClass().equals(borderingFeature.getClass())) {
+                        // then act like the feature of this tile has a meeple on it
+                        // if the bordering feature has a meeple on it.
+                        feature.setHasMeepleOnIt(borderingFeature.hasMeepleOnIt());
+                    }
                 }
+            }catch (NullPointerException e){
+
+                LOGGER.warning("NullPointerException" );
+
             }
         }
     }
@@ -157,7 +164,7 @@ public class TileActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 360 - rotation * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+        batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, (float)360 - rotation * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
     }
 
     public Texture getTexture() {
@@ -174,7 +181,7 @@ public class TileActor extends Actor {
 
     public void setPosition(Position position) {
         this.position = position;
-        setPosition(position.getX() * SIZE, position.getY() * SIZE);
+        setPosition((float)position.getX() * SIZE, (float)position.getY() * SIZE);
     }
     public void setMonastery() {
         monastery = true;

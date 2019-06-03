@@ -3,14 +3,9 @@ package com.mygdx.game;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
-
-import org.junit.Before;
 import org.junit.Test;
-
 import java.util.Arrays;
-
 import static org.junit.Assert.*;
-
 public class TileActorTest {
 
     TileActor tile = new TileActor(new Position(0, 0));
@@ -18,29 +13,29 @@ public class TileActorTest {
     @Test
     public void testRotation() {
         for (int i = 0; i < 5; ++i) tile.rotate();
-        assertSame(tile.getSideAfterRotation(Side.top), Side.right);
-        assertSame(tile.getSideAfterRotation(Side.right), Side.bottom);
-        assertSame(tile.getSideAfterRotation(Side.bottom), Side.left);
-        assertSame(tile.getSideAfterRotation(Side.left), Side.top);
-        assertSame(tile.getTileSideAt(Side.top), Side.left);
-        assertSame(tile.getTileSideAt(Side.right), Side.top);
-        assertSame(tile.getTileSideAt(Side.bottom), Side.right);
-        assertSame(tile.getTileSideAt(Side.left), Side.bottom);
+        assertSame(tile.getSideAfterRotation(Side.TOP), Side.RIGHT);
+        assertSame(tile.getSideAfterRotation(Side.RIGHT), Side.BOTTOM);
+        assertSame(tile.getSideAfterRotation(Side.BOTTOM), Side.LEFT);
+        assertSame(tile.getSideAfterRotation(Side.LEFT), Side.TOP);
+        assertSame(tile.getTileSideAt(Side.TOP), Side.LEFT);
+        assertSame(tile.getTileSideAt(Side.RIGHT), Side.TOP);
+        assertSame(tile.getTileSideAt(Side.BOTTOM), Side.RIGHT);
+        assertSame(tile.getTileSideAt(Side.LEFT), Side.BOTTOM);
     }
 
     @Test
     public void testAddFeature() {
-        Road road = new Road(Arrays.asList(Side.top, Side.bottom));
+        Road road = new Road(Arrays.asList(Side.TOP, Side.BOTTOM));
         tile.addFeature(road);
-        assertEquals(tile.getFeatureAtSide(Side.top), road);
-        assertEquals(tile.getFeatureAtSide(Side.bottom), road);
-        assertNull(tile.getFeatureAtSide(Side.right));
+        assertEquals(tile.getFeatureAtSide(Side.TOP), road);
+        assertEquals(tile.getFeatureAtSide(Side.BOTTOM), road);
+        assertNull(tile.getFeatureAtSide(Side.RIGHT));
     }
 
     @Test(expected=Exception.class)
     public void testAddFeatureException() {
-        Road road1 = new Road(Arrays.asList(Side.top, Side.bottom));
-        Road road2 = new Road(Arrays.asList(Side.top, Side.right));
+        Road road1 = new Road(Arrays.asList(Side.TOP, Side.BOTTOM));
+        Road road2 = new Road(Arrays.asList(Side.TOP, Side.RIGHT));
         tile.addFeature(road1);
         tile.addFeature(road2);
     }

@@ -5,31 +5,29 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.tile.Side;
-import com.mygdx.game.actor.TileActor;
 
-import java.util.ArrayList;
+import java.util.logging.Logger;
+
 
 public class MeeplePlacement {
-    ArrayList<TileActor> usedTiles;
-    GameBoard gb;
-    Position[] positions;
-    private Boolean feature1 = true;
-    private Boolean feature2 = true;
-    private Boolean feature3 = true;
-    private Boolean feature4 = true;
-    Boolean[] booleans;
+    private static final Logger LOGGER = Logger.getLogger(TileActor.class.getSimpleName());
+
+    private GameBoard gb;
+
 
     public MeeplePlacement(GameBoard gb) {
         this.gb = gb;
-        usedTiles = gb.getNewestTileList();
+
     }
 
-    public void placeMeeple(Side side, Feature feature, Position pos) {
+
+    public boolean placeMeeple(Side side, Feature feature, Position pos) {
         try {
             Meeple meepleForPlacement = gb.getCurrentPlayer().getUnusedMeeple();
             meepleForPlacement.setSide(side);
@@ -39,9 +37,12 @@ public class MeeplePlacement {
             drawMeeple(side, pos);
             GameScreen.placeMeeple.setVisible(false);
         } catch (Exception e) {
-            // todo
+            LOGGER.warning("Exception");
         }
+        return true;
     }
+
+
 
     public void drawMeeple(Side side, Position pos) {
 
@@ -73,8 +74,6 @@ public class MeeplePlacement {
         }
 
 
-        // Position pos = gb.getPreviousTile().getPosition();
-
         ImageButton meepleImg = new ImageButton(
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)),
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)));
@@ -83,16 +82,16 @@ public class MeeplePlacement {
         float y = (pos.getY() * 128f) + (128f / 2f) - (meepleImg.getHeight() / 2f);
 
         switch (side) {
-            case top:
+            case TOP:
                 y += 42f;
                 break;
-            case left:
+            case LEFT:
                 x -= 42f;
                 break;
-            case right:
+            case RIGHT:
                 x += 42f;
                 break;
-            case bottom:
+            case BOTTOM:
                 y -= 42f;
                 break;
         }
@@ -100,9 +99,8 @@ public class MeeplePlacement {
         meepleImg.setPosition(x, y);
 
 
-
-        for(int i=0; i<gb.getPlayers().size()
-                ; i++){
+        for (int i = 0; i < gb.getPlayers().size()
+                ; i++) {
             gb.getPlayerActorList().get(i).update();
         }
 

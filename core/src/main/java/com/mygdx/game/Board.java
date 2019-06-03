@@ -13,17 +13,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Board {
-    private ArrayList<TileActor> availableTiles = new ArrayList<>();
+    private List<TileActor> availableTiles = new ArrayList<>();
     private HashMap<Position, TileActor> placedTiles = new HashMap<>();
 
-    public ArrayList<TileActor> getAvailableTiles() {
+    public List<TileActor> getAvailableTiles() {
         return availableTiles;
 
     }
 
-    public HashMap<Position, TileActor> getPlacedTiles() {
+    public Map<Position, TileActor> getPlacedTiles() {
         return placedTiles;
     }
 
@@ -56,7 +59,7 @@ public class Board {
         return score == -1 ? 0 : score;
     }
 
-    public int scoreRoadOrCityRec(TileActor tile, Feature feature, TileActor parent, HashSet<TileActor> visited) {
+    public int scoreRoadOrCityRec(TileActor tile, Feature feature, TileActor parent, Set<TileActor> visited) {
         int score = feature instanceof City ? 2 : 1; // tile itself
 
         if (!visited.add(tile)) return 0; // we found a loop => road closed
@@ -90,7 +93,7 @@ public class Board {
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 TileActor tileAround = placedTiles.get(tile.getPosition().add(new Position(i, j)));
-                if ( tileAround != null) {
+                if ( tileAround != null ) {
                     if (tileAround.isMonastery()) {
                         score += scoreMonastery(tileAround);
                     }
@@ -100,7 +103,7 @@ public class Board {
         return score;
     }
 
-    // e.g. for top we want bottom, for right we want left ...
+    // e.g. for TOP we want BOTTOM, for RIGHT we want LEFT ...
     private Side getFacingSideOfSurroundingTile(Side side) {
         return Side.values()[side.ordinal() ^ 2];
     }
@@ -126,7 +129,7 @@ public class Board {
         return connected; // if the position was not connected to the current board -> return false
     }
 
-    public HashSet<Position> getValidPositionsForTile(TileActor placedTile) {
+    HashSet<Position> getValidPositionsForTile(TileActor placedTile) {
         HashSet<Position> validPositions = new HashSet<>();
         for (TileActor tile : placedTiles.values()) {
             for (Position pos : tile.getPosition().getSurroundingPositions()) {
@@ -140,20 +143,20 @@ public class Board {
 
     private TileActor getTileInDirectionOfSide(TileActor tile, Side side) {
         switch (side) {
-            case top:
+            case TOP:
                 return placedTiles.get(tile.getPosition().add(new Position(0, 1)));
-            case right:
+            case RIGHT:
                 return placedTiles.get(tile.getPosition().add(new Position(1, 0)));
-            case bottom:
+            case BOTTOM:
                 return placedTiles.get(tile.getPosition().add(new Position(0, -1)));
-            case left:
+            case LEFT:
                 return placedTiles.get(tile.getPosition().add(new Position(-1, 0)));
             default:
                 return null;
         }
     }
 
-    public void createDeckTilesAndStartTile() {
+    void createDeckTilesAndStartTile() {
         int straightRoadUnderCityCount = 4; // 3 + (1 start-tile)
         int diagCityCount = 5;
         int straightRoadCount = 8;
@@ -178,8 +181,8 @@ public class Board {
         for (int i = 0; i < straightRoadUnderCityCount; ++i) {
             TileActor straightRoadUnderCity = new TileActor();
             straightRoadUnderCity.setTexture(new Texture(Gdx.files.internal("road_under_city_128.jpg")));
-            straightRoadUnderCity.addFeature(new City(Side.top));
-            straightRoadUnderCity.addFeature(new Road(Arrays.asList(Side.left, Side.right)));
+            straightRoadUnderCity.addFeature(new City(Side.TOP));
+            straightRoadUnderCity.addFeature(new Road(Arrays.asList(Side.LEFT, Side.RIGHT)));
             availableTiles.add(straightRoadUnderCity);
         }
 
@@ -187,7 +190,7 @@ public class Board {
         for (int i = 0; i < diagCityCount; ++i) {
             TileActor diagCity = new TileActor();
             diagCity.setTexture(new Texture(Gdx.files.internal("diagonal_city_128.jpg")));
-            diagCity.addFeature(new City(Arrays.asList(Side.top, Side.right)));
+            diagCity.addFeature(new City(Arrays.asList(Side.TOP, Side.RIGHT)));
             availableTiles.add(diagCity);
         }
 
@@ -195,51 +198,51 @@ public class Board {
         for (int i = 0; i < straightRoadCount; ++i) {
             TileActor straightRoad = new TileActor();
             straightRoad.setTexture(new Texture(Gdx.files.internal("straight_road_128.jpg")));
-            straightRoad.addFeature(new Road(Arrays.asList(Side.top, Side.bottom)));
+            straightRoad.addFeature(new Road(Arrays.asList(Side.TOP, Side.BOTTOM)));
             availableTiles.add(straightRoad);
         }
 
-        /* city left right */
+        /* city LEFT RIGHT */
         for (int i = 0; i < cityLeftRightCount; ++i) {
             TileActor cityLeftRight = new TileActor();
             cityLeftRight.setTexture(new Texture(Gdx.files.internal("city_left_right_128.jpg")));
-            cityLeftRight.addFeature(new City(Side.left));
-            cityLeftRight.addFeature(new City(Side.right));
+            cityLeftRight.addFeature(new City(Side.LEFT));
+            cityLeftRight.addFeature(new City(Side.RIGHT));
             availableTiles.add(cityLeftRight);
         }
 
-        /* city top */
+        /* city TOP */
         for (int i = 0; i < cityTopCount; ++i) {
             TileActor cityTop = new TileActor();
             cityTop.setTexture(new Texture(Gdx.files.internal("city_top_128.jpg")));
-            cityTop.addFeature(new City(Side.top));
+            cityTop.addFeature(new City(Side.TOP));
             availableTiles.add(cityTop);
         }
 
-        /* city top right */
+        /* city TOP RIGHT */
         for (int i = 0; i < cityTopRightCount; ++i) {
             TileActor cityTopRight = new TileActor();
             cityTopRight.setTexture(new Texture(Gdx.files.internal("city_top_right_128.jpg")));
-            cityTopRight.addFeature(new City(Side.top));
-            cityTopRight.addFeature(new City(Side.right));
+            cityTopRight.addFeature(new City(Side.TOP));
+            cityTopRight.addFeature(new City(Side.RIGHT));
             availableTiles.add(cityTopRight);
         }
 
-        /* city top with left road */
+        /* city TOP with LEFT road */
         for (int i = 0; i < cityTopWithLeftRoadCount; ++i) {
             TileActor cityTopWithLeftRoad = new TileActor();
             cityTopWithLeftRoad.setTexture(new Texture(Gdx.files.internal("city_top_with_left_road_128.jpg")));
-            cityTopWithLeftRoad.addFeature(new City(Side.top));
-            cityTopWithLeftRoad.addFeature(new Road(Arrays.asList(Side.left, Side.bottom)));
+            cityTopWithLeftRoad.addFeature(new City(Side.TOP));
+            cityTopWithLeftRoad.addFeature(new Road(Arrays.asList(Side.LEFT, Side.BOTTOM)));
             availableTiles.add(cityTopWithLeftRoad);
         }
 
-        /* city top with right road */
+        /* city TOP with RIGHT road */
         for (int i = 0; i < cityTopWithRightRoadCount; ++i) {
             TileActor cityTopWithRightRoad = new TileActor();
             cityTopWithRightRoad.setTexture(new Texture(Gdx.files.internal("city_top_with_right_road_128.jpg")));
-            cityTopWithRightRoad.addFeature(new City(Side.top));
-            cityTopWithRightRoad.addFeature(new Road(Arrays.asList(Side.right, Side.bottom)));
+            cityTopWithRightRoad.addFeature(new City(Side.TOP));
+            cityTopWithRightRoad.addFeature(new Road(Arrays.asList(Side.RIGHT, Side.BOTTOM)));
             availableTiles.add(cityTopWithRightRoad);
         }
 
@@ -247,10 +250,10 @@ public class Board {
         for (int i = 0; i < cityWithTripleRoadCount; ++i) {
             TileActor cityWithTripleRoad = new TileActor();
             cityWithTripleRoad.setTexture(new Texture(Gdx.files.internal("city_with_triple_road_128.jpg")));
-            cityWithTripleRoad.addFeature(new City(Side.top));
-            cityWithTripleRoad.addFeature(new Road(Side.left));
-            cityWithTripleRoad.addFeature(new Road(Side.right));
-            cityWithTripleRoad.addFeature(new Road(Side.bottom));
+            cityWithTripleRoad.addFeature(new City(Side.TOP));
+            cityWithTripleRoad.addFeature(new Road(Side.LEFT));
+            cityWithTripleRoad.addFeature(new Road(Side.RIGHT));
+            cityWithTripleRoad.addFeature(new Road(Side.BOTTOM));
             availableTiles.add(cityWithTripleRoad);
         }
 
@@ -258,8 +261,8 @@ public class Board {
         for (int i = 0; i < diagCityWithRoadCount; ++i) {
             TileActor diagCityWithRoad = new TileActor();
             diagCityWithRoad.setTexture(new Texture(Gdx.files.internal("diagonal_city_with_road_128.jpg")));
-            diagCityWithRoad.addFeature(new City(Arrays.asList(Side.top, Side.left)));
-            diagCityWithRoad.addFeature(new Road(Arrays.asList(Side.bottom, Side.right)));
+            diagCityWithRoad.addFeature(new City(Arrays.asList(Side.TOP, Side.LEFT)));
+            diagCityWithRoad.addFeature(new Road(Arrays.asList(Side.BOTTOM, Side.RIGHT)));
             availableTiles.add(diagCityWithRoad);
         }
 
@@ -267,32 +270,32 @@ public class Board {
         for (int i = 0; i < fullCityCount; ++i) {
             TileActor fullCity = new TileActor();
             fullCity.setTexture(new Texture(Gdx.files.internal("full_city_128.jpg")));
-            fullCity.addFeature(new City(Arrays.asList(Side.left, Side.top, Side.right, Side.bottom)));
+            fullCity.addFeature(new City(Arrays.asList(Side.LEFT, Side.TOP, Side.RIGHT, Side.BOTTOM)));
             availableTiles.add(fullCity);
         }
 
-        /* full city left/right */
+        /* full city LEFT/RIGHT */
         for (int i = 0; i < fullCityLeftRightCount; ++i) {
             TileActor fullCityLeftRight = new TileActor();
             fullCityLeftRight.setTexture(new Texture(Gdx.files.internal("full_city_left_right_128.jpg")));
-            fullCityLeftRight.addFeature(new City(Arrays.asList(Side.left, Side.right)));
+            fullCityLeftRight.addFeature(new City(Arrays.asList(Side.LEFT, Side.RIGHT)));
             availableTiles.add(fullCityLeftRight);
         }
 
-        /* full city left/top/right */
+        /* full city LEFT/TOP/RIGHT */
         for (int i = 0; i < fullCityLeftTopRightCount; ++i) {
             TileActor fullCityLeftTopRight = new TileActor();
             fullCityLeftTopRight.setTexture(new Texture(Gdx.files.internal("full_city_left_top_right_128.jpg")));
-            fullCityLeftTopRight.addFeature(new City(Arrays.asList(Side.left, Side.top, Side.right)));
+            fullCityLeftTopRight.addFeature(new City(Arrays.asList(Side.LEFT, Side.TOP, Side.RIGHT)));
             availableTiles.add(fullCityLeftTopRight);
         }
 
-        /* full city left/top/right with road */
+        /* full city LEFT/TOP/RIGHT with road */
         for (int i = 0; i < fullCityLeftTopRightWithRoadCount; ++i) {
             TileActor fullCityLeftTopRightWithRoad = new TileActor();
             fullCityLeftTopRightWithRoad.setTexture(new Texture(Gdx.files.internal("full_city_left_top_right_with_road_128.jpg")));
-            fullCityLeftTopRightWithRoad.addFeature(new City(Arrays.asList(Side.left, Side.top, Side.right)));
-            fullCityLeftTopRightWithRoad.addFeature(new Road(Side.bottom));
+            fullCityLeftTopRightWithRoad.addFeature(new City(Arrays.asList(Side.LEFT, Side.TOP, Side.RIGHT)));
+            fullCityLeftTopRightWithRoad.addFeature(new Road(Side.BOTTOM));
             availableTiles.add(fullCityLeftTopRightWithRoad);
         }
 
@@ -300,7 +303,7 @@ public class Board {
         for (int i = 0; i < monasteryCount; ++i) {
             TileActor monastery = new TileActor();
             monastery.setTexture(new Texture(Gdx.files.internal("monastery_128.jpg")));
-            monastery.addFeature(new Monastery(Side.top));
+            monastery.addFeature(new Monastery(Side.TOP));
             availableTiles.add(monastery);
         }
 
@@ -308,8 +311,8 @@ public class Board {
         for (int i = 0; i < monasteryWithRoadCount; ++i) {
             TileActor monasteryWithRoad = new TileActor();
             monasteryWithRoad.setTexture(new Texture(Gdx.files.internal("monastery_with_road_128.jpg")));
-            monasteryWithRoad.addFeature(new Monastery(Side.top));
-            monasteryWithRoad.addFeature(new Road(Side.bottom));
+            monasteryWithRoad.addFeature(new Monastery(Side.TOP));
+            monasteryWithRoad.addFeature(new Road(Side.BOTTOM));
             availableTiles.add(monasteryWithRoad);
         }
 
@@ -317,9 +320,9 @@ public class Board {
         for (int i = 0; i < tripleRoadCount; ++i) {
             TileActor tripleRoad = new TileActor();
             tripleRoad.setTexture(new Texture(Gdx.files.internal("triple_road_128.jpg")));
-            tripleRoad.addFeature(new Road(Side.left));
-            tripleRoad.addFeature(new Road(Side.bottom));
-            tripleRoad.addFeature(new Road(Side.right));
+            tripleRoad.addFeature(new Road(Side.LEFT));
+            tripleRoad.addFeature(new Road(Side.BOTTOM));
+            tripleRoad.addFeature(new Road(Side.RIGHT));
             availableTiles.add(tripleRoad);
         }
 
@@ -327,7 +330,7 @@ public class Board {
         for (int i = 0; i < turningRoadCount; ++i) {
             TileActor turningRoad = new TileActor();
             turningRoad.setTexture(new Texture(Gdx.files.internal("turning_road_128.jpg")));
-            turningRoad.addFeature(new Road(Arrays.asList(Side.left, Side.bottom)));
+            turningRoad.addFeature(new Road(Arrays.asList(Side.LEFT, Side.BOTTOM)));
             availableTiles.add(turningRoad);
         }
 
@@ -335,10 +338,10 @@ public class Board {
         for (int i = 0; i < quadRoadCount; ++i) {
             TileActor quadRoad = new TileActor();
             quadRoad.setTexture(new Texture(Gdx.files.internal("quad_road_128.jpg")));
-            quadRoad.addFeature(new Road(Side.left));
-            quadRoad.addFeature(new Road(Side.bottom));
-            quadRoad.addFeature(new Road(Side.right));
-            quadRoad.addFeature(new Road(Side.top));
+            quadRoad.addFeature(new Road(Side.LEFT));
+            quadRoad.addFeature(new Road(Side.BOTTOM));
+            quadRoad.addFeature(new Road(Side.RIGHT));
+            quadRoad.addFeature(new Road(Side.TOP));
             availableTiles.add(quadRoad);
         }
     }
