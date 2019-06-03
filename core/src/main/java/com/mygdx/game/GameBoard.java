@@ -146,7 +146,7 @@ public class GameBoard {
             e.printStackTrace();
         }
         CurrentTileMessage cm = new CurrentTileMessage();
-        cm.tileNumber = board.getAvailableTiles().indexOf(nextTile);
+        cm.setTileNumber(board.getAvailableTiles().indexOf(nextTile));
 
         if (gameClient != null) {
             NetworkHelper.getGameManager().sendToServer(cm);
@@ -156,7 +156,7 @@ public class GameBoard {
     }
 
     public void onTurnBegin(CurrentTileMessage cm) {
-        currentTile = board.getAvailableTiles().get(cm.tileNumber);
+        currentTile = board.getAvailableTiles().get(cm.getTileNumber());
         Gdx.app.debug("DEBUG", " " + currentTile.getName() + " " + currentTile.toString());
         showCurrentTile();
     }
@@ -171,13 +171,13 @@ public class GameBoard {
     }
 
     public void onTilePlaced(TilePlacementMessage tilePlacementMessage) {
-        Gdx.app.debug("DEBUG", " " + tilePlacementMessage.rotation + " " + currentTile.toString());
-        currentTile.setRotation(tilePlacementMessage.rotation);
+        Gdx.app.debug("DEBUG", " " + tilePlacementMessage.getRotation() + " " + currentTile.toString());
+        currentTile.setRotation(tilePlacementMessage.getRotation());
 
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                placeCurrentTileAt(tilePlacementMessage.position);
+                placeCurrentTileAt(tilePlacementMessage.getPosition());
             }
         });
     }

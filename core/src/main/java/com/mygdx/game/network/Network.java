@@ -19,7 +19,6 @@ import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.InitGameMessage;
 import com.mygdx.game.network.response.PlayerGameMessage;
-import com.mygdx.game.network.response.SimpleMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 

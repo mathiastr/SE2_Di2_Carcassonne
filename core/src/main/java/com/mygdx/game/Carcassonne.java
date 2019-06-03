@@ -22,7 +22,7 @@ public class Carcassonne extends Game {
     private static NativeInterface nativeInterface;
 
     public Carcassonne(NativeInterface ni) {
-        this.nativeInterface = ni;
+        nativeInterface = ni;
     }
 
     @Override
