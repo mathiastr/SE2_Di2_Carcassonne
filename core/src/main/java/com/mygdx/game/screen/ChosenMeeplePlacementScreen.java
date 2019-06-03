@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
+import com.mygdx.game.meeple.MeepleTextureFactory;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.meeple.MeeplePlacement;
@@ -37,7 +38,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
     private MeeplePlacement mp;
 
 
-    public ChosenMeeplePlacementScreen(Screen previousScreen, Game game, GameBoard gb) {
+    public ChosenMeeplePlacementScreen(GameScreen previousScreen, Game game, GameBoard gb) {
         this.gb = gb;
         this.previousScreen = previousScreen;
         this.game = game;
@@ -46,7 +47,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         newestTile = gb.getNewestTile(); //current Tile for Placing Meeple
         features = newestTile.getFeatures();
         meepleButtons = new ArrayList<>();
-        mp = new MeeplePlacement(gb);
+        mp = new MeeplePlacement(gb, previousScreen, new MeepleTextureFactory());
 
         output = new Label("Where do you want to place your Meeple?", Carcassonne.skin);
         output.setAlignment(Align.center);

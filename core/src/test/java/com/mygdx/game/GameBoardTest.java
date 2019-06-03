@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
@@ -20,11 +21,13 @@ public class GameBoardTest {
 
     Stage stageMock;
     ArrayList<Player> players;
+    private final GameScreen gameScreen;
 
     public GameBoardTest() {
         stageMock = mock(Stage.class);
         Gdx.files = mock(Files.class);
         Gdx.gl = mock(GL20.class);
+        gameScreen = mock(GameScreen.class);
     }
 
     public void preparePlayers() {
@@ -42,8 +45,7 @@ public class GameBoardTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
-
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null, gameScreen);
 
         {
             TileActor t = new TileActor();
@@ -81,7 +83,7 @@ public class GameBoardTest {
     @Test
     public void testCheating() {
         preparePlayers();
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null, gameScreen);
         gb.performCheatAction(players.get(0)); //cheat Meeple
         assert players.get(0).getNumberOfMeeples() == Player.MEEPLE_COUNT + 1;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
@@ -105,7 +107,7 @@ public class GameBoardTest {
     public void setCurrentTileTest(){
         preparePlayers();
         TileActor newCurrentTile = new TileActor();
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null, gameScreen);
 
         gb.setCurrentTile(newCurrentTile);
         Assert.assertEquals(newCurrentTile, gb.getCurrentTile());

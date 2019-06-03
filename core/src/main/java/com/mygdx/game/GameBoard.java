@@ -17,6 +17,7 @@ import com.mygdx.game.actor.PlayerStatusActor;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.meeple.MeeplePlacement;
+import com.mygdx.game.meeple.MeepleTextureFactory;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.CheatOnScoreMessage;
@@ -64,8 +65,10 @@ public class GameBoard {
     public final static int MAX_NUM_OF_PLAYERS = 6;
     private TextButton finishTurnButton;
     private boolean tileIsPlaced = false;
+    private final boolean isLocal;
     private Player me;
     private GameClient gameClient;
+    private final GameScreen gameScreen;
     private boolean meepleIsPlaced;
     private int numberOfPlayers;
     private static HashMap<Position, TileActor> usedTileHash = new HashMap<>();
@@ -82,8 +85,17 @@ public class GameBoard {
         return currentTile;
     }
 
+    public void addMeepleOnCurrentTile(Meeple meeple)
+    {
+        currentTile.addMeeple(meeple);
+    }
+
     public Player getCurrentPlayer() {
         return currentPlayer;
+    }
+
+    public Meeple getUnusedCurrentPlayerMeeple() throws Exception {
+        return currentPlayer.getUnusedMeeple();
     }
 
     public Board getBoard() { return board; }
@@ -201,7 +213,7 @@ public class GameBoard {
                 @Override
                 public void run() {
                     for (Meeple m : turnEndMessage.getMeeples()) {
-                        new MeeplePlacement(that).drawMeeple(m.getSide(), pos);
+                        new MeeplePlacement(that, gameScreen, new MeepleTextureFactory()).drawMeeple(m.getSide(), pos);
                     }
                 }
             });
@@ -255,15 +267,17 @@ public class GameBoard {
     }
 
 
-    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
+    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen) {
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
 
         numberOfPlayers = players.size();
         this.players = players;
         currentPlayer = players.get(0);
+        this.isLocal = isLocal;
         this.me = me;
         this.gameClient = gameClient;
+        this.gameScreen = gameScreen;
         this.board = new Board();
     }
 
@@ -441,7 +455,7 @@ public class GameBoard {
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
 
             placeTileAt(currentTile, position);
-            GameScreen.placeMeeple.setVisible(true);
+            gameScreen.placeMeeple.setVisible(true);
 
 
 
@@ -512,6 +526,11 @@ public class GameBoard {
         return stageOfBoard;
     }
 
+    public void addActorToBoardStage(Actor actor)
+    {
+        stageOfBoard.addActor(actor);
+    }
+
     public Stage getStageOfUI() {
         return stageOfUI;
     }
@@ -536,6 +555,11 @@ public class GameBoard {
 
     public List<PlayerStatusActor> getPlayerActorList() {
         return playerActorList;
+    }
+
+    public PlayerStatusActor getPlayerActor(int i)
+    {
+        return playerActorList.get(i);
     }
 
     public int getScoreFromPlayer(Player p){

@@ -54,13 +54,13 @@ public class GameScreen implements Screen {
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
-    public  static TextButton placeMeeple;
+    public  TextButton placeMeeple;
 
     public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
-        gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient);
+        gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient, this);
         gameBoard.init();
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
         this.isLocal = isLocal;

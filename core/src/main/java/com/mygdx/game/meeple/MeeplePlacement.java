@@ -19,23 +19,28 @@ public class MeeplePlacement {
     private static final Logger LOGGER = Logger.getLogger(TileActor.class.getSimpleName());
 
     private GameBoard gb;
+    private GameScreen gameScreen;
+    private MeepleTextureFactory textureFactory;
 
 
-    public MeeplePlacement(GameBoard gb) {
+    public MeeplePlacement(GameBoard gb, GameScreen gameScreen, MeepleTextureFactory textureFactory) {
         this.gb = gb;
-
+        this.gameScreen = gameScreen;
+        this.textureFactory = textureFactory;
     }
 
 
     public boolean placeMeeple(Side side, Feature feature, Position pos) {
         try {
-            Meeple meepleForPlacement = gb.getCurrentPlayer().getUnusedMeeple();
+            Meeple meepleForPlacement = gb.getUnusedCurrentPlayerMeeple();
             meepleForPlacement.setSide(side);
             meepleForPlacement.setFeature(feature);
-            gb.getCurrentTile().addMeeple(meepleForPlacement);
+            gb.addMeepleOnCurrentTile(meepleForPlacement);
             feature.setHasMeepleOnIt(true);
             drawMeeple(side, pos);
-            GameScreen.placeMeeple.setVisible(false);
+            gameScreen.placeMeeple.setVisible(false);
+        } catch (NullPointerException e) {
+            throw e;
         } catch (Exception e) {
             LOGGER.warning("Exception");
         }
@@ -47,37 +52,9 @@ public class MeeplePlacement {
     public void drawMeeple(Side side, Position pos) {
 
         GameBoard.Color color = gb.getCurrentPlayer().getColor();
-        Texture meepleTexture;
 
-        switch (color) {
-            case red:
-                meepleTexture = new Texture(Gdx.files.internal("redmeeple.png"));
-                break;
-            case blue:
-                meepleTexture = new Texture(Gdx.files.internal("bluemeeple.png"));
-                break;
-            case grey:
-                meepleTexture = new Texture(Gdx.files.internal("greymeeple.png"));
-                break;
-            case black:
-                meepleTexture = new Texture(Gdx.files.internal("blackmeeple.png"));
-                break;
-            case green:
-                meepleTexture = new Texture(Gdx.files.internal("greenmeeple.png"));
-                break;
-            case yellow:
-                meepleTexture = new Texture(Gdx.files.internal("yellowmeeple.png"));
-                break;
-            default:
-                meepleTexture = new Texture(Gdx.files.internal("greenmeeple.png"));
-                break;
-        }
+        ImageButton meepleImg = textureFactory.createMeepleImage(color);
 
-
-        ImageButton meepleImg = new ImageButton(
-                new TextureRegionDrawable(new TextureRegion(meepleTexture)),
-                new TextureRegionDrawable(new TextureRegion(meepleTexture)));
-        meepleImg.setSize(Gdx.graphics.getWidth() / 18f, Gdx.graphics.getHeight() / 18f);
         float x = (pos.getX() * 128f) + (128f / 2f) - (meepleImg.getWidth() / 2f);
         float y = (pos.getY() * 128f) + (128f / 2f) - (meepleImg.getHeight() / 2f);
 
@@ -99,13 +76,10 @@ public class MeeplePlacement {
         meepleImg.setPosition(x, y);
 
 
-        for (int i = 0; i < gb.getPlayers().size()
-                ; i++) {
-            gb.getPlayerActorList().get(i).update();
+        for (int i = 0; i < gb.getPlayers().size(); i++) {
+            gb.getPlayerActor(i).update();
         }
 
-        gb.getStageOfBoard().addActor(meepleImg);
-
-
+        gb.addActorToBoardStage(meepleImg);
     }
 }
