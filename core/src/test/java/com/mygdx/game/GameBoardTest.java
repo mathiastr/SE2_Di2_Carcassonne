@@ -27,7 +27,7 @@ public class GameBoardTest {
         Gdx.gl = mock(GL20.class);
     }
 
-    private void preparePlayers() {
+    public void preparePlayers() {
         players = new ArrayList<>();
         players.add(new Player(GameBoard.Color.black, "A"));
         players.add(new Player(GameBoard.Color.blue, "B"));
@@ -98,6 +98,9 @@ public class GameBoardTest {
 
     }
 
+    /**
+     * Tests the setter of the current tile
+     */
     @Test
     public void setCurrentTileTest(){
         preparePlayers();

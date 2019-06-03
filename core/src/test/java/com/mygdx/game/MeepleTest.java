@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.MeeplePlacement;
@@ -22,6 +23,7 @@ public class MeepleTest {
     private Stage stageMock;
     private ArrayList<Player> players;
     private Position posMock;
+    private Texture meepleTexture;
 
 
     public MeepleTest() {
@@ -32,7 +34,7 @@ public class MeepleTest {
 
     }
     @Before
-    private void preparePlayers() {
+    public void preparePlayers() {
         players = new ArrayList<>();
         players.add(new Player(GameBoard.Color.black, "A"));
         players.add(new Player(GameBoard.Color.blue, "B"));
@@ -40,7 +42,7 @@ public class MeepleTest {
 
 
     /**
-     * Test throws an exception cause of UI in the code in MeeplePlacement.class
+     * Test throws an exception cause of UI in the code in MeeplePlacement.class and GameBoard.class
      */
     @Test
     public void hasMeepleOnItTest() {
@@ -55,11 +57,18 @@ public class MeepleTest {
         City city = new City(Side.RIGHT);
         t.addFeature(city);
         mp.placeMeeple(Side.RIGHT, city, t.getPosition());
-        System.out.print(city.hasMeepleOnIt());
         Assert.assertTrue(city.hasMeepleOnIt());
     }
 
+    @Test
+    public void drawMeepleTest(){
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
 
+
+        GameBoard.Color color = gb.getCurrentPlayer().getColor();
+        //meepleTexture = new Texture();
+
+    }
 
 
 }
