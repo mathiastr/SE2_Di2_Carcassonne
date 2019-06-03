@@ -86,14 +86,14 @@ public class TileActor extends Actor {
     }
 
     public TileActor(TilePlacementMessage tilePlacementMessage) {
-        if (tilePlacementMessage.meeples != null) {
+        if (tilePlacementMessage.getMeeples() != null) {
             this.meeples = new ArrayList<>();
-            for (Meeple m : tilePlacementMessage.meeples) {
+            for (Meeple m : tilePlacementMessage.getMeeples()) {
                 this.meeples.add(m);
             }
         }
-        this.monastery = tilePlacementMessage.monastery;
-        this.position = tilePlacementMessage.position;
+        this.monastery = tilePlacementMessage.isMonastery();
+        this.position = tilePlacementMessage.getPosition();
 
     }
 

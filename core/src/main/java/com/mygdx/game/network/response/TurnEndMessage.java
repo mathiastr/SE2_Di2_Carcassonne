@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TurnEndMessage {
-    private List<Meeple> meeples;
+    private ArrayList meeples;
 
     public HashMap<Player, Integer> getScoreChanges() {
         return scoreChanges;
@@ -25,7 +25,10 @@ public class TurnEndMessage {
     }
 
     public void setMeeples(List<Meeple> meeples) {
-        this.meeples = meeples;
+        this.meeples.clear();
+        for (Meeple m : meeples) {
+            this.meeples.add(m);
+        }
     }
 
 }

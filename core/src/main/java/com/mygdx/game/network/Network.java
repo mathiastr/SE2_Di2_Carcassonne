@@ -38,7 +38,6 @@ public class Network {
         kryo.register(TilePlacementMessage.class);
         kryo.register(Position.class);
         kryo.register(Meeple.class);
-        kryo.register(SimpleMessage.class);
         kryo.register(CurrentTileMessage.class);
         kryo.register(TurnEndMessage.class);
         kryo.register(GameBoard.Color.class);
