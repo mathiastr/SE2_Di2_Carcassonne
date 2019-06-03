@@ -73,6 +73,7 @@ public class GameBoard {
     private List<com.mygdx.game.Player> players;
     private ArrayList<TileActor> hints = new ArrayList<>();
     private ArrayList<TileActor> usedTiles = new ArrayList<>();
+    private Random rand;
 
     public ArrayList<PlayerStatusActor> getStatuses() {
         return statuses;
@@ -102,7 +103,6 @@ public class GameBoard {
     }
 
     public TileActor getRandomElement(List<TileActor> list) throws Exception {
-        Random rand = new Random();
         if (list.size() == 0) {
             throw new Exception("No more tiles");
         }
@@ -283,6 +283,8 @@ public class GameBoard {
         this.me = me;
         this.gameClient = gameClient;
         this.board = new Board();
+        this.rand = new Random();
+
     }
 
     public void init() {
@@ -339,7 +341,7 @@ public class GameBoard {
 
         finishTurnButton.setWidth(300);
         finishTurnButton.getLabel().setFontScale(0.8f);
-        finishTurnButton.setPosition(Gdx.graphics.getWidth() - 300 - 100, 0);
+        finishTurnButton.setPosition(Gdx.graphics.getWidth() - 300f - 100f, 0);
         finishTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

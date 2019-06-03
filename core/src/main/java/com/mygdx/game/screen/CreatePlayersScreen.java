@@ -142,8 +142,8 @@ public class CreatePlayersScreen implements Screen {
 
         // TODO place these buttons inside the table
         TextButton startGameButton = new TextButton("Start Game", Carcassonne.skin, "menu");
-        startGameButton.setWidth(Gdx.graphics.getWidth() / 4);
-        startGameButton.setPosition(Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, Gdx.graphics.getHeight() * 6 / 9 - marginTop);
+        startGameButton.setWidth((float)Gdx.graphics.getWidth() / 4);
+        startGameButton.setPosition((float)Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6 / 9 - marginTop);
         startGameButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -154,8 +154,8 @@ public class CreatePlayersScreen implements Screen {
         });
 
         TextButton addPlayer = new TextButton("Add player", Carcassonne.skin, "menu");
-        addPlayer.setWidth(Gdx.graphics.getWidth() / 4);
-        addPlayer.setPosition(Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, Gdx.graphics.getHeight() * 6 / 9 + startGameButton.getHeight() * 3 / 2 - marginTop);
+        addPlayer.setWidth((float)Gdx.graphics.getWidth() / 4);
+        addPlayer.setPosition((float)Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6 / 9 + startGameButton.getHeight() * 3 / 2 - marginTop);
         addPlayer.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {

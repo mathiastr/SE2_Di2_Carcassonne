@@ -40,22 +40,18 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private GameBoard gameBoard;
 
-
     private Skin skin;
-    private boolean isLocal;
-    private GameClient gameClient;
-
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
-    public  static TextButton placeMeeple;
+    public static TextButton placeMeeple;
 
     public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
-        for (Player player: players) {
+        for (Player player : players) {
             player.setColor(GameBoard.Color.values()[players.indexOf(player)]);
             for (Meeple m : player.getMeeples()) {
                 m.setColor(player.getColor());
@@ -64,8 +60,6 @@ public class GameScreen implements Screen {
         gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient);
         gameBoard.init();
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        this.isLocal = isLocal;
-        this.gameClient = gameClient;
 
         placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
         placeMeeple.setWidth(Gdx.graphics.getWidth() / 4f);
@@ -83,8 +77,6 @@ public class GameScreen implements Screen {
         stageUI.addActor(placeMeeple);
 
         placeMeeple.setVisible(false);
-
-
 
 
         Gdx.input.setInputProcessor(stage);
@@ -125,7 +117,7 @@ public class GameScreen implements Screen {
         });
 
         camera = (OrthographicCamera) stage.getViewport().getCamera();
-        camera.translate(-Gdx.graphics.getWidth() / 2, -Gdx.graphics.getHeight() / 2);
+        camera.translate((float) -Gdx.graphics.getWidth() / 2, (float) -Gdx.graphics.getHeight() / 2);
 
 
         // TODO currently so we can differentiate between board tiles and currentTile.
@@ -153,7 +145,6 @@ public class GameScreen implements Screen {
         stageUI.addActor(labelTilesLeft);
         stageUI.addActor(currentPlayerLabel);
     }
-
 
 
     @Override
