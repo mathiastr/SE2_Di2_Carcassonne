@@ -441,7 +441,7 @@ public class GameBoard {
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
 
             placeTileAt(currentTile, position);
-            //GameScreen.placeMeeple.setVisible(true);
+            GameScreen.placeMeeple.setVisible(true);
 
 
 

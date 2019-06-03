@@ -97,4 +97,14 @@ public class GameBoardTest {
         assert players.get(1).getNumberOfMeeples() == 0;
 
     }
+
+    @Test
+    public void setCurrentTileTest(){
+        preparePlayers();
+        TileActor newCurrentTile = new TileActor();
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+
+        gb.setCurrentTile(newCurrentTile);
+        Assert.assertEquals(newCurrentTile, gb.getCurrentTile());
+    }
 }

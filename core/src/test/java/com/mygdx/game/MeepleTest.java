@@ -1,40 +1,67 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Files;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Side;
+
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import java.util.Arrays;
+
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.mock;
 
 public class MeepleTest {
 
+    private Stage stageMock;
+    private ArrayList<Player> players;
     private Position posMock;
 
+
     public MeepleTest() {
+        stageMock = mock(Stage.class);
+        Gdx.files = mock(Files.class);
+        Gdx.gl = mock(GL20.class);
         posMock = mock(Position.class);
+
+    }
+    @Before
+    private void preparePlayers() {
+        players = new ArrayList<>();
+        players.add(new Player(GameBoard.Color.black, "A"));
+        players.add(new Player(GameBoard.Color.blue, "B"));
     }
 
+
+    /**
+     * Test throws an exception cause of UI in the code in MeeplePlacement.class
+     */
     @Test
-    public void hasMeepleOnItTrueTest() {
+    public void hasMeepleOnItTest() {
+
+        preparePlayers();
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+        MeeplePlacement mp = new MeeplePlacement(gb);
 
         TileActor t = new TileActor(posMock);
-        City city = new City(Arrays.asList(Side.TOP));
+        gb.setCurrentTile(t);
+        gb.placeCurrentTileAt(posMock);
+        City city = new City(Side.RIGHT);
         t.addFeature(city);
-        t.getFeatures().get(0).setHasMeepleOnIt(true);
-        Assert.assertTrue(t.getFeatures().get(0).hasMeepleOnIt());
-
+        mp.placeMeeple(Side.RIGHT, city, t.getPosition());
+        System.out.print(city.hasMeepleOnIt());
+        Assert.assertTrue(city.hasMeepleOnIt());
     }
 
-    @Test
-    public void hasMeepleOnItFalseTest() {
 
-        TileActor t = new TileActor(posMock);
-        City city = new City(Arrays.asList(Side.BOTTOM));
-        t.addFeature(city);
-        t.getFeatures().get(0).setHasMeepleOnIt(false);
-        Assert.assertFalse(t.getFeatures().get(0).hasMeepleOnIt());
 
-    }
+
 }
+
+
