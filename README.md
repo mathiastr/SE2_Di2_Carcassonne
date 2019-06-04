@@ -1,4 +1,3 @@
-![header](https://steamcdn-a.akamaihd.net/steam/apps/598810/header.jpg?t=1546876854)
 # Carcassonne
 Native Android App for the board game carcassonne using [libgdx](https://libgdx.badlogicgames.com/). This game features local and network multiplayer for up to six players.
 ## Ruleset
@@ -12,5 +11,7 @@ Native Android App for the board game carcassonne using [libgdx](https://libgdx.
 * **Julian Gaggl**
 * **Peter Waysocher**
 * **Samuel Pichler**
+## Screenshot
+![screenshot](https://i.ibb.co/4mw2Z8c/Screenshot-1559627934.png)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
