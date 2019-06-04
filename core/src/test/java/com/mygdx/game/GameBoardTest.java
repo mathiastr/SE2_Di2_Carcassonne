@@ -15,6 +15,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
@@ -97,44 +98,44 @@ public class GameBoardTest {
         players.add(player1);
         players.add(player2);
 
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null, gameScreen);
 
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new Road(Arrays.asList(Side.right)));
+            t.addFeature(new Road(Arrays.asList(Side.RIGHT)));
             Meeple meeple = player1.getUnusedMeeple();
             meeple.setFeature(t.getFeatures().get(0));
-            meeple.setSide(Side.right);
+            meeple.setSide(Side.RIGHT);
             t.addMeeple(meeple);
             gb.addTileOnBoard(t, new Position(-1, 0));
         }
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new Road(Arrays.asList(Side.left, Side.right)));
+            t.addFeature(new Road(Arrays.asList(Side.LEFT, Side.RIGHT)));
             Meeple meeple = player2.getUnusedMeeple();
             meeple.setFeature(t.getFeatures().get(0));
-            meeple.setSide(Side.right);
+            meeple.setSide(Side.RIGHT);
             t.addMeeple(meeple);
             gb.addTileOnBoard(t, new Position(0, 0));
         }
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new Road(Arrays.asList(Side.left, Side.bottom)));
+            t.addFeature(new Road(Arrays.asList(Side.LEFT, Side.BOTTOM)));
             gb.addTileOnBoard(t, new Position(1, 0));
         }
 
         TileActor t = new TileActor();
         {
-            t.addFeature(new Road(Arrays.asList(Side.top)));
-            t.addFeature(new Road(Arrays.asList(Side.right)));
-            t.addFeature(new Road(Arrays.asList(Side.bottom)));
+            t.addFeature(new Road(Arrays.asList(Side.TOP)));
+            t.addFeature(new Road(Arrays.asList(Side.RIGHT)));
+            t.addFeature(new Road(Arrays.asList(Side.BOTTOM)));
             gb.addTileOnBoard(t, new Position(1, -1));
         }
 
-        List<Player> owners = gb.getFeatureOwners(t, t.getFeatureAtSide(Side.top));
+        List<Player> owners = gb.getFeatureOwners(t, t.getFeatureAtSide(Side.TOP));
         Assert.assertTrue(owners.contains(player1));
         Assert.assertTrue(owners.contains(player2));
     }
