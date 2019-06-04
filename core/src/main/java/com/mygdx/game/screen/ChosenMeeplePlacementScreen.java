@@ -31,14 +31,13 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
     private GameBoard gb;
     private TileActor newestTile;
     private List<Feature> features;
-    private Label output;
     private List<TextButton> meepleButtons;
     private Game game;
     private Screen previousScreen;
     private MeeplePlacement mp;
 
 
-    public ChosenMeeplePlacementScreen(GameScreen previousScreen, Game game, GameBoard gb) {
+    ChosenMeeplePlacementScreen(GameScreen previousScreen, Game game, GameBoard gb) {
         this.gb = gb;
         this.previousScreen = previousScreen;
         this.game = game;
@@ -49,7 +48,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
         meepleButtons = new ArrayList<>();
         mp = new MeeplePlacement(gb, previousScreen, new MeepleTextureFactory());
 
-        output = new Label("Where do you want to place your Meeple?", Carcassonne.skin);
+        Label output = new Label("Where do you want to place your Meeple?", Carcassonne.skin);
         output.setAlignment(Align.center);
         output.setY(Gdx.graphics.getHeight()/8f*7f);
         output.setWidth(Gdx.graphics.getWidth());
@@ -86,7 +85,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
     }
 
     private TextButton createMeeplePlacementButton(Feature feature){
-        TextButton placeMeepleButton = new TextButton("On " + feature.getClass().getSimpleName() + " " +feature.getSides(), Carcassonne.skin);
+        TextButton placeMeepleButton = new TextButton(("On " + feature.getClass().getSimpleName() + " " + feature.getSides().get(0)), Carcassonne.skin);
         placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8f);
         placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8f);
 
@@ -98,7 +97,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                ArrayList<Side> sides;
+                List<Side> sides;
                 Side side = null;
                 if(!newestTile.isMonastery() ) {
                     sides = feature.getSides();
@@ -107,7 +106,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen{
                     side = newestTile.getSideAfterRotation(side);}
                 else {
                     for(Feature f : features){
-                        if (f.equals(Road.class)){
+                        if (f instanceof Road){
                             sides = feature.getSides();
                             side = sides.get(0);
                             side = newestTile.getSideAfterRotation(side);

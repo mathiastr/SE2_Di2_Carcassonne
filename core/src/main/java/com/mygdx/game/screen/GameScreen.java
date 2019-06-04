@@ -40,12 +40,10 @@ public class GameScreen implements Screen {
     private OrthographicCamera camera;
     private GameBoard gameBoard;
 
-    private Skin skin;
-
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
-    public  TextButton placeMeeple;
+    public final TextButton placeMeeple;
 
     public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
@@ -59,7 +57,7 @@ public class GameScreen implements Screen {
         }
         gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient, this);
         gameBoard.init();
-        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
         placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
         placeMeeple.setWidth(Gdx.graphics.getWidth() / 4f);

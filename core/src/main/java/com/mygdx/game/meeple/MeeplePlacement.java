@@ -1,10 +1,7 @@
 package com.mygdx.game.meeple;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
@@ -30,7 +27,7 @@ public class MeeplePlacement {
     }
 
 
-    public boolean placeMeeple(Side side, Feature feature, Position pos) {
+    public void placeMeeple(Side side, Feature feature, Position pos) {
         try {
             Meeple meepleForPlacement = gb.getUnusedCurrentPlayerMeeple();
             meepleForPlacement.setSide(side);
@@ -44,7 +41,6 @@ public class MeeplePlacement {
         } catch (Exception e) {
             LOGGER.warning("Exception");
         }
-        return true;
     }
 
 

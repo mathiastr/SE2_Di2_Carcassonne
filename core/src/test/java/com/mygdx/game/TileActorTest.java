@@ -13,14 +13,14 @@ public class TileActorTest {
     @Test
     public void testRotation() {
         for (int i = 0; i < 5; ++i) tile.rotate();
-        assertSame(tile.getSideAfterRotation(Side.TOP), Side.RIGHT);
-        assertSame(tile.getSideAfterRotation(Side.RIGHT), Side.BOTTOM);
-        assertSame(tile.getSideAfterRotation(Side.BOTTOM), Side.LEFT);
-        assertSame(tile.getSideAfterRotation(Side.LEFT), Side.TOP);
-        assertSame(tile.getTileSideAt(Side.TOP), Side.LEFT);
-        assertSame(tile.getTileSideAt(Side.RIGHT), Side.TOP);
-        assertSame(tile.getTileSideAt(Side.BOTTOM), Side.RIGHT);
-        assertSame(tile.getTileSideAt(Side.LEFT), Side.BOTTOM);
+        assertSame(Side.RIGHT, tile.getSideAfterRotation(Side.TOP));
+        assertSame(Side.BOTTOM, tile.getSideAfterRotation(Side.RIGHT));
+        assertSame(Side.LEFT, tile.getSideAfterRotation(Side.BOTTOM));
+        assertSame(Side.TOP, tile.getSideAfterRotation(Side.LEFT));
+        assertSame(Side.LEFT, tile.getTileSideAt(Side.TOP));
+        assertSame(Side.TOP, tile.getTileSideAt(Side.RIGHT));
+        assertSame(Side.RIGHT, tile.getTileSideAt(Side.BOTTOM));
+        assertSame(Side.BOTTOM, tile.getTileSideAt(Side.LEFT));
     }
 
     @Test

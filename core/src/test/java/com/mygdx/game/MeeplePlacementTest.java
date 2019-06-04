@@ -3,8 +3,6 @@ package com.mygdx.game;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.mygdx.game.actor.PlayerStatusActor;
@@ -30,14 +28,11 @@ import static org.mockito.Mockito.when;
 
 public class MeeplePlacementTest {
 
-    private Stage stageMock;
     private ArrayList<Player> players;
     private Position posMock;
-    private Texture meepleTexture;
     private GameScreen gameScreen;
 
     public MeeplePlacementTest() {
-        stageMock = mock(Stage.class);
         Gdx.files = mock(Files.class);
         Gdx.gl = mock(GL20.class);
         posMock = mock(Position.class);
@@ -58,7 +53,6 @@ public class MeeplePlacementTest {
     @Test
     public void hasMeepleOnItTest() throws Exception {
 
-        // TODO: Verify mocks.
         preparePlayers();
 
         // Set up Player mock (needed by GameBoard mock)

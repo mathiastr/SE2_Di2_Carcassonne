@@ -71,7 +71,6 @@ public class GameBoard {
     private TextButton finishTurnButton;
     private boolean tileIsPlaced = false;
     private com.mygdx.game.Player me;
-    private final boolean isLocal;
     private GameClient gameClient;
     private final GameScreen gameScreen;
     private boolean meepleIsPlaced;
@@ -91,7 +90,7 @@ public class GameBoard {
         return statuses;
     }
 
-    public Meeple getUnusedCurrentPlayerMeeple() throws Exception {
+    public Meeple getUnusedCurrentPlayerMeeple() {
         return currentPlayer.getUnusedMeeple();
     }
     private ArrayList<PlayerStatusActor> statuses = new ArrayList<>();
@@ -295,7 +294,7 @@ public class GameBoard {
         numberOfPlayers = players.size();
         this.players = players;
         currentPlayer = players.get(0);
-        this.isLocal = isLocal;
+        boolean isLocal1 = isLocal;
         this.me = me;
         this.gameClient = gameClient;
         this.gameScreen = gameScreen;
@@ -661,7 +660,7 @@ public class GameBoard {
         return Collections.max(players, Comparator.comparing(com.mygdx.game.Player::getScore));
     }
 
-    public void setCurrentTile (TileActor tile){
+    void setCurrentTile(TileActor tile){
         currentTile = tile;
     }
 }

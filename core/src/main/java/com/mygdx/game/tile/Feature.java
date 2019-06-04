@@ -25,7 +25,7 @@ public class Feature {
         sides.add(side);
     }
 
-    public ArrayList<Side> getSides() {
+    public List<Side> getSides() {
         return sides;
     }
 

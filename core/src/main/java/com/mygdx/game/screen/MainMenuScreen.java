@@ -23,7 +23,6 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     private String touch = "touch";
     private String start = "start touch up";
-    private Texture background;
 
     public MainMenuScreen(final Game game1) {
         game = game1;
