@@ -19,7 +19,7 @@ import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
-import com.mygdx.game.network.response.CheatOnScoreMessage;
+import com.mygdx.game.network.response.CheatMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
@@ -306,8 +306,8 @@ public class GameBoard {
                     if (object instanceof TurnEndMessage) {
                         onTurnEnd((TurnEndMessage)object);
                     }
-                    if (object instanceof CheatOnScoreMessage) {
-                        onCheatOnScore((CheatOnScoreMessage)object);
+                    if (object instanceof CheatMessage) {
+                        onCheat((CheatMessage) object);
                     }
 
                     if (object instanceof ErrorMessage) {
@@ -368,8 +368,16 @@ public class GameBoard {
                     @Override
                     public boolean longPress(Actor actor, float x, float  y) {
                         Gdx.app.debug("DEBUG","Long Press");
-                        CheatOnScore();
+                        cheat(CheatType.SCORE, p);
                         return false;
+                    }
+
+                    @Override
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        if (count == 2) {
+                            Gdx.app.debug("DEBUG","double tap");
+                            cheat(CheatType.MEEPLE, p);
+                        }
                     }
 
                     @Override
@@ -433,39 +441,28 @@ public class GameBoard {
         }
     }
 
-    private void onCheatOnScore(CheatOnScoreMessage message) {
-        for (com.mygdx.game.Player p :
-                players) {
-            if(p.equals(message.getPlayer())){
-                p.addScore(100);
-                p.addTimeToDetectUsedCheats(message.getCheatTime());
-                updatePlayersInfo();
-            }
+    private void onCheat(CheatMessage message) {
+        performCheatAction(message.getCaller(), message.getCallee(), message.getType());
+    }
+
+    private void cheat(CheatType type, Player player) {
+
+        performCheatAction(currentPlayer, player, type);
+
+        if(NetworkHelper.getGameManager() != null){
+            NetworkHelper.getGameManager().sendToServer(new CheatMessage(currentPlayer, player, type));
         }
+
 
     }
 
-    private void CheatOnScore() {
-        for (com.mygdx.game.Player p : players
-        ) {
-            if(p.equals(NetworkHelper.getPlayer())){
-                p.addScore(100);
-                p.setTimeToDetectUsedCheats(3);
-                if(NetworkHelper.getGameManager() != null){
-                    NetworkHelper.getGameManager().sendToServer(new CheatOnScoreMessage(3,NetworkHelper.getPlayer()));
-                }
-                updatePlayersInfo();
-            }
-        }
-    }
-
-    public void performCheatAction(com.mygdx.game.Player p) {
-        if (p.equals(currentPlayer)) {
-            p.cheatMeeple();
-        } else if (p.isCheater()) {
-            p.detectCheat();
+    public void performCheatAction(Player caller, Player callee, CheatType type) {
+        if (callee.equals(caller)) {
+            callee.cheat(type);
+        } else if (callee.isCheater()) {
+            callee.detectCheat();
         } else {
-            currentPlayer.detectCheat();
+            caller.detectCheat();
         }
         updatePlayersInfo();
     }

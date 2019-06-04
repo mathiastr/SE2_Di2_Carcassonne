@@ -142,17 +142,17 @@ public class GameBoardTest {
     public void testCheating() {
         preparePlayers();
         GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
-        gb.performCheatAction(players.get(0)); //cheat Meeple
+        gb.performCheatAction(gb.getCurrentPlayer(), players.get(0), ); //cheat Meeple
         assert players.get(0).getNumberOfMeeples() == Player.MEEPLE_COUNT + 1;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
 
         gb.setCurrentPlayer(players.get(1));
 
-        gb.performCheatAction(players.get(0)); //detect cheat rightfully
+        gb.performCheatAction(gb.getCurrentPlayer(), players.get(0), ); //detect cheat rightfully
         assert players.get(0).getNumberOfMeeples() == 0;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
 
-        gb.performCheatAction(players.get(0)); //detect cheat wrongfully
+        gb.performCheatAction(gb.getCurrentPlayer(), players.get(0), ); //detect cheat wrongfully
         assert players.get(0).getNumberOfMeeples() == 0;
         assert players.get(1).getNumberOfMeeples() == 0;
 
