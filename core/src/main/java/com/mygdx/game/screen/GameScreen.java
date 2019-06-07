@@ -26,7 +26,14 @@ import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.TestOutput;
+import com.mygdx.game.tile.City;
+import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.Monastery;
+import com.mygdx.game.tile.Road;
+import com.mygdx.game.utility.Toast;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 // TODO: add the current Tile view (first add UI stage)
@@ -45,6 +52,8 @@ public class GameScreen implements Screen {
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
     public  TextButton placeMeeple;
+    private Toast.ToastFactory meeplePlaced;
+    private final List<Toast> toasts = new LinkedList<Toast>();
 
     public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
@@ -145,6 +154,30 @@ public class GameScreen implements Screen {
         stageUI.addActor(currentPlayerLabel);
     }
 
+    public void createMeepleIsPlacedToast(Feature feature){
+        String meepleType;
+
+        if(feature.getClass().equals(City.class)){
+            meepleType = "knight";
+        }
+        else if(feature.getClass().equals(Monastery.class)){
+            meepleType = "monk";
+        }
+        else if(feature.getClass().equals(Road.class)){
+            meepleType = "highwayman";
+        }
+        else {
+            meepleType = "meeple";
+        }
+
+        String stringForToast = gameBoard.getCurrentPlayer().getName() + " has placed a " + meepleType + " !";
+
+        meeplePlaced = new Toast.ToastFactory.Builder()
+                .font(Carcassonne.skin.getFont("font-big"))
+                .build();
+        toasts.add(meeplePlaced.create(stringForToast, Toast.Length.LONG));
+    }
+
 
     @Override
     public void show() {
@@ -167,6 +200,18 @@ public class GameScreen implements Screen {
         stage.draw();
         stageUI.act();
         stageUI.draw();
+
+        //TODO: figur out if you be able to display a toast without list and iterator
+
+        Iterator<Toast> it = toasts.iterator();
+        while (it.hasNext()) {
+            Toast t = it.next();
+            if (!t.render(Gdx.graphics.getDeltaTime())) {
+                it.remove(); // toast finished -> remove
+            } else {
+                break; // first toast still active, break the loop
+            }
+        }
     }
 
     @Override
