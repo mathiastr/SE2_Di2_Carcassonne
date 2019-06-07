@@ -47,7 +47,7 @@ public class GameBoard {
    private ArrayList<PlayerStatusActor> playerActorList;
 
     public enum Color {
-        yellow, red, green, blue, black, grey;
+        YELLOW, RED, GREEN, BLUE, BLACK, GREY;
 
         public static Color getRandomColorExcept(List<Color> colors) {
             Color randomColor = getRandom();
@@ -620,11 +620,6 @@ public class GameBoard {
         int lastElement = usedTiles.size()-1;
         return usedTiles.get(lastElement);
     }
-
-    public List<TileActor> getNewestTileList() {
-        return usedTiles;
-    }
-
 
     public static Map<Position, TileActor> getUsedTileHash() {
         return usedTileHash;

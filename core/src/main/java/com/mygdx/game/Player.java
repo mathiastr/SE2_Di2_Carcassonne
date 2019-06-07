@@ -83,7 +83,7 @@ public class Player {
     public Player(PlayerGameMessage p) {
         this.score = p.getScore();
         this.name = p.name;
-        this.color = GameBoard.Color.green;
+        this.color = GameBoard.Color.GREEN;
         this.meeples = new ArrayList<Meeple>();
         for (int i = 0; i < MEEPLE_COUNT; i++) {
             this.meeples.add(new Meeple(this.color));

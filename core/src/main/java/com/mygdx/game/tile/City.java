@@ -5,7 +5,7 @@ import java.util.List;
 public class City extends Feature {
     private boolean coatOfArms;
 
-    public City() {
+    public City(Side right, Side left, Side top, Side bottom) {
         super();
         this.coatOfArms = false;
     }

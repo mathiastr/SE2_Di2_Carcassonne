@@ -11,17 +11,17 @@ public class MeepleTextureFactory {
     private Texture createMeepleTexture(GameBoard.Color color)
     {
         switch (color) {
-            case red:
+            case RED:
                 return new Texture(Gdx.files.internal("redmeeple.png"));
-            case blue:
+            case BLUE:
                 return new Texture(Gdx.files.internal("bluemeeple.png"));
-            case grey:
+            case GREY:
                 return new Texture(Gdx.files.internal("greymeeple.png"));
-            case black:
+            case BLACK:
                 return new Texture(Gdx.files.internal("blackmeeple.png"));
-            case green:
+            case GREEN:
                 return new Texture(Gdx.files.internal("greenmeeple.png"));
-            case yellow:
+            case YELLOW:
                 return new Texture(Gdx.files.internal("yellowmeeple.png"));
             default:
                 return new Texture(Gdx.files.internal("greenmeeple.png"));

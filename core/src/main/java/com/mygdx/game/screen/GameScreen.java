@@ -4,8 +4,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -155,6 +157,10 @@ public class GameScreen implements Screen {
     }
 
     public void createMeepleIsPlacedToast(Feature feature){
+        BitmapFont font = Carcassonne.skin.getFont("font-big");
+        font.getData().setScale(0.8f, 0.8f);
+        Color backgroundColor = new Color(55f / 256, 55f / 256, 55f / 256, 1);
+        Color fontColor = new Color(1, 1, 1, 1);
         String meepleType;
 
         if(feature.getClass().equals(City.class)){
@@ -170,12 +176,10 @@ public class GameScreen implements Screen {
             meepleType = "meeple";
         }
 
-        String stringForToast = gameBoard.getCurrentPlayer().getName() + " has placed a " + meepleType + " !";
+        String stringForToast = gameBoard.getCurrentPlayer().getName() + " has placed a " + meepleType;
 
-        meeplePlaced = new Toast.ToastFactory.Builder()
-                .font(Carcassonne.skin.getFont("font-big"))
-                .build();
-        toasts.add(meeplePlaced.create(stringForToast, Toast.Length.LONG));
+        Toast meeplePlaced = new Toast(stringForToast, Toast.Length.LONG, font, backgroundColor, 0.5f, 1f,fontColor,Gdx.graphics.getHeight() / 2f,10 );
+        toasts.add(meeplePlaced);
     }
 
 
@@ -189,7 +193,7 @@ public class GameScreen implements Screen {
         if (gameBoard.tilesLeft() == 0)
             game.setScreen(new GameOverScreen(game, gameBoard.getWinningPlayer()));
 
-        // clear the screen with dark blue
+        // clear the screen with dark BLUE
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

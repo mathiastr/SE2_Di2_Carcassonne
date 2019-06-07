@@ -58,7 +58,7 @@ public class Toast {
     private float fontX, fontY; // LEFT TOP corner
     private int fontWidth;
 
-    Toast(
+    public Toast(
             String text,
             Length length,
             BitmapFont font,

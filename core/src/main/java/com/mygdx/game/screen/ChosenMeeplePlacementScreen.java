@@ -13,9 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.mygdx.game.Board;
 import com.mygdx.game.Carcassonne;
-import com.mygdx.game.Position;
 import com.mygdx.game.meeple.MeepleTextureFactory;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
@@ -32,7 +30,6 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
     private Stage stage;
     private GameBoard gb;
     private TileActor newestTile;
-    private List<TileActor> usedTiles;
     private List<Feature> features;
     private List<TextButton> meepleButtons;
     private Game game;

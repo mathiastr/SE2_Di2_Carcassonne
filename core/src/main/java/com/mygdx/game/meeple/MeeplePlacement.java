@@ -75,7 +75,7 @@ public class MeeplePlacement {
 
 
         for (int i = 0; i < gb.getPlayers().size(); i++) {
-            gb.getPlayerActor(i).update();
+            gb.getPlayerActor(i).updateInfo();
         }
 
         gb.addActorToBoardStage(meepleImg);

@@ -23,7 +23,7 @@ public class TileActor extends Actor {
     private Texture texture;
     private Texture textureBig;
     private Position position;
-    private ArrayList<Meeple> meeples = new ArrayList<>(); // TODO: maybe add meeple field to Feature class
+    private ArrayList<Meeple> meeples = new ArrayList<>();
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
     private boolean monastery = false;
 
@@ -110,11 +110,11 @@ public class TileActor extends Actor {
         this.features.add(feature);
     }
 
-    public TileActor getTileOnSide(Side side) {
+    private TileActor getTileOnSide(Side side) {
         return GameBoard.getUsedTileHash().get(this.position.getPositionOnSide(side));
     }
 
-    public void updateTileFeaturesRecursive(){
+    private void updateTileFeaturesRecursive(){
         for (Side side : Side.values()){
             TileActor borderingTile = this.getTileOnSide(side);
             Feature feature = this. getFeatureAtSide(side);

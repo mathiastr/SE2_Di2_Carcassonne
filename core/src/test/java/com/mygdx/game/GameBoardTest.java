@@ -34,8 +34,8 @@ public class GameBoardTest {
 
     public void preparePlayers() {
         players = new ArrayList<>();
-        players.add(new Player(GameBoard.Color.black, "A"));
-        players.add(new Player(GameBoard.Color.blue, "B"));
+        players.add(new Player(GameBoard.Color.BLACK, "A"));
+        players.add(new Player(GameBoard.Color.BLUE, "B"));
     }
 
     @Test
@@ -89,11 +89,11 @@ public class GameBoardTest {
         Player player1 = new Player();
         Player player2 = new Player();
 
-        player1.setColor(GameBoard.Color.black);
-        player2.setColor(GameBoard.Color.green);
+        player1.setColor(GameBoard.Color.BLACK);
+        player2.setColor(GameBoard.Color.GREEN);
 
-        player1.getMeeples().add(new Meeple(GameBoard.Color.black));
-        player2.getMeeples().add(new Meeple(GameBoard.Color.green));
+        player1.getMeeples().add(new Meeple(GameBoard.Color.BLACK));
+        player2.getMeeples().add(new Meeple(GameBoard.Color.GREEN));
 
         players.add(player1);
         players.add(player2);
@@ -173,4 +173,5 @@ public class GameBoardTest {
         gb.setCurrentTile(newCurrentTile);
         Assert.assertEquals(newCurrentTile, gb.getCurrentTile());
     }
+
 }
