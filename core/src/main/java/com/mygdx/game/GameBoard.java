@@ -79,6 +79,11 @@ public class GameBoard {
     private List<com.mygdx.game.Player> players;
     private static HashMap<Position, TileActor> usedTileHash = new HashMap<>();
     private ArrayList<TileActor> hints = new ArrayList<>();
+
+    public ArrayList<TileActor> getUsedTiles() {
+        return usedTiles;
+    }
+
     private ArrayList<TileActor> usedTiles = new ArrayList<>();
     private Random rand;
 

@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class Board {
     private List<TileActor> availableTiles = new ArrayList<>();
-    private HashMap<Position, TileActor> placedTiles = new HashMap<>();
+    public HashMap<Position, TileActor> placedTiles = new HashMap<>();
 
     public List<TileActor> getAvailableTiles() {
         return availableTiles;

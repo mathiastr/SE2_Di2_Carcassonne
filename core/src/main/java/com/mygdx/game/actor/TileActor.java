@@ -3,6 +3,7 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.meeple.Meeple;
@@ -39,7 +40,7 @@ public class TileActor extends Actor {
     }
 
     public void removeMeeple(Meeple meeple) {
-        for (Meeple m: meeples) {
+        for (Meeple m : meeples) {
             // todo
         }
     }
@@ -81,7 +82,7 @@ public class TileActor extends Actor {
         position = aPosition;
         setWidth(SIZE);
         setHeight(SIZE);
-        setPosition((float)position.getX() * SIZE, (float)position.getY() * SIZE);
+        setPosition((float) position.getX() * SIZE, (float) position.getY() * SIZE);
     }
 
     public TileActor() {
@@ -109,14 +110,38 @@ public class TileActor extends Actor {
         this.features.add(feature);
     }
 
-    public TileActor getTileOnSide(Side side)
-    {
+    public TileActor getTileOnSide(Side side) {
         return GameBoard.getUsedTileHash().get(this.position.getPositionOnSide(side));
     }
 
-    public void updateTileFeatures()
-    {
-        for(Side side : Side.values()) {
+    public void updateTileFeaturesRecursive(){
+        for (Side side : Side.values()){
+            TileActor borderingTile = this.getTileOnSide(side);
+            Feature feature = this. getFeatureAtSide(side);
+            try {
+                if (borderingTile != null) {
+                    Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
+
+                    // if features are of the same type
+                    if (feature.getClass().equals(borderingFeature.getClass())) {
+                        // then act like the feature of this tile has a meeple on it
+                        // if the bordering feature has a meeple on it.
+                        borderingFeature.setHasMeepleOnIt(true);
+                    }
+
+                }
+
+            } catch (NullPointerException e) {
+
+                LOGGER.warning("NullPointerException");
+
+            }
+        }
+    }
+
+
+    public void updateTileFeatures() {
+        for (Side side : Side.values()) {
             TileActor borderingTile = this.getTileOnSide(side);
             Feature feature = this.getFeatureAtSide(side);
             try {
@@ -128,13 +153,18 @@ public class TileActor extends Actor {
                         // then act like the feature of this tile has a meeple on it
                         // if the bordering feature has a meeple on it.
                         feature.setHasMeepleOnIt(borderingFeature.hasMeepleOnIt());
-                    }
-                }
-            }catch (NullPointerException e){
+                        updateTileFeaturesRecursive();
 
-                LOGGER.warning("NullPointerException" );
+                    }
+
+                }
+
+            } catch (NullPointerException e) {
+
+                LOGGER.warning("NullPointerException");
 
             }
+
         }
     }
 
@@ -164,7 +194,7 @@ public class TileActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, (float)360 - rotation * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+        batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, (float) 360 - rotation * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
     }
 
     public Texture getTexture() {
@@ -181,13 +211,16 @@ public class TileActor extends Actor {
 
     public void setPosition(Position position) {
         this.position = position;
-        setPosition((float)position.getX() * SIZE, (float)position.getY() * SIZE);
+        setPosition((float) position.getX() * SIZE, (float) position.getY() * SIZE);
     }
+
     public void setMonastery() {
         monastery = true;
     }
 
-    public boolean isMonastery() { return monastery; }
+    public boolean isMonastery() {
+        return monastery;
+    }
 
     public boolean areSidesConnected(Side side1, Side side2, FeatureType type) {
 

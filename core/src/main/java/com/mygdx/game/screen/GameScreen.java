@@ -21,6 +21,7 @@ import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
+import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
