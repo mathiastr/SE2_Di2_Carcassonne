@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -16,7 +17,6 @@ import com.mygdx.game.actor.AddTileActor;
 import com.mygdx.game.actor.PlayerStatusActor;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.emotes.Emote;
-import com.mygdx.game.emotes.EmoteManager;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.network.GameClient;
@@ -31,7 +31,6 @@ import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Side;
-import com.mygdx.game.utility.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -84,7 +83,6 @@ public class GameBoard {
 
     private ArrayList<PlayerStatusActor> statuses = new ArrayList<>();
     private com.mygdx.game.Board board;
-    private EmoteManager emoteManager;
 
     private TileActor currentTile;
 
@@ -277,10 +275,12 @@ public class GameBoard {
         return (currentPlayer.getId() == NetworkHelper.getPlayer().getId() || gameClient == null);
     }
 
+    public GameScreen gameScreen;
 
-    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
+    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
+        gameScreen = screen;
 
         numberOfPlayers = players.size();
         this.players = players;
@@ -387,8 +387,6 @@ public class GameBoard {
             stageOfUI.addActor(playerStatusActor);
             playerActorList.add(playerStatusActor);
         }
-        emoteManager = new EmoteManager(this);
-        emoteManager.init(statuses);
     }
 
     public List<com.mygdx.game.Player> getFeatureOwners(TileActor tile, Feature feature) {
@@ -441,19 +439,14 @@ public class GameBoard {
     }
 
     private void onEmote(EmoteMessage emoteMessage) {
-        Player player = players.stream().filter(p -> p.getId() == (emoteMessage.getPlayer().getId())).findAny().orElse(null);
-        if (player != null) {
-            emoteManager.showEmoteFromPlayer(emoteMessage.getEmote(), emoteMessage.getPlayer());
-        }
+        players.stream().filter(p -> p.getId() == (emoteMessage.getPlayer().getId())).findAny().ifPresent(player -> gameScreen.showEmote(emoteMessage));
     }
 
     public void showEmote(Emote emote) {
-        Gdx.app.debug("DEBUG", "show emote " + emote.toString());
-        if(gameClient != null && NetworkHelper.getGameManager() != null){
+        if (gameClient != null && NetworkHelper.getGameManager() != null){
             NetworkHelper.getGameManager().sendToServer(new EmoteMessage(emote, me));
         }
     }
-
 
     private void onCheatOnScore(CheatOnScoreMessage message) {
         for (com.mygdx.game.Player p :

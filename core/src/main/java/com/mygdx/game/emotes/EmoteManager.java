@@ -2,14 +2,10 @@ package com.mygdx.game.emotes;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.scenes.scene2d.Action;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.actions.AlphaAction;
-import com.badlogic.gdx.scenes.scene2d.actions.DelayAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RunnableAction;
 import com.badlogic.gdx.scenes.scene2d.actions.SequenceAction;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,22 +14,21 @@ import com.badlogic.gdx.utils.Align;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
 import com.mygdx.game.actor.PlayerStatusActor;
-import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.network.response.EmoteMessage;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
-
-import javax.swing.GroupLayout;
 
 public class EmoteManager {
-    GameBoard gameBoard;
+    private Stage emoteStage;
+    private GameBoard gameBoard;
+
     private class PlayerEmote {
         Player player;
         Emote emote;
-        public PlayerEmote(Player p, Emote e) {
+
+        PlayerEmote(Player p, Emote e) {
             player = p;
             emote = e;
         }
@@ -54,34 +49,31 @@ public class EmoteManager {
 
     private Map<PlayerEmote, Image> emoteImages = new HashMap<>();
 
-    public EmoteManager(GameBoard gb) {
+    public EmoteManager(GameBoard gb, Stage stage) {
         gameBoard = gb;
-    }
-
-    public void init(List<PlayerStatusActor> statuses) {
+        this.emoteStage = stage;
         generateTinyClickEmotes();
-        generateEmotesForPlayers(statuses);
+        generateEmotesForPlayers();
     }
 
-    private void generateEmotesForPlayers(List<PlayerStatusActor> statuses) {
+    private void generateEmotesForPlayers() {
         Map<Emote, Texture> emoteTextures = new HashMap<>();
         emoteTextures.put(Emote.cool, new Texture(Gdx.files.internal("emotes/glasses.png")));
         emoteTextures.put(Emote.happy, new Texture(Gdx.files.internal("emotes/happy.png")));
         emoteTextures.put(Emote.angry, new Texture(Gdx.files.internal("emotes/angry.png")));
-        for (PlayerStatusActor psa : statuses) {
+        for (PlayerStatusActor psa : gameBoard.getStatuses()) {
             for (Map.Entry<Emote, Texture> entry2 : emoteTextures.entrySet()) {
-                Emote e = entry2.getKey();
-                Texture t = entry2.getValue();
-                Image emoteImage = new Image(t);
-                emoteImage.setName(e.toString()+t.toString());
-                emoteImage.setPosition(psa.getX() + psa.getWidth() / 2f, psa.getY()-50);
-                emoteImage.setScale(.4f);
-                emoteImages.put(new PlayerEmote(psa.getPlayer(), e), emoteImage);
-                //emoteImage.setVisible(false);
+                Emote emote = entry2.getKey();
+                Texture texture = entry2.getValue();
 
-                gameBoard.getStageOfUI().addActor(emoteImage);
+                Image emoteImage = new Image(texture);
+                emoteImage.setName(emote.toString() + texture.toString());
+                emoteImage.setPosition(psa.getX() + psa.getWidth() / 4f, psa.getY() + psa.getHeight() / 4f);
+                emoteImage.setScale(.4f);
+                emoteImages.put(new PlayerEmote(psa.getPlayer(), emote), emoteImage);
+
+                emoteStage.addActor(emoteImage);
                 emoteImage.setTouchable(Touchable.disabled);
-                //emoteImage.addAction(Actions.alpha(0));
                 SequenceAction sq = new SequenceAction();
                 sq.addAction(Actions.alpha(0));
                 emoteImage.addAction(sq);
@@ -96,11 +88,10 @@ public class EmoteManager {
         emotes.put(Emote.angry, new Image(new Texture(Gdx.files.internal("emotes/angry_tiny_b.png"))));
 
         Table emoteTable = new Table();
-        float size = Gdx.app.getGraphics().getHeight()/10f;
+        float size = Gdx.app.getGraphics().getHeight() / 10f;
         int padding = 20;
 
-        emoteTable.setPosition(size/2+5, (padding+size)*emotes.size()/2 + Gdx.graphics.getHeight()/8f+10+size); // TODO
-        //emoteTable.setDebug(true);
+        emoteTable.setPosition(size / 2 + 5, (padding + size) * emotes.size() / 2 + Gdx.graphics.getHeight() / 8f + 10 + size);
         for (Map.Entry<Emote, Image> entry : emotes.entrySet()) {
             Emote emote = entry.getKey();
             Image image = entry.getValue();
@@ -130,22 +121,15 @@ public class EmoteManager {
             }
         });
 
-        gameBoard.getStageOfUI().addActor(emoteTable);
+        emoteStage.addActor(emoteTable);
     }
 
-    public void showEmoteFromPlayer(Emote emote, Player player) {
-        Image image = emoteImages.get(new PlayerEmote(player, emote));
+    public void showEmoteFromPlayer(EmoteMessage emoteMessage) {
+        Image image = emoteImages.get(new PlayerEmote(emoteMessage.getPlayer(), emoteMessage.getEmote()));
         SequenceAction sequence = new SequenceAction();
-        //image.setVisible(true);
-        //sequence.addAction(Actions.show());
         sequence.addAction(Actions.fadeIn(1));
         sequence.addAction(Actions.delay(1));
         sequence.addAction(Actions.fadeOut(1));
-        //sequence.addAction(Actions.hide());
-        // postaction setvisible false
-        TileActor a = gameBoard.getCurrentTile();
-        gameBoard.getCurrentTile().remove();
         image.addAction(sequence);
-        gameBoard.getStageOfUI().addActor(a);
     }
 }

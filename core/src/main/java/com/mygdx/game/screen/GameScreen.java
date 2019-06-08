@@ -6,73 +6,55 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
-import com.mygdx.game.emotes.Emote;
+import com.mygdx.game.emotes.EmoteManager;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.GameClient;
-import com.mygdx.game.network.NetworkHelper;
-import com.mygdx.game.network.TestOutput;
+import com.mygdx.game.network.response.EmoteMessage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-// TODO: add the current Tile view (first add UI stage)
-// TODO: add Players and turnbased game (also add the playerUIs with scores...)
-// TODO: add algorithmic for scoring
-// TODO: "Home-Button": goes back to baseTile and resets zoom.
 
 public class GameScreen implements Screen {
     private Game game;
     private Stage stage;
     private Stage stageUI;
+    private Stage stageEmote;
     private OrthographicCamera camera;
     private GameBoard gameBoard;
-
-
-    private Skin skin;
-    private boolean isLocal;
-    private GameClient gameClient;
-
 
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
     public  static TextButton placeMeeple;
 
+    private boolean show_emote = false;
+    private EmoteManager emoteManager;
+    private EmoteMessage emoteMessage;
+
     public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
+        stageEmote = new Stage(new ScreenViewport());
         for (Player player: players) {
             player.setColor(GameBoard.Color.values()[players.indexOf(player)]);
             for (Meeple m : player.getMeeples()) {
                 m.setColor(player.getColor());
             }
         }
-        gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient);
+        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient);
         gameBoard.init();
-        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        this.isLocal = isLocal;
-        this.gameClient = gameClient;
 
         placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
         placeMeeple.setWidth(Gdx.graphics.getWidth() / 4f);
@@ -91,18 +73,7 @@ public class GameScreen implements Screen {
 
         placeMeeple.setVisible(false);
 
-
-
-
         Gdx.input.setInputProcessor(stage);
-
-        if (NetworkHelper.getGameManager() != null) {
-            NetworkHelper.getGameManager().addListener(new Listener() {
-                public void received(Connection connection, Object object) {
-                    receive(connection, object);
-                }
-            });
-        }
 
         stage.addListener(new InputListener() {
             @Override
@@ -132,16 +103,11 @@ public class GameScreen implements Screen {
         });
 
         camera = (OrthographicCamera) stage.getViewport().getCamera();
-        camera.translate(-Gdx.graphics.getWidth() / 2, -Gdx.graphics.getHeight() / 2);
-
-
-        // TODO currently so we can differentiate between board tiles and currentTile.
-        // TODO show currentTile in right corner and make it bigger.
-        camera.zoom *= 1.2;
-        camera.update();
+        camera.translate(-Gdx.graphics.getWidth() / 2f, -Gdx.graphics.getHeight() / 2f);
 
         multiplexer = new InputMultiplexer();
         /* UI gets click first (call event.handle() in listener to not pass the event down to game stage */
+        multiplexer.addProcessor(stageEmote);
         multiplexer.addProcessor(stageUI);
         multiplexer.addProcessor(stage);
 
@@ -159,6 +125,13 @@ public class GameScreen implements Screen {
 
         stageUI.addActor(labelTilesLeft);
         stageUI.addActor(currentPlayerLabel);
+
+        if (!isLocal) emoteManager = new EmoteManager(gameBoard, stageEmote);
+    }
+
+    public void showEmote(EmoteMessage em) {
+        emoteMessage = em;
+        show_emote = true;
     }
 
     @Override
@@ -178,10 +151,17 @@ public class GameScreen implements Screen {
         labelTilesLeft.setText("Tiles left: " + gameBoard.tilesLeft());
         currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer().getName());
 
+        if (show_emote) {
+            emoteManager.showEmoteFromPlayer(emoteMessage);
+            show_emote = false;
+        }
+
+        stageEmote.act();
         stage.act();
-        stage.draw();
         stageUI.act();
+        stage.draw();
         stageUI.draw();
+        stageEmote.draw();
     }
 
     @Override
@@ -208,14 +188,5 @@ public class GameScreen implements Screen {
     public void dispose() {
         stage.dispose();
         stageUI.dispose();
-    }
-
-    public void receive(Connection connection, Object object) {
-        //do here what should happen if you get a message of type ...
-        //send message with "Networkhelper.getGameManager.sentToAll(message)
-        //before register the class in the Network class
-        if (object instanceof TestOutput) {
-            //do something
-        }
     }
 }
