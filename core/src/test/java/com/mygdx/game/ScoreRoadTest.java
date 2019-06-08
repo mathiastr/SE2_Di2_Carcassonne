@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
+import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
