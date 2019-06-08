@@ -19,13 +19,13 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
-public class GameBoardTest {
+public class ScoreRoadTest {
 
     private GameScreen screenMock;
     private Stage stageMock;
     private ArrayList<Player> players;
 
-    public GameBoardTest() {
+    public ScoreRoadTest() {
         screenMock = mock(GameScreen.class);
         stageMock = mock(Stage.class);
         Gdx.files = mock(Files.class);
