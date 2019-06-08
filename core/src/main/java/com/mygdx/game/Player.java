@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.PlayerGameMessage;
@@ -82,7 +81,7 @@ public class Player {
     }
 
     public Player(PlayerGameMessage p) {
-        this.score = p.score;
+        this.score = p.getScore();
         this.name = p.name;
         this.color = GameBoard.Color.green;
         this.meeples = new ArrayList<Meeple>();

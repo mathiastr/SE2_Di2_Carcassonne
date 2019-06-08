@@ -36,7 +36,7 @@ public class GameScreen implements Screen {
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
-    public  static TextButton placeMeeple;
+    public static TextButton placeMeeple;
 
     private boolean show_emote = false;
     private EmoteManager emoteManager;

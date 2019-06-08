@@ -15,8 +15,8 @@ import com.mygdx.game.emotes.Emote;
 
 public class PlayerStatusActor extends Actor {
     private Texture texture;
-    public static final int WIDTH = 350;
-    public static final int HEIGHT = 270;
+    public static final float WIDTH = 350;
+    public static final float HEIGHT = 270;
     private final BitmapFont font;
     private Player player;
     private Table info;
