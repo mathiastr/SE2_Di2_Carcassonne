@@ -54,11 +54,11 @@ public class Toast {
     private int toastWidth;
     private int toastHeight;
     private float timeToLive;
-    private float positionX, positionY; // left bottom corner
-    private float fontX, fontY; // left top corner
+    private float positionX, positionY; // LEFT BOTTOM corner
+    private float fontX, fontY; // LEFT TOP corner
     private int fontWidth;
 
-    Toast(
+    public Toast(
             String text,
             Length length,
             BitmapFont font,
@@ -100,7 +100,7 @@ public class Toast {
         toastHeight = fontHeight + 2 * margin;
         toastWidth = fontWidth + 2 * margin;
 
-        positionX = (screenWidth / 2) - toastWidth / 2;
+        positionX = (screenWidth / 2f) - toastWidth / 2f;
 
         fontX = positionX + margin;
         fontY = positionY + margin + fontHeight;
@@ -120,9 +120,9 @@ public class Toast {
         }
 
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.circle(positionX, positionY + toastHeight / 2, toastHeight / 2);
+        renderer.circle(positionX, positionY + toastHeight / 2f, toastHeight / 2f);
         renderer.rect(positionX, positionY, toastWidth, toastHeight);
-        renderer.circle(positionX + toastWidth, positionY + toastHeight / 2, toastHeight / 2);
+        renderer.circle(positionX + toastWidth, positionY + toastHeight / 2f, toastHeight / 2f);
         renderer.end();
 
         spriteBatch.begin();
@@ -225,8 +225,8 @@ public class Toast {
 
             /**
              * Specify vertical position for toasts<br/>
-             * Default: bottom part
-             * @param positionY vertical position of bottom left corner
+             * Default: BOTTOM part
+             * @param positionY vertical position of BOTTOM LEFT corner
              * @return this
              */
             public Builder positionY(float positionY) {

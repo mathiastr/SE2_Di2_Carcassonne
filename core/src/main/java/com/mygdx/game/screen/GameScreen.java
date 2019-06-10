@@ -4,8 +4,10 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,10 +21,18 @@ import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
 import com.mygdx.game.emotes.EmoteManager;
+import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.response.EmoteMessage;
+import com.mygdx.game.tile.City;
+import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.Monastery;
+import com.mygdx.game.tile.Road;
+import com.mygdx.game.utility.Toast;
 
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class GameScreen implements Screen {
@@ -36,7 +46,9 @@ public class GameScreen implements Screen {
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
-    public static TextButton placeMeeple;
+    public  TextButton placeMeeple;
+    private Toast.ToastFactory meeplePlaced;
+    private final List<Toast> toasts = new LinkedList<Toast>();
 
     private boolean show_emote = false;
     private EmoteManager emoteManager;
@@ -53,7 +65,7 @@ public class GameScreen implements Screen {
                 m.setColor(player.getColor());
             }
         }
-        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient);
+        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient, this);
         gameBoard.init();
 
         placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
@@ -129,6 +141,32 @@ public class GameScreen implements Screen {
         if (!isLocal) emoteManager = new EmoteManager(gameBoard, stageEmote);
     }
 
+    public void createMeepleIsPlacedToast(Feature feature){
+        BitmapFont font = Carcassonne.skin.getFont("font-big");
+        font.getData().setScale(0.8f, 0.8f);
+        Color backgroundColor = new Color(55f / 256, 55f / 256, 55f / 256, 1);
+        Color fontColor = new Color(1, 1, 1, 1);
+        String meepleType;
+
+        if(feature.getClass().equals(City.class)){
+            meepleType = "knight";
+        }
+        else if(feature.getClass().equals(Monastery.class)){
+            meepleType = "monk";
+        }
+        else if(feature.getClass().equals(Road.class)){
+            meepleType = "highwayman";
+        }
+        else {
+            meepleType = "meeple";
+        }
+
+        String stringForToast = gameBoard.getCurrentPlayer().getName() + " has placed a " + meepleType;
+
+        Toast meeplePlaced = new Toast(stringForToast, Toast.Length.LONG, font, backgroundColor, 0.5f, 1f,fontColor,Gdx.graphics.getHeight() / 2f,10 );
+        toasts.add(meeplePlaced);
+    }
+
     public void showEmote(EmoteMessage em) {
         emoteMessage = em;
         show_emote = true;
@@ -144,11 +182,11 @@ public class GameScreen implements Screen {
         if (gameBoard.tilesLeft() == 0)
             game.setScreen(new GameOverScreen(game, gameBoard.getWinningPlayer()));
 
-        // clear the screen with dark blue
+        // clear the screen with dark BLUE
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        labelTilesLeft.setText("Tiles left: " + gameBoard.tilesLeft());
+        labelTilesLeft.setText("Tiles LEFT: " + gameBoard.tilesLeft());
         currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer().getName());
 
         if (show_emote) {
@@ -162,6 +200,18 @@ public class GameScreen implements Screen {
         stage.draw();
         stageUI.draw();
         stageEmote.draw();
+
+        //TODO: figur out if you be able to display a toast without list and iterator
+
+        Iterator<Toast> it = toasts.iterator();
+        while (it.hasNext()) {
+            Toast t = it.next();
+            if (!t.render(Gdx.graphics.getDeltaTime())) {
+                it.remove(); // toast finished -> remove
+            } else {
+                break; // first toast still active, break the loop
+            }
+        }
     }
 
     @Override

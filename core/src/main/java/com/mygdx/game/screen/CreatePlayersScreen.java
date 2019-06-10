@@ -125,8 +125,8 @@ public class CreatePlayersScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
 
-        players.add(new Player(GameBoard.Color.red, "Player 1"));
-        players.add(new Player(GameBoard.Color.blue, "Player 2"));
+        players.add(new Player(GameBoard.Color.RED, "Player 1"));
+        players.add(new Player(GameBoard.Color.BLUE, "Player 2"));
 
         NetworkHelper.setPlayer(players.get(0));
 

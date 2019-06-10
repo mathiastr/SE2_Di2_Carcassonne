@@ -25,7 +25,7 @@ public class Feature {
         sides.add(side);
     }
 
-    public ArrayList<Side> getSides() {
+    public List<Side> getSides() {
         return sides;
     }
 
@@ -46,7 +46,7 @@ public class Feature {
                 '}';
     }
 
-    public boolean isHasMeepleOnIt(){
+    public boolean hasMeepleOnIt(){
         return hasMeepleOnIt;
     }
 
@@ -55,8 +55,10 @@ public class Feature {
     }
 
     public void addMeeple(){
-        if(hasMeepleOnIt == false ){
+        if(!hasMeepleOnIt){
             setHasMeepleOnIt(true);
         }
     }
+
+
 }
