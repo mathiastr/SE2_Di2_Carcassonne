@@ -294,7 +294,6 @@ public class GameBoard {
         return (currentPlayer.getId() == NetworkHelper.getPlayer().getId() || gameClient == null);
     }
 
-    public GameScreen gameScreen;
 
     public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen) {
         stageOfBoard = stageGame;

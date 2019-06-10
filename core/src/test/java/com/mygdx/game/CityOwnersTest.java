@@ -24,17 +24,19 @@ public class CityOwnersTest {
     GameScreen screenMock;
     Stage stageMock;
     ArrayList<Player> players;
+    private final GameScreen gameScreen;
 
     public CityOwnersTest() {
         stageMock = mock(Stage.class);
         Gdx.files = mock(Files.class);
         Gdx.gl = mock(GL20.class);
+        gameScreen = mock(GameScreen.class);
     }
 
     private void preparePlayers() {
         players = new ArrayList<>();
-        players.add(new Player(GameBoard.Color.black, "A"));
-        players.add(new Player(GameBoard.Color.green, "B"));
+        players.add(new Player(GameBoard.Color.BLACK, "A"));
+        players.add(new Player(GameBoard.Color.GREEN, "B"));
     }
 
     @Test
@@ -46,27 +48,27 @@ public class CityOwnersTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
 
         players = new ArrayList<>();
         Player player1 = new Player();
         Player player2 = new Player();
 
-        player1.setColor(GameBoard.Color.black);
-        player2.setColor(GameBoard.Color.green);
+        player1.setColor(GameBoard.Color.BLACK);
+        player2.setColor(GameBoard.Color.GREEN);
 
-        player1.getMeeples().add(new Meeple(GameBoard.Color.black));
+        player1.getMeeples().add(new Meeple(GameBoard.Color.BLACK));
 
-        player2.getMeeples().add(new Meeple(GameBoard.Color.green));
-        player2.getMeeples().add(new Meeple(GameBoard.Color.green));
+        player2.getMeeples().add(new Meeple(GameBoard.Color.GREEN));
+        player2.getMeeples().add(new Meeple(GameBoard.Color.GREEN));
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new City(Arrays.asList(Side.right)));
+            t.addFeature(new City(Arrays.asList(Side.RIGHT)));
 
             Meeple meeple = player1.getUnusedMeeple();
             meeple.setFeature(t.getFeatures().get(0));
-            meeple.setSide(Side.right);
+            meeple.setSide(Side.RIGHT);
             t.addMeeple(meeple);
 
             gb.addTileOnBoard(t, new Position(0, 0));
@@ -74,23 +76,23 @@ public class CityOwnersTest {
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new City(Arrays.asList(Side.left, Side.right, Side.bottom)));
+            t.addFeature(new City(Arrays.asList(Side.LEFT, Side.RIGHT, Side.BOTTOM)));
             gb.addTileOnBoard(t, new Position(1, 0));
         }
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new City(Arrays.asList(Side.left, Side.bottom)));
+            t.addFeature(new City(Arrays.asList(Side.LEFT, Side.BOTTOM)));
             gb.addTileOnBoard(t, new Position(2, 0));
         }
 
         {
             TileActor t = new TileActor();
-            t.addFeature(new City(Arrays.asList(Side.top)));
+            t.addFeature(new City(Arrays.asList(Side.TOP)));
 
             Meeple meeple = player2.getUnusedMeeple();
             meeple.setFeature(t.getFeatures().get(0));
-            meeple.setSide(Side.top);
+            meeple.setSide(Side.TOP);
             t.addMeeple(meeple);
 
             gb.addTileOnBoard(t, new Position(1, -1));
@@ -99,18 +101,18 @@ public class CityOwnersTest {
         TileActor t = new TileActor();
 
         {
-            t.addFeature(new City(Arrays.asList(Side.top)));
+            t.addFeature(new City(Arrays.asList(Side.TOP)));
 
             Meeple meeple = player2.getUnusedMeeple();
             meeple.setFeature(t.getFeatures().get(0));
-            meeple.setSide(Side.top);
+            meeple.setSide(Side.TOP);
             t.addMeeple(meeple);
 
             gb.addTileOnBoard(t, new Position(2, -1));
         }
 
 
-        List<Player> owners = gb.getFeatureOwners(t, t.getFeatureAtSide(Side.top));
+        List<Player> owners = gb.getFeatureOwners(t, t.getFeatureAtSide(Side.TOP));
 
         for (Player owner: owners) {
             Assert.assertFalse(owner.getColor().equals(player1.getColor()));
