@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
+import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
@@ -20,10 +21,12 @@ import static org.mockito.Mockito.mock;
 
 public class ScoreRoadTest {
 
-    Stage stageMock;
-    ArrayList<Player> players;
+    private GameScreen screenMock;
+    private Stage stageMock;
+    private ArrayList<Player> players;
 
     public ScoreRoadTest() {
+        screenMock = mock(GameScreen.class);
         stageMock = mock(Stage.class);
         Gdx.files = mock(Files.class);
         Gdx.gl = mock(GL20.class);
@@ -44,7 +47,7 @@ public class ScoreRoadTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null);
 
 
         {
@@ -96,7 +99,7 @@ public class ScoreRoadTest {
         players.add(player1);
         players.add(player2);
 
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null);
 
 
         {
@@ -141,7 +144,7 @@ public class ScoreRoadTest {
     // @Test
     public void testCheating() {
         preparePlayers();
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null);
         gb.performCheatAction(players.get(0)); //cheat Meeple
         assert players.get(0).getNumberOfMeeples() == Player.MEEPLE_COUNT + 1;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;

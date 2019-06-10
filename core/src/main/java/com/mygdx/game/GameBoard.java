@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,12 +16,14 @@ import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.actor.AddTileActor;
 import com.mygdx.game.actor.PlayerStatusActor;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.emotes.Emote;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.CheatOnScoreMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
+import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.TilePlacementMessage;
@@ -272,10 +275,12 @@ public class GameBoard {
         return (currentPlayer.getId() == NetworkHelper.getPlayer().getId() || gameClient == null);
     }
 
+    public GameScreen gameScreen;
 
-    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
+    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
+        gameScreen = screen;
 
         numberOfPlayers = players.size();
         this.players = players;
@@ -309,9 +314,11 @@ public class GameBoard {
                     if (object instanceof CheatOnScoreMessage) {
                         onCheatOnScore((CheatOnScoreMessage)object);
                     }
-
                     if (object instanceof ErrorMessage) {
                         errorHandling((ErrorMessage)object, connection);
+                    }
+                    if (object instanceof EmoteMessage) {
+                        onEmote((EmoteMessage)object);
                     }
                 }
             });
@@ -430,6 +437,16 @@ public class GameBoard {
         if(error.errorNumber == ErrorNumber.GAMENOTSTARTED){
 
             Gdx.app.debug("DEBUG","Game was not initialized by " + connection.getID());
+        }
+    }
+
+    private void onEmote(EmoteMessage emoteMessage) {
+        players.stream().filter(p -> p.getId() == (emoteMessage.getPlayer().getId())).findAny().ifPresent(player -> gameScreen.showEmote(emoteMessage));
+    }
+
+    public void showEmote(Emote emote) {
+        if (gameClient != null && NetworkHelper.getGameManager() != null){
+            NetworkHelper.getGameManager().sendToServer(new EmoteMessage(emote, me));
         }
     }
 
