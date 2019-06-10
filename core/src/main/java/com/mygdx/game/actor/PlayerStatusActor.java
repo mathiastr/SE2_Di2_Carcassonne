@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.game.Player;
+import com.mygdx.game.emotes.Emote;
 
 public class PlayerStatusActor extends Actor {
     private Texture texture;
@@ -22,7 +24,6 @@ public class PlayerStatusActor extends Actor {
     private Texture meeple;
     private Texture score;
     private Label.LabelStyle textStyle;
-
 
     public PlayerStatusActor(Player player) {
         this.texture = new Texture("playerStatusBackground.jpg");
@@ -110,5 +111,13 @@ public class PlayerStatusActor extends Actor {
         return HEIGHT;
     }
 
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 }
 

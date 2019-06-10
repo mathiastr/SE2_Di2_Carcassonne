@@ -12,22 +12,19 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ActorGestureListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.esotericsoftware.kryonet.Connection;
-import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
+import com.mygdx.game.emotes.EmoteManager;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.GameClient;
-import com.mygdx.game.network.NetworkHelper;
-import com.mygdx.game.network.TestOutput;
+import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Monastery;
@@ -38,15 +35,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-// TODO: add the current Tile view (first add UI stage)
-// TODO: add Players and turnbased game (also add the playerUIs with scores...)
-// TODO: add algorithmic for scoring
-// TODO: "Home-Button": goes back to baseTile and resets zoom.
-
 public class GameScreen implements Screen {
     private Game game;
     private Stage stage;
     private Stage stageUI;
+    private Stage stageEmote;
     private OrthographicCamera camera;
     private GameBoard gameBoard;
 
@@ -57,19 +50,23 @@ public class GameScreen implements Screen {
     private Toast.ToastFactory meeplePlaced;
     private final List<Toast> toasts = new LinkedList<Toast>();
 
+    private boolean show_emote = false;
+    private EmoteManager emoteManager;
+    private EmoteMessage emoteMessage;
+
     public GameScreen(Game aGame, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
         game = aGame;
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
-        for (Player player : players) {
+        stageEmote = new Stage(new ScreenViewport());
+        for (Player player: players) {
             player.setColor(GameBoard.Color.values()[players.indexOf(player)]);
             for (Meeple m : player.getMeeples()) {
                 m.setColor(player.getColor());
             }
         }
-        gameBoard = new GameBoard(stage, stageUI, players, isLocal, me, gameClient, this);
+        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient, this);
         gameBoard.init();
-        new Skin(Gdx.files.internal("skin/glassy-ui.json"));
 
         placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
         placeMeeple.setWidth(Gdx.graphics.getWidth() / 4f);
@@ -88,16 +85,7 @@ public class GameScreen implements Screen {
 
         placeMeeple.setVisible(false);
 
-
         Gdx.input.setInputProcessor(stage);
-
-        if (NetworkHelper.getGameManager() != null) {
-            NetworkHelper.getGameManager().addListener(new Listener() {
-                public void received(Connection connection, Object object) {
-                    receive(connection, object);
-                }
-            });
-        }
 
         stage.addListener(new InputListener() {
             @Override
@@ -127,16 +115,11 @@ public class GameScreen implements Screen {
         });
 
         camera = (OrthographicCamera) stage.getViewport().getCamera();
-        camera.translate((float) -Gdx.graphics.getWidth() / 2, (float) -Gdx.graphics.getHeight() / 2);
-
-
-        // TODO currently so we can differentiate between board tiles and newestTile.
-        // TODO show newestTile in RIGHT corner and make it bigger.
-        camera.zoom *= 1.2;
-        camera.update();
+        camera.translate(-Gdx.graphics.getWidth() / 2f, -Gdx.graphics.getHeight() / 2f);
 
         multiplexer = new InputMultiplexer();
         /* UI gets click first (call event.handle() in listener to not pass the event down to game stage */
+        multiplexer.addProcessor(stageEmote);
         multiplexer.addProcessor(stageUI);
         multiplexer.addProcessor(stage);
 
@@ -154,6 +137,8 @@ public class GameScreen implements Screen {
 
         stageUI.addActor(labelTilesLeft);
         stageUI.addActor(currentPlayerLabel);
+
+        if (!isLocal) emoteManager = new EmoteManager(gameBoard, stageEmote);
     }
 
     public void createMeepleIsPlacedToast(Feature feature){
@@ -182,6 +167,10 @@ public class GameScreen implements Screen {
         toasts.add(meeplePlaced);
     }
 
+    public void showEmote(EmoteMessage em) {
+        emoteMessage = em;
+        show_emote = true;
+    }
 
     @Override
     public void show() {
@@ -200,10 +189,17 @@ public class GameScreen implements Screen {
         labelTilesLeft.setText("Tiles LEFT: " + gameBoard.tilesLeft());
         currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer().getName());
 
+        if (show_emote) {
+            emoteManager.showEmoteFromPlayer(emoteMessage);
+            show_emote = false;
+        }
+
+        stageEmote.act();
         stage.act();
-        stage.draw();
         stageUI.act();
+        stage.draw();
         stageUI.draw();
+        stageEmote.draw();
 
         //TODO: figur out if you be able to display a toast without list and iterator
 
@@ -242,14 +238,5 @@ public class GameScreen implements Screen {
     public void dispose() {
         stage.dispose();
         stageUI.dispose();
-    }
-
-    public void receive(Connection connection, Object object) {
-        //do here what should happen if you get a message of type ...
-        //send message with "Networkhelper.getGameManager.sentToAll(message)
-        //before register the class in the Network class
-        if (object instanceof TestOutput) {
-            //do something
-        }
     }
 }

@@ -19,13 +19,15 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
-public class GameBoardTest {
+public class ScoreRoadTest {
 
-    Stage stageMock;
-    ArrayList<Player> players;
+    private GameScreen screenMock;
+    private Stage stageMock;
+    private ArrayList<Player> players;
     private final GameScreen gameScreen;
 
-    public GameBoardTest() {
+    public ScoreRoadTest() {
+        screenMock = mock(GameScreen.class);
         stageMock = mock(Stage.class);
         Gdx.files = mock(Files.class);
         Gdx.gl = mock(GL20.class);
@@ -47,7 +49,7 @@ public class GameBoardTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
 
         {
             TileActor t = new TileActor();
@@ -98,7 +100,7 @@ public class GameBoardTest {
         players.add(player1);
         players.add(player2);
 
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
 
 
         {
@@ -143,7 +145,7 @@ public class GameBoardTest {
     // @Test
     public void testCheating() {
         preparePlayers();
-        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
         gb.performCheatAction(players.get(0)); //cheat Meeple
         assert players.get(0).getNumberOfMeeples() == Player.MEEPLE_COUNT + 1;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
