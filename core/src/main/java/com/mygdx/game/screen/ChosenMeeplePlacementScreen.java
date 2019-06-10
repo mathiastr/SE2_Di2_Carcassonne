@@ -35,7 +35,9 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
     private Game game;
     private Screen previousScreen;
     private MeeplePlacement mp;
-    ChosenMeeplePlacementScreen(GameScreen previousScreen, Game game, GameBoard gb) {
+
+    ChosenMeeplePlacementScreen(GameScreen previousScreen, Game game, GameBoard gb)
+    {
         this.gb = gb;
         this.previousScreen = previousScreen;
         this.game = game;
@@ -59,8 +61,10 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
 
 
 
-        for (Feature feature : newestTile.getFeatures()) {
-            if (!feature.hasMeepleOnIt()) {
+        for (Feature feature : newestTile.getFeatures())
+        {
+            if (!feature.hasMeepleOnIt())
+            {
                 meepleButtons.add(createMeeplePlacementButton(feature));
             }
         }
@@ -71,14 +75,17 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
         TextButton back = new TextButton("Back", Carcassonne.skin);
         back.setWidth(Gdx.graphics.getWidth() / 5f - 40f);
         back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
-        back.addListener(new InputListener() {
+        back.addListener(new InputListener()
+        {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+            {
                 return true;
             }
 
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button)
+            {
                 game.setScreen(previousScreen);
             }
         });
@@ -86,33 +93,42 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
     }
 
 
-    private TextButton createMeeplePlacementButton(Feature feature) {
+    private TextButton createMeeplePlacementButton(Feature feature)
+    {
         TextButton placeMeepleButton = new TextButton(("On " + feature.getClass().getSimpleName() + " " + feature.getSides().get(0)), Carcassonne.skin);
         placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8f);
         placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8f);
 
-        placeMeepleButton.addListener(new InputListener() {
+        placeMeepleButton.addListener(new InputListener()
+        {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
+            {
                 return true;
             }
 
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button)
+            {
                 List<Side> sides;
                 Side side = null;
-                if (!newestTile.isMonastery()) {
+                if (!newestTile.isMonastery())
+                {
                     sides = feature.getSides();
                     side = sides.get(0);
                     newestTile = gb.getNewestTile();
                     side = newestTile.getSideAfterRotation(side);
-                } else {
-                    for (Feature f : features) {
-                        if (f instanceof Road) {
+                } else
+                    {
+                    for (Feature f : features)
+                    {
+                        if (f instanceof Road)
+                        {
                             sides = feature.getSides();
                             side = sides.get(0);
                             side = newestTile.getSideAfterRotation(side);
-                        } else {
+                        } else
+                            {
                             side = Side.TOP;
                         }
                     }
@@ -127,14 +143,18 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
         return placeMeepleButton;
     }
 
-    private void setMeepleTextButtons() {
-        for (int i = 0; i < meepleButtons.size() && i < 6; i++) {
+    private void setMeepleTextButtons()
+    {
+        for (int i = 0; i < meepleButtons.size() && i < 6; i++)
+        {
             TextButton button = meepleButtons.get(i);
             button.setWidth(Gdx.graphics.getWidth() / 2f - 40f);
             button.setHeight(Gdx.graphics.getHeight() / 5f - 40f);
-            if (i % 2 == 0) {
+            if (i % 2 == 0)
+            {
                 button.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5f * (i / 2f + 2) + 40f);
-            } else {
+            } else
+                {
                 button.setPosition(20f + Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5f * (i / 2f + 2) + 40f);
             }
             stage.addActor(button);
@@ -142,12 +162,14 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
     }
 
     @Override
-    public void show() {
+    public void show()
+    {
         Gdx.input.setInputProcessor(stage);
     }
 
     @Override
-    public void render(float delta) {
+    public void render(float delta)
+    {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
@@ -155,27 +177,32 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(int width, int height)
+    {
 
     }
 
     @Override
-    public void pause() {
+    public void pause()
+    {
 
     }
 
     @Override
-    public void resume() {
+    public void resume()
+    {
 
     }
 
     @Override
-    public void hide() {
+    public void hide()
+    {
 
     }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
 
     }
 }

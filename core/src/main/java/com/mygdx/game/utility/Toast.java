@@ -100,7 +100,7 @@ public class Toast {
         toastHeight = fontHeight + 2 * margin;
         toastWidth = fontWidth + 2 * margin;
 
-        positionX = (screenWidth / 2) - toastWidth / 2;
+        positionX = (screenWidth / 2f) - toastWidth / 2f;
 
         fontX = positionX + margin;
         fontY = positionY + margin + fontHeight;
@@ -120,9 +120,9 @@ public class Toast {
         }
 
         renderer.begin(ShapeRenderer.ShapeType.Filled);
-        renderer.circle(positionX, positionY + toastHeight / 2, toastHeight / 2);
+        renderer.circle(positionX, positionY + toastHeight / 2f, toastHeight / 2f);
         renderer.rect(positionX, positionY, toastWidth, toastHeight);
-        renderer.circle(positionX + toastWidth, positionY + toastHeight / 2, toastHeight / 2);
+        renderer.circle(positionX + toastWidth, positionY + toastHeight / 2f, toastHeight / 2f);
         renderer.end();
 
         spriteBatch.begin();

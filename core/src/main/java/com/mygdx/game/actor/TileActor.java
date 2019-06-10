@@ -3,7 +3,6 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.utils.Array;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.meeple.Meeple;
