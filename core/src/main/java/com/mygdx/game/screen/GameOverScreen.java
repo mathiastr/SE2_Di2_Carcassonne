@@ -34,7 +34,7 @@ public class GameOverScreen implements Screen {
         stage = new Stage(new ScreenViewport());
 
         //// TODO change.....
-        //winner = new Player(GameBoard.Color.black, "Herbert");
+        //winner = new Player(GameBoard.Color.BLACK, "Herbert");
         //winner.setPhoto(new Texture(Gdx.files.internal("profilePhoto.png")));
 
 

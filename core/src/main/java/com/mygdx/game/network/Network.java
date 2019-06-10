@@ -4,8 +4,10 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.mygdx.game.Player;
 import com.mygdx.game.network.response.BlameCheatMessage;
+import com.mygdx.game.emotes.Emote;
 import com.mygdx.game.network.response.CheatOnScoreMessage;
 import com.mygdx.game.network.response.CheatType;
+import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Field;
@@ -55,6 +57,8 @@ public class Network {
         kryo.register(Player.class);
         kryo.register(CheatOnScoreMessage.class);
         kryo.register(ErrorNumber.class);
+        kryo.register(EmoteMessage.class);
+        kryo.register(Emote.class);
         kryo.register(CheatType.class);
         kryo.register(BlameCheatMessage.class);
     }

@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,36 +16,43 @@ import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.actor.AddTileActor;
 import com.mygdx.game.actor.PlayerStatusActor;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.emotes.Emote;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.meeple.MeeplePlacement;
+import com.mygdx.game.meeple.MeepleTextureFactory;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.Network;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.BlameCheatMessage;
 import com.mygdx.game.network.response.CheatOnScoreMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
+import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
+import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.Monastery;
+import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class GameBoard {
 
-    ArrayList<PlayerStatusActor> playerActorList;
+   private ArrayList<PlayerStatusActor> playerActorList;
 
     public enum Color {
-        yellow, red, green, blue, black, grey;
+        YELLOW, RED, GREEN, BLUE, BLACK, GREY;
 
         public static Color getRandomColorExcept(List<Color> colors) {
             Color randomColor = getRandom();
@@ -69,18 +77,32 @@ public class GameBoard {
     private boolean tileIsPlaced = false;
     private com.mygdx.game.Player me;
     private GameClient gameClient;
+    private final GameScreen gameScreen;
     private boolean meepleIsPlaced;
     private int numberOfPlayers;
     private com.mygdx.game.Player currentPlayer;
     private List<com.mygdx.game.Player> players;
+    private static HashMap<Position, TileActor> usedTileHash = new HashMap<>();
     private ArrayList<TileActor> hints = new ArrayList<>();
+
+    public ArrayList<TileActor> getUsedTiles() {
+        return usedTiles;
+    }
+
     private ArrayList<TileActor> usedTiles = new ArrayList<>();
     private Random rand;
 
+    public void addMeepleOnCurrentTile(Meeple meeple)
+    {
+        currentTile.addMeeple(meeple);
+    }
     public ArrayList<PlayerStatusActor> getStatuses() {
         return statuses;
     }
 
+    public Meeple getUnusedCurrentPlayerMeeple() {
+        return currentPlayer.getUnusedMeeple();
+    }
     private ArrayList<PlayerStatusActor> statuses = new ArrayList<>();
     private com.mygdx.game.Board board;
 
@@ -221,7 +243,7 @@ public class GameBoard {
                 @Override
                 public void run() {
                     for (Meeple m : turnEndMessage.getMeeples()) {
-                        new MeeplePlacement(that).drawMeeple(m.getSide(), pos);
+                        new MeeplePlacement(that, gameScreen, new MeepleTextureFactory()).drawMeeple(m.getSide(), pos);
                     }
                 }
             });
@@ -280,15 +302,18 @@ public class GameBoard {
     }
 
 
-    public GameBoard(Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient) {
+    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen) {
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
+        gameScreen = screen;
 
         numberOfPlayers = players.size();
         this.players = players;
         currentPlayer = players.get(0);
+        boolean isLocal1 = isLocal;
         this.me = me;
         this.gameClient = gameClient;
+        this.gameScreen = gameScreen;
         this.board = new Board();
         this.rand = new Random();
 
@@ -322,6 +347,9 @@ public class GameBoard {
                     if (object instanceof ErrorMessage) {
                         errorHandling((ErrorMessage)object, connection);
                     }
+                    if (object instanceof EmoteMessage) {
+                        onEmote((EmoteMessage)object);
+                    }
                 }
             });
         }
@@ -350,7 +378,7 @@ public class GameBoard {
 
         finishTurnButton.setWidth(300);
         finishTurnButton.getLabel().setFontScale(0.8f);
-        finishTurnButton.setPosition(Gdx.graphics.getWidth() - 300f - 100f, 0);
+        finishTurnButton.setPosition((float)Gdx.graphics.getWidth() - 300f - 100f, 0);
         finishTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -371,7 +399,7 @@ public class GameBoard {
         for (com.mygdx.game.Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
             statuses.add(playerStatusActor);
-            playerStatusActor.setPosition(players.indexOf(p) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
+            playerStatusActor.setPosition((float) players.indexOf(p) * PlayerStatusActor.WIDTH , Gdx.graphics.getHeight(), Align.topLeft);
             if(p.getId() == NetworkHelper.getPlayer().getId()){
                 playerStatusActor.addListener(new ActorGestureListener(20,0.4f,5f,0.15f){
                     @Override
@@ -485,6 +513,16 @@ public class GameBoard {
         }
     }
 
+    private void onEmote(EmoteMessage emoteMessage) {
+        players.stream().filter(p -> p.getId() == (emoteMessage.getPlayer().getId())).findAny().ifPresent(player -> gameScreen.showEmote(emoteMessage));
+    }
+
+    public void showEmote(Emote emote) {
+        if (gameClient != null && NetworkHelper.getGameManager() != null){
+            NetworkHelper.getGameManager().sendToServer(new EmoteMessage(emote, me));
+        }
+    }
+
     private void onCheatOnScore(CheatOnScoreMessage message) {
         for (com.mygdx.game.Player p :
                 players) {
@@ -529,6 +567,7 @@ public class GameBoard {
     public void placeTileAt(TileActor tileToPlace, Position position) {
         if (!tileIsPlaced) {
             addTileOnBoard(tileToPlace, position);
+            usedTileHash.put(position, tileToPlace);
             tileIsPlaced = true;
 
             DelayedRemovalArray<EventListener> listeners = tileToPlace.getListeners();
@@ -554,7 +593,8 @@ public class GameBoard {
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
 
             placeTileAt(currentTile, position);
-            GameScreen.placeMeeple.setVisible(true);
+            gameScreen.placeMeeple.setVisible(true);
+
 
 
 
@@ -596,6 +636,16 @@ public class GameBoard {
         //}
     }
 
+    /*
+        method for dynamic checking owners of the city/road/field
+        if two or more players own the same property, score is splitted between
+     */
+    public ArrayList<Player> getFeatureOwners(Feature feature, Side side, TileActor tile) {
+
+        // count number of meeples of each player
+
+        return new ArrayList<Player>();
+    }
 
     public void showHintsForTile(TileActor tile) {
         removeOldHints();
@@ -622,6 +672,11 @@ public class GameBoard {
         return stageOfBoard;
     }
 
+    public void addActorToBoardStage(Actor actor)
+    {
+        stageOfBoard.addActor(actor);
+    }
+
     public Stage getStageOfUI() {
         return stageOfUI;
     }
@@ -630,16 +685,22 @@ public class GameBoard {
         for (TileActor a : hints) a.remove();
         hints.clear();
     }
-    public ArrayList<TileActor> getUsedTiles() {
-        return usedTiles;
-    }
-    public TileActor getPreviousTile(){
+    public TileActor getNewestTile() {
         int lastElement = usedTiles.size()-1;
         return usedTiles.get(lastElement);
     }
 
+    public static Map<Position, TileActor> getUsedTileHash() {
+        return usedTileHash;
+    }
+
     public List<PlayerStatusActor> getPlayerActorList() {
         return playerActorList;
+    }
+
+    public PlayerStatusActor getPlayerActor(int i)
+    {
+        return playerActorList.get(i);
     }
 
     public int getScoreFromPlayer(com.mygdx.game.Player p){
@@ -674,5 +735,9 @@ public class GameBoard {
         }
         return winningPlayer;
         //return Collections.max(players, Comparator.comparing(com.mygdx.game.Player::getScore));
+    }
+
+    void setCurrentTile(TileActor tile){
+        currentTile = tile;
     }
 }

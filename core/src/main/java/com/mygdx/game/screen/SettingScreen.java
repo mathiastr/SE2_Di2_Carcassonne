@@ -27,12 +27,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
-import com.mygdx.game.network.GameServer;
 import com.mygdx.game.network.NetworkHelper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class SettingScreen implements Screen {
 
@@ -126,7 +121,7 @@ public class SettingScreen implements Screen {
         font.getData().setScale(5);
 
         if(NetworkHelper.getPlayer() == null){
-            NetworkHelper.setPlayer(new Player(GameBoard.Color.red, "Guest"));
+            NetworkHelper.setPlayer(new Player(GameBoard.Color.RED, "Guest"));
         }
         renderPlayersList();
 
