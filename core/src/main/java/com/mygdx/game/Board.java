@@ -74,6 +74,7 @@ public class Board {
         if (!visited.add(tile)){
             return 0; // we found a loop => road close
         }
+
         for (Side side : feature.getSides()) {
             side = tile.getSideAfterRotation(side);
             TileActor nextTile = getTileInDirectionOfSide(tile, side);
@@ -87,6 +88,34 @@ public class Board {
             score += currScore;
         }
         mp.removeMeeple(tile);
+
+
+        return score;
+
+    }
+
+    public int getScore(TileActor tile) {
+        int score = 0;
+        for (Feature feature: tile.getFeatures()) {
+            if(feature instanceof City || feature instanceof Road) {
+                score += scoreRoadOrCity(tile, feature);
+            }
+            else if (feature instanceof Monastery) {
+                score += scoreMonastery(tile);
+            }
+            // TODO check for monastery around
+        }
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                TileActor tileAround = placedTiles.get(tile.getPosition().add(new Position(i, j)));
+                if ( tileAround != null ) {
+                    if (tileAround.isMonastery()) {
+                        score += scoreMonastery(tileAround);
+                    }
+                }
+            }
+        }
+
         return score;
     }
 

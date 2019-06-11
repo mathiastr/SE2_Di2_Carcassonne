@@ -8,6 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.GameBoard;
 
 public class MeepleTextureFactory {
+
     private Texture createMeepleTexture(GameBoard.Color color)
     {
         switch (color) {
@@ -35,6 +36,7 @@ public class MeepleTextureFactory {
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)),
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)));
         imageButton.setSize(Gdx.graphics.getWidth() / 18f, Gdx.graphics.getHeight() / 18f);
+
         return imageButton;
     }
 }

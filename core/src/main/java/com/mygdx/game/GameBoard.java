@@ -29,14 +29,16 @@ import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
-import com.mygdx.game.network.response.MeepleIsPlacedMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
+import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.Monastery;
+import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -47,7 +49,7 @@ import java.util.Random;
 
 public class GameBoard {
 
-   private ArrayList<PlayerStatusActor> playerActorList;
+    private ArrayList<PlayerStatusActor> playerActorList;
 
     public enum Color {
         YELLOW, RED, GREEN, BLUE, BLACK, GREY;
@@ -349,9 +351,6 @@ public class GameBoard {
                     if (object instanceof EmoteMessage) {
                         onEmote((EmoteMessage)object);
                     }
-                    if (object instanceof MeepleIsPlacedMessage) {
-                        onEmote((EmoteMessage)object);
-                    }
                 }
             });
         }
@@ -376,7 +375,31 @@ public class GameBoard {
             }
         }
 
+
         createFinishTurnButton();
+
+        finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
+
+        finishTurnButton.setWidth(300);
+        finishTurnButton.getLabel().setFontScale(0.8f);
+        finishTurnButton.setPosition((float)Gdx.graphics.getWidth() - 300f - 100f, 0);
+        MeeplePlacement mp = new MeeplePlacement(this, gameScreen);
+
+        finishTurnButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (gameClient != null && isMyTurn()) {
+                    if (tileIsPlaced) {
+                        endMyTurn();
+                      //  mp.removeMeeple(getCurrentTile());
+                    }
+                } else if (gameClient == null) {
+                   // mp.removeMeeple(getCurrentTile());
+                    endMyTurn();
+                }
+
+            }
+        });
 
         stageOfUI.addActor(finishTurnButton);
         playerActorList = new ArrayList<>();
