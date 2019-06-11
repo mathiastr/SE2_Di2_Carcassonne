@@ -6,12 +6,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.game.Player;
-import com.mygdx.game.emotes.Emote;
 
 public class PlayerStatusActor extends Actor {
     private Texture texture;
@@ -57,6 +55,7 @@ public class PlayerStatusActor extends Actor {
          Image scoreImg;
          Label scoreLabel;
          Label nameLabel;
+         Label color;
 
         info = new Table();
 
@@ -72,6 +71,9 @@ public class PlayerStatusActor extends Actor {
         scoreLabel = new Label("" + player.getScore(), textStyle);
         info.add(scoreLabel)/*.width(WIDTH / 4).height(50)*/.padLeft(20);
 
+        info.row();
+        color = new Label("" + player.getColor().name(), textStyle);
+        info.add(color);
     }
 
     @Override

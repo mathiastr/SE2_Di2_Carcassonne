@@ -1,13 +1,10 @@
 package com.mygdx.game.meeple;
 
-import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
+import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Side;
 
-import java.util.Random;
-
 public class Meeple {
-    private int id;
     private MeepleType meepleType;
     private GameBoard.Color color;
     private boolean isBusy;
@@ -41,13 +38,9 @@ public class Meeple {
     private Feature feature;
 
     public Meeple() {
-        Random rand = new Random();
-        this.id = rand.nextInt(1000);
     }
 
     public Meeple(GameBoard.Color color){
-        Random rand = new Random();
-        this.id = rand.nextInt(1000);
         this.color = color;
     }
 
