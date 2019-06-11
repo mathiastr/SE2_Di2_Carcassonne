@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
+import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
@@ -77,6 +78,79 @@ public class GameBoardTest {
 
         Assert.assertEquals(4, result);
 
+
+    }
+
+    @Test
+    public void circleRoad() {
+
+        preparePlayers();
+
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+
+        {
+            TileActor t = new TileActor();
+            t.addFeature(new Road(Arrays.asList(Side.right, Side.bottom)));
+            gb.addTileOnBoard(t, new Position(0, 0));
+        }
+
+        {
+            TileActor t = new TileActor();
+            t.addFeature(new Road(Arrays.asList(Side.left, Side.bottom)));
+            gb.addTileOnBoard(t, new Position(1, 0));
+        }
+
+        {
+            TileActor t = new TileActor();
+            t.addFeature(new Road(Arrays.asList(Side.top, Side.left)));
+            gb.addTileOnBoard(t, new Position(1, -1));
+        }
+
+        TileActor t = new TileActor();
+        {
+            t.addFeature(new Road(Arrays.asList(Side.right, Side.top)));
+            gb.addTileOnBoard(t, new Position(0, -1));
+        }
+
+        int result = gb.getBoard().scoreRoadOrCity(t, t.getFeatureAtSide(Side.top));
+        Assert.assertEquals(4, result);
+
+    }
+
+
+    @Test
+    public void getScore() {
+
+        preparePlayers();
+
+        GameBoard gb = new GameBoard(stageMock, stageMock, players, true, players.get(0), null);
+
+        {
+            TileActor t = new TileActor();
+            t.addFeature(new City(Arrays.asList(Side.right, Side.bottom)));
+            gb.addTileOnBoard(t, new Position(0, 0));
+        }
+
+        {
+            TileActor t = new TileActor();
+            t.addFeature(new City(Arrays.asList(Side.left, Side.bottom)));
+            gb.addTileOnBoard(t, new Position(1, 0));
+        }
+
+        {
+            TileActor t = new TileActor();
+            t.addFeature(new City(Arrays.asList(Side.top, Side.left)));
+            gb.addTileOnBoard(t, new Position(1, -1));
+        }
+
+        TileActor t = new TileActor();
+        {
+            t.addFeature(new City(Arrays.asList(Side.right, Side.top)));
+            gb.addTileOnBoard(t, new Position(0, -1));
+        }
+
+        int result = gb.getBoard().getScore(t, t.getFeatures().get(0));
+        Assert.assertEquals(8, result);
 
     }
 
