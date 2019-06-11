@@ -12,8 +12,8 @@ public class Meeple {
     private GameBoard.Color color;
     private boolean isBusy;
 
-    public GameBoard.Color getColor() {
-        return color;
+    public GameBoard.Color getColor(GameBoard.Color color) {
+        return this.color;
     }
 
     public void setColor(GameBoard.Color color) {

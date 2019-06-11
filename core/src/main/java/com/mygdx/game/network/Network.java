@@ -7,6 +7,7 @@ import com.mygdx.game.emotes.Emote;
 import com.mygdx.game.network.response.CheatOnScoreMessage;
 import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorNumber;
+import com.mygdx.game.network.response.MeepleIsPlacedMessage;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Field;
 import com.mygdx.game.GameBoard;
@@ -23,6 +24,7 @@ import com.mygdx.game.network.response.InitGameMessage;
 import com.mygdx.game.network.response.PlayerGameMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
+import com.mygdx.game.utility.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -57,6 +59,8 @@ public class Network {
         kryo.register(ErrorNumber.class);
         kryo.register(EmoteMessage.class);
         kryo.register(Emote.class);
+        kryo.register(MeepleIsPlacedMessage.class);
+        kryo.register(Toast.class);
     }
 }
 

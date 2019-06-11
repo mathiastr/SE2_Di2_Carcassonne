@@ -48,7 +48,7 @@ public class GameScreen implements Screen {
     private Label currentPlayerLabel;
     public  TextButton placeMeeple;
     private Toast.ToastFactory meeplePlaced;
-    private final List<Toast> toasts = new LinkedList<Toast>();
+    private final List<Toast> toasts = new LinkedList<>();
 
     private boolean show_emote = false;
     private EmoteManager emoteManager;

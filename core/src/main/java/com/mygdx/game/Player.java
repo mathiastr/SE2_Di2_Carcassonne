@@ -147,6 +147,7 @@ public class Player {
     }
 
     public Player(){}
+
     public void addMeeples(int numberOfMeeples) {
 
         for (int i = 0; i < numberOfMeeples; i++) {
