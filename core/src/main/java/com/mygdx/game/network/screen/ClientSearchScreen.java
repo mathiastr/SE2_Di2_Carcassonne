@@ -102,7 +102,7 @@ public class ClientSearchScreen implements Screen {
                                             @Override
                                             public void run() {
                                                 // TODO get "me" from settings (your user name and etc.)
-                                                game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
+                                                game.setScreen((Screen)new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
                                             }
                                         });
                                     }
@@ -190,7 +190,7 @@ public class ClientSearchScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 NetworkHelper.setGameManager(null);
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen((Screen)new MainMenuScreen(game));
             }
         });
         stage.addActor(back);

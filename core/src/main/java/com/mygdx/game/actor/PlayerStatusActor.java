@@ -48,14 +48,14 @@ public class PlayerStatusActor extends Actor {
         info.setDebug(true);
     }
 
-    public void updateInfo(){
+    public void updateInfo() {
 
-         Label meepleLabel;
-         Image meepleImg;
-         Image scoreImg;
-         Label scoreLabel;
-         Label nameLabel;
-         Label color;
+        Label meepleLabel;
+        Image meepleImg;
+        Image scoreImg;
+        Label scoreLabel;
+        Label nameLabel;
+        Label color;
 
         info = new Table();
 
@@ -69,15 +69,15 @@ public class PlayerStatusActor extends Actor {
         scoreImg = new Image(score);
         info.add(scoreImg).width(50).height(50);
         scoreLabel = new Label("" + player.getScore(), textStyle);
-        info.add(scoreLabel)/*.width(WIDTH / 4).height(50)*/.padLeft(20);
+        info.add(scoreLabel).padLeft(20);
 
         info.row();
         color = new Label("" + player.getColor().name(), textStyle);
-        info.add(color);
+        info.add(color).padBottom(60);
     }
 
     @Override
-    public void draw (Batch batch, float parentAlpha) {
+    public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         batch.draw(texture, getX(), getY(), WIDTH, HEIGHT);
 

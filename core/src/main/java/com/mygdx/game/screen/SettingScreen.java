@@ -29,11 +29,9 @@ import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
 import com.mygdx.game.network.NetworkHelper;
 
-public class SettingScreen implements Screen {
+public class SettingScreen extends BaseScreen {
 
-    private Game game;
     private Stage stage;
-    private Texture background;
     private final BitmapFont font;
     private Table playerListTable;
 
@@ -104,12 +102,11 @@ public class SettingScreen implements Screen {
     }
 
     public SettingScreen(final Game game) {
-        this.game = game;
         stage = new Stage(new ScreenViewport());
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-        background = new Texture("background.png");
+        Texture background = new Texture("background.png");
         Image backgroundImage = new Image(background);
         backgroundImage.setWidth(Gdx.graphics.getWidth());
         backgroundImage.setHeight(Gdx.graphics.getHeight());
@@ -126,7 +123,7 @@ public class SettingScreen implements Screen {
         renderPlayersList();
 
         TextButton back = new TextButton("Back", Carcassonne.skin);
-        back.setWidth(Gdx.graphics.getWidth() / 5 - 40);
+        back.setWidth((float)Gdx.graphics.getWidth() / 5 - 40);
         back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
         back.addListener(new InputListener() {
             @Override
@@ -136,7 +133,7 @@ public class SettingScreen implements Screen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen((Screen)new MainMenuScreen(game));
             }
         });
         stage.addActor(back);
@@ -144,12 +141,10 @@ public class SettingScreen implements Screen {
 
     }
 
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -157,27 +152,6 @@ public class SettingScreen implements Screen {
         stage.draw();
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
     public void dispose() {
         stage.dispose();
     }
