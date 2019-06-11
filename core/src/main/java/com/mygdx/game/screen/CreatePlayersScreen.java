@@ -34,10 +34,9 @@ import java.util.List;
 
 public class CreatePlayersScreen extends BaseScreen {
 
-    private Game game;
     private Stage stage;
     private Texture background;
-    private List<Player> players = new ArrayList<Player>();
+    private List<Player> players = new ArrayList<>();
     private final BitmapFont font;
     private Table playerListTable;
 
@@ -51,78 +50,10 @@ public class CreatePlayersScreen extends BaseScreen {
         textFieldStyle.font = font;
         textFieldStyle.fontColor = Color.BLACK;
 
-        if (playerListTable != null) {
-            playerListTable.remove();
-        }
-        playerListTable = new Table();
-
-        playerListTable.add(new Label("", textStyle)).width(100);
-        Label nameLabel = new Label("Name", textStyle);
-        nameLabel.setAlignment(Align.center);
-        playerListTable.add(nameLabel).width(500);
-        playerListTable.row();
-
-        for (Player player : players) {
-            TextField nameField = new TextField(player.getName(), textFieldStyle);
-
-            //TODO profile photo
-
-            Texture imageTexture = new Texture(Gdx.files.internal("profilePhoto.png"));
-            Image profilePhoto = new Image();
-            profilePhoto.setDrawable(new TextureRegionDrawable(new TextureRegion(imageTexture)));
-
-            profilePhoto.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Carcassonne.getNativeInterface().getPhoto((byte[] bytes) -> {
-                        Pixmap p = new Pixmap(bytes, 0, bytes.length);
-                        Gdx.app.postRunnable(new Runnable() {
-                            @Override
-                            public void run() {
-                                Texture tex=new Texture(p);
-                                Sprite sprite = new Sprite(tex);
-                                sprite.setRotation(180f);
-                                profilePhoto.setDrawable(new SpriteDrawable(sprite));
-                                player.setPhoto(tex);
-                            }
-                        });
-                    });
-                }
-            });
-
-            playerListTable.add(profilePhoto).width(100).height(100);
-            nameField.setAlignment(Align.center);
-
-            nameField.setTextFieldListener(new TextField.TextFieldListener() {
-                @Override
-                public void keyTyped(TextField textField, char c) {
-                    player.setName(nameField.getText());
-                }
-            });
-            playerListTable.add(nameField).width(500);
-            playerListTable.add(new Label("" + player.getColor().name(), textStyle));
-
-            TextButton deleteButton = new TextButton("delete", Carcassonne.skin, "menu");
-            playerListTable.add(deleteButton);
-            deleteButton.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Gdx.app.debug("touch", "delete button is touched");
-                    players.remove(player);
-                    renderPlayersList();
-                }
-            });
-            playerListTable.row();
-
-        }
-
-        playerListTable.setFillParent(true);
-        playerListTable.setY(-125);
-        stage.addActor(playerListTable);
+        populatePlayerListTable(textStyle, textFieldStyle);
     }
 
     public CreatePlayersScreen(final Game game) {
-        this.game = game;
         stage = new Stage(new ScreenViewport());
 
         initilizeBasicPlayers();
@@ -157,6 +88,72 @@ public class CreatePlayersScreen extends BaseScreen {
         stage.addActor(backgroundImage);
     }
 
+    private void populatePlayerListTable(Label.LabelStyle textStyle, TextField.TextFieldStyle textFieldStyle) {
+        if (playerListTable != null) {
+            playerListTable.remove();
+        }
+        playerListTable = new Table();
+
+        playerListTable.add(new Label("", textStyle)).width(100);
+        Label nameLabel = new Label("Name", textStyle);
+        nameLabel.setAlignment(Align.center);
+        playerListTable.add(nameLabel).width(500);
+        playerListTable.row();
+
+        for (Player player : players) {
+            TextField nameField = new TextField(player.getName(), textFieldStyle);
+
+            //TODO profile photo
+
+            Texture imageTexture = new Texture(Gdx.files.internal("profilePhoto.png"));
+            Image profilePhoto = new Image();
+            profilePhoto.setDrawable(new TextureRegionDrawable(new TextureRegion(imageTexture)));
+
+            profilePhoto.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Carcassonne.getNativeInterface().getPhoto((byte[] bytes) -> {
+                        Pixmap p = new Pixmap(bytes, 0, bytes.length);
+                        Gdx.app.postRunnable(new Runnable() {
+                            @Override
+                            public void run() {
+                                Texture tex = new Texture(p);
+                                Sprite sprite = new Sprite(tex);
+                                sprite.setRotation(180f);
+                                profilePhoto.setDrawable(new SpriteDrawable(sprite));
+                                player.setPhoto(tex);
+                            }
+                        });
+                    });
+                }
+            });
+
+            playerListTable.add(profilePhoto).width(100).height(100);
+            nameField.setAlignment(Align.center);
+
+            nameField.setTextFieldListener((textField, c) -> player.setName(nameField.getText()));
+            playerListTable.add(nameField).width(500);
+            playerListTable.add(new Label("" + player.getColor().name(), textStyle));
+
+            TextButton deleteButton = new TextButton("delete", Carcassonne.skin, "menu");
+            playerListTable.add(deleteButton);
+            deleteButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    Gdx.app.debug("touch", "delete button is touched");
+                    players.remove(player);
+                    renderPlayersList();
+                }
+            });
+            playerListTable.row();
+
+        }
+
+        playerListTable.setFillParent(true);
+        playerListTable.setY(-125);
+        stage.addActor(playerListTable);
+    }
+
     private void initilizeBasicPlayers() {
         players.add(new Player(GameBoard.Color.RED, "Player 1"));
         players.add(new Player(GameBoard.Color.BLUE, "Player 2"));
@@ -165,13 +162,13 @@ public class CreatePlayersScreen extends BaseScreen {
     private TextButton createStartGameButton(Game game, int marginTop) {
         TextButton startGameButton = new TextButton("Start Game", Carcassonne.skin, "menu");
         startGameButton.setWidth((float) Gdx.graphics.getWidth() / 4);
-        startGameButton.setPosition((float)Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6 / 9 - marginTop);
-        startGameButton.addListener(new ClickListener(){
+        startGameButton.setPosition((float) Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float) Gdx.graphics.getHeight() * 6 / 9 - marginTop);
+        startGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start button is touched");
                 // in this case "me" doesn't matter
-                game.setScreen((Screen)new GameScreen(game, players, true, players.get(0), null));
+                game.setScreen(new GameScreen(game, players, true, players.get(0), null));
             }
         });
         return startGameButton;
@@ -180,16 +177,16 @@ public class CreatePlayersScreen extends BaseScreen {
     private TextButton createAddPlayerButton(int marginTop, TextButton startGameButton) {
         TextButton addPlayer = new TextButton("Add player", Carcassonne.skin, "menu");
         addPlayer.setWidth((float) Gdx.graphics.getWidth() / 4);
-        addPlayer.setPosition((float)Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6 / 9 + startGameButton.getHeight() * 3 / 2 - marginTop);
-        addPlayer.addListener(new ClickListener(){
+        addPlayer.setPosition((float) Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float) Gdx.graphics.getHeight() * 6 / 9 + startGameButton.getHeight() * 3 / 2 - marginTop);
+        addPlayer.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (players.size() < GameBoard.MAX_NUM_OF_PLAYERS) {
                     List<GameBoard.Color> colors = new ArrayList<>();
                     List<Integer> numbers = new ArrayList<>();
-                    for (Player p : players) {
-                        numbers.add(Integer.valueOf(p.getName().split(" ")[1]));
-                        colors.add(p.getColor());
+                    for (Player player : players) {
+                        numbers.add(Integer.valueOf(player.getName().split(" ")[1]));
+                        colors.add(player.getColor());
                     }
                     Integer[] arr = {1, 2, 3, 4, 5, 6};
                     List<Integer> rest = (new ArrayList<>(Arrays.asList(arr)));

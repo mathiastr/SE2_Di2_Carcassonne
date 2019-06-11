@@ -5,11 +5,11 @@ import com.mygdx.game.Player;
 public class ConnectMessage {
     public Player player;
 
-    public ConnectMessage(){
+    public ConnectMessage() {
 
     }
 
-    public ConnectMessage(Player player){
+    public ConnectMessage(Player player) {
         this.player = player;
 
     }

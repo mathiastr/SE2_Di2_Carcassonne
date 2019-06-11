@@ -11,7 +11,8 @@ public class CurrentTileMessage {
 
     private int tileNumber;
 
-    public CurrentTileMessage() {}
+    public CurrentTileMessage() {
+    }
 
 
 }

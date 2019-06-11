@@ -8,11 +8,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.rmi.CORBA.Util;
-
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-public class GameClient extends AbstractGameManager{
+public class GameClient extends AbstractGameManager {
     Client client;
 
     public GameClient() {
@@ -44,10 +40,10 @@ public class GameClient extends AbstractGameManager{
         return client;
     }
 
-    public void initConnection (final InetAddress host, final Object message){
+    public void initConnection(final InetAddress host, final Object message) {
         client.setKeepAliveTCP(10000);
         new Thread("Connect") {
-            public void run () {
+            public void run() {
                 try {
                     //
                     client.connect(3000, host, Network.TCP, Network.UDP);
@@ -73,7 +69,7 @@ public class GameClient extends AbstractGameManager{
     public void sendToServer(final Object message) {
         System.out.println("DEGUG ::: sendtoAll   " + message.toString());
         new Thread("Sending") {
-            public void run () {
+            public void run() {
                 client.sendTCP(message);
             }
         }.start();

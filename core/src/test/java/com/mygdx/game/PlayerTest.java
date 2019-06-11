@@ -8,10 +8,10 @@ public class PlayerTest {
 
     @Test
     public void testAddScore() {
-        Player p = new Player();
-        p.addScore(5);
-        p.addScore(2);
-        p.addScore(7);
-        assertEquals(p.getScore(), 5 + 2 + 7);
+        Player player = new Player();
+        player.addScore(5);
+        player.addScore(2);
+        player.addScore(7);
+        assertEquals(player.getScore(), 5 + 2 + 7);
     }
 }

@@ -84,9 +84,9 @@ public class ServerRoomScreen implements Screen {
             NetworkHelper.getPlayer().setId(1);
             players.add(NetworkHelper.getPlayer());
         } else {
-            Player p = new Player(GameBoard.Color.BLUE, "Server");
-            p.setId(1);
-            players.add(p);
+            Player player = new Player(GameBoard.Color.BLUE, "Server");
+            player.setId(1);
+            players.add(player);
         }
 
         Gdx.input.setInputProcessor(stage);
@@ -95,8 +95,8 @@ public class ServerRoomScreen implements Screen {
     private TextButton getStartTextButton(Game game, GameServer f) {
         TextButton start = new TextButton("Start", Carcassonne.skin);
         start.setWidth((float) Gdx.graphics.getWidth() / 5 * 2 - 40);
-        start.setHeight((float)Gdx.graphics.getHeight() / 5 - 60);
-        start.setPosition((float)Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 - 20, 40);
+        start.setHeight((float) Gdx.graphics.getHeight() / 5 - 60);
+        start.setPosition((float) Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 - 20, 40);
         start.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -111,7 +111,7 @@ public class ServerRoomScreen implements Screen {
                 NetworkHelper.getGameManager().sendToServer(ig);
 
                 // TODO get "me" from settings
-                game.setScreen((Screen)new GameScreen(game, players, false, NetworkHelper.getPlayer(), f.localClient));
+                game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), f.localClient));
             }
         });
         return start;
@@ -131,7 +131,7 @@ public class ServerRoomScreen implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 ((GameServer) NetworkHelper.getGameManager()).destroy();
                 NetworkHelper.setGameManager(null);
-                game.setScreen((Screen)new MainMenuScreen(game));
+                game.setScreen(new MainMenuScreen(game));
             }
         });
         return back;
@@ -142,10 +142,10 @@ public class ServerRoomScreen implements Screen {
         device.setWidth((float) Gdx.graphics.getWidth() / 2 - 40);
         device.setHeight((float) Gdx.graphics.getHeight() / 5 - 40);
         if (i % 2 == 0) {
-            device.setPosition(20, Gdx.graphics.getHeight() - (float)Gdx.graphics.getHeight() / 5 * ((float)i / 2 + 2) + 40);
+            device.setPosition(20, Gdx.graphics.getHeight() - (float) Gdx.graphics.getHeight() / 5 * ((float) i / 2 + 2) + 40);
             devices.add(device);
         } else {
-            device.setPosition(20 + (float)Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - (float)Gdx.graphics.getHeight() / 5 * (i / 2 + 2) + 40);
+            device.setPosition(20 + (float) Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - (float) Gdx.graphics.getHeight() / 5 * (i / 2 + 2) + 40);
             devices.add(device);
         }
         stage.addActor(device);
@@ -199,8 +199,7 @@ public class ServerRoomScreen implements Screen {
                 connection.sendTCP(new ErrorMessage("The game is full", ErrorNumber.TOOMANYCLIENTS));
             } else {
                 Player player = ((ConnectMessage) object).player;
-                for (Player p : players
-                ) {
+                for (Player p : players) {
                     if (p.getName().equals((player.getName()))) {
                         player.setName(player.getName() + players.size());
                     }

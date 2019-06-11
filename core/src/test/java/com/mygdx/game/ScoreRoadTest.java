@@ -217,26 +217,6 @@ public class ScoreRoadTest {
         Assert.assertTrue(owners.contains(player2));
     }
 
-    // @Test
-    public void testCheating() {
-        preparePlayers();
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
-        gb.performCheatAction(players.get(0)); //cheat Meeple
-        assert players.get(0).getNumberOfMeeples() == Player.MEEPLE_COUNT + 1;
-        assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
-
-        gb.setCurrentPlayer(players.get(1));
-
-        gb.performCheatAction(players.get(0)); //detect cheat rightfully
-        assert players.get(0).getNumberOfMeeples() == 0;
-        assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
-
-        gb.performCheatAction(players.get(0)); //detect cheat wrongfully
-        assert players.get(0).getNumberOfMeeples() == 0;
-        assert players.get(1).getNumberOfMeeples() == 0;
-
-    }
-
     /**
      * Tests the setter of the current tile
      */

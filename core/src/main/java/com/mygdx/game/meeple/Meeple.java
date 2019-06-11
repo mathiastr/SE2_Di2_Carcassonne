@@ -40,7 +40,7 @@ public class Meeple {
     public Meeple() {
     }
 
-    public Meeple(GameBoard.Color color){
+    public Meeple(GameBoard.Color color) {
         this.color = color;
     }
 

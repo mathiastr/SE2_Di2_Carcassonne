@@ -5,7 +5,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -13,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
@@ -55,7 +53,7 @@ public class ClientSearchScreen implements Screen {
 
         output = new Label("Looking for Server", Carcassonne.skin);
         output.setAlignment(Align.center);
-        output.setY((float)Gdx.graphics.getHeight() / 8 * 7);
+        output.setY((float) Gdx.graphics.getHeight() / 8 * 7);
         output.setWidth(Gdx.graphics.getWidth());
         output.setFontScale(3);
         stage.addActor(output);
@@ -96,7 +94,7 @@ public class ClientSearchScreen implements Screen {
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         try {
                             //TODO send player name + color
-                            if(!((GameClient)NetworkHelper.getGameManager()).getClient().isConnected()){
+                            if (!((GameClient) NetworkHelper.getGameManager()).getClient().isConnected()) {
                                 if (NetworkHelper.getPlayer() == null) {
                                     gameClient.initConnection(host, new ConnectMessage(new Player(GameBoard.Color.getRandom(), "Guest")));
                                 } else {
@@ -133,7 +131,7 @@ public class ClientSearchScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 NetworkHelper.setGameManager(null);
-                game.setScreen((Screen)new MainMenuScreen(game));
+                game.setScreen(new MainMenuScreen(game));
             }
         });
         return back;
@@ -142,8 +140,8 @@ public class ClientSearchScreen implements Screen {
     private TextButton getRefreshTextButton() {
         TextButton start = new TextButton("Refresh", Carcassonne.skin);
         start.setWidth((float) Gdx.graphics.getWidth() / 5 * 2 - 40);
-        start.setHeight((float)Gdx.graphics.getHeight() / 5 - 60);
-        start.setPosition((float)Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 - 20, 40);
+        start.setHeight((float) Gdx.graphics.getHeight() / 5 - 60);
+        start.setPosition((float) Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 - 20, 40);
         start.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
@@ -201,7 +199,7 @@ public class ClientSearchScreen implements Screen {
 
     private void connect(Connection connection, ConnectMessage object) {
         ConnectMessage response = object;
-        if(NetworkHelper.getPlayer().getId() == 0){
+        if (NetworkHelper.getPlayer().getId() == 0) {
             NetworkHelper.setPlayer(response.player);
 
             System.out.println("DEBUG ::: Client is now: " + response.player.getName() + " " + connection.getID());
@@ -226,19 +224,19 @@ public class ClientSearchScreen implements Screen {
                                      game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
                                  }
                              }
-            );
+        );
     }
 
 
     private void setServerTextButtons() {
         for (int i = 0; i < server.size() && i < 6; i++) {
             TextButton device = server.get(i);
-            device.setWidth((float)Gdx.graphics.getWidth() / 2 - 40);
-            device.setHeight((float)Gdx.graphics.getHeight() / 5 - 40);
+            device.setWidth((float) Gdx.graphics.getWidth() / 2 - 40);
+            device.setHeight((float) Gdx.graphics.getHeight() / 5 - 40);
             if (i % 2 == 0) {
-                device.setPosition(20, Gdx.graphics.getHeight() - (float)Gdx.graphics.getHeight() / 5 * ((float)i / 2 + 2) + 40);
+                device.setPosition(20, Gdx.graphics.getHeight() - (float) Gdx.graphics.getHeight() / 5 * ((float) i / 2 + 2) + 40);
             } else {
-                device.setPosition(20 + (float)Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - (float)Gdx.graphics.getHeight() / 5 * ((float)i / 2 + 2) + 40);
+                device.setPosition(20 + (float) Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - (float) Gdx.graphics.getHeight() / 5 * ((float) i / 2 + 2) + 40);
             }
             stage.addActor(device);
         }

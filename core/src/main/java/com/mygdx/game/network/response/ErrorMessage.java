@@ -4,15 +4,15 @@ public class ErrorMessage {
     public String message;
     public ErrorNumber errorNumber;
 
-    public ErrorMessage(){
+    public ErrorMessage() {
     }
 
-    public ErrorMessage(String message){
+    public ErrorMessage(String message) {
         this.message = message;
         this.errorNumber = ErrorNumber.OTHER;
     }
 
-    public ErrorMessage(String message,ErrorNumber errorNumber){
+    public ErrorMessage(String message, ErrorNumber errorNumber) {
         this.message = message;
         this.errorNumber = errorNumber;
     }
