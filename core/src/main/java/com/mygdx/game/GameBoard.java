@@ -382,17 +382,19 @@ public class GameBoard {
             statuses.add(playerStatusActor);
             playerStatusActor.setPosition((float) players.indexOf(player) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
             playerStatusActor.addListener(new ActorGestureListener(20, 0.4f, 5f, 0.15f) {
+                private final Player playerById = findPlayerById(NetworkHelper.getPlayer().getId());
+
                 @Override
                 public boolean longPress(Actor actor, float x, float  y) {
                     Gdx.app.debug("DEBUG","Long Press");
-                    cheat(CheatType.SCORE, player);
+                    cheat(CheatType.SCORE, player, playerById);
                     return false;
                 }
 
                 @Override
                 public void tap(InputEvent event, float x, float y, int count, int button) {
                     Gdx.app.debug("DEBUG","double tap");
-                    cheat(CheatType.MEEPLE, player);
+                    cheat(CheatType.MEEPLE, player, playerById);
                 }
 
                 @Override
@@ -498,9 +500,8 @@ public class GameBoard {
         performCheatAction(findPlayerById(message.getCaller()), findPlayerById(message.getCallee()), message.getType());
     }
 
-    public void cheat(CheatType type, Player player) {
+    public void cheat(CheatType type, Player player, Player currentPlayer) {
 
-        Player currentPlayer = findPlayerById(NetworkHelper.getPlayer().getId());
         performCheatAction(currentPlayer, player, type);
 
         if(currentPlayer != null && NetworkHelper.getGameManager() != null){

@@ -94,6 +94,11 @@ public class Player {
         this.timeToDetectUsedCheats = 0;
     }
 
+    public Player(int id, GameBoard.Color color, String name) {
+        this(color, name);
+        this.id = id;
+    }
+
     public Meeple getUnusedMeeple() {
         if (this.meeples.size() != 0) {
             Meeple lastMeeple = this.meeples.get(this.meeples.size() - 1);

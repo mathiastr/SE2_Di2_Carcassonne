@@ -30,8 +30,8 @@ public class CheatTest {
 
     public void preparePlayers() {
         players = new ArrayList<>();
-        players.add(new Player(GameBoard.Color.BLACK, "A"));
-        players.add(new Player(GameBoard.Color.BLUE, "B"));
+        players.add(new Player(1, GameBoard.Color.BLACK, "A"));
+        players.add(new Player(2, GameBoard.Color.BLUE, "B"));
     }
 
     @Test
@@ -40,17 +40,15 @@ public class CheatTest {
 
         GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
 
-        gb.cheat(CheatType.SCORE, players.get(0)); //cheat Meeple
+        gb.cheat(CheatType.SCORE, players.get(0), players.get(0)); //cheat Meeple
         assert players.get(0).getScore() == Player.CHEAT_SCORE;
         assert players.get(1).getScore() == 0;
 
-        gb.setCurrentPlayer(players.get(1));
-
-        gb.cheat(CheatType.SCORE, players.get(0)); //detect cheat rightfully
+        gb.cheat(CheatType.SCORE, players.get(0), players.get(1)); //detect cheat rightfully
         assert players.get(0).getScore() == Player.CHEAT_SCORE * (-2);
         assert players.get(1).getScore() == 0;
 
-        gb.cheat(CheatType.SCORE, players.get(0)); //detect cheat wrongfully
+        gb.cheat(CheatType.SCORE, players.get(0), players.get(1)); //detect cheat wrongfully
         assert players.get(0).getScore() == Player.CHEAT_SCORE * (-2);
         assert players.get(1).getScore() == Player.CHEAT_SCORE * (-3);
 
@@ -61,17 +59,17 @@ public class CheatTest {
     public void testMeepleCheating() {
         preparePlayers();
         GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
-        gb.cheat(CheatType.MEEPLE, players.get(0)); //cheat Meeple
+        gb.cheat(CheatType.MEEPLE, players.get(0), players.get(0)); //cheat Meeple
         assert players.get(0).getNumberOfMeeples() == Player.MEEPLE_COUNT + 1;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
 
         gb.setCurrentPlayer(players.get(1));
 
-        gb.cheat(CheatType.MEEPLE, players.get(0)); //detect cheat rightfully
+        gb.cheat(CheatType.MEEPLE, players.get(0), players.get(1)); //detect cheat rightfully
         assert players.get(0).getNumberOfMeeples() == 0;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
 
-        gb.cheat(CheatType.MEEPLE, players.get(0)); //detect cheat wrongfully
+        gb.cheat(CheatType.MEEPLE, players.get(0), players.get(1)); //detect cheat wrongfully
         assert players.get(0).getNumberOfMeeples() == 0;
         assert players.get(1).getNumberOfMeeples() == 0;
 
