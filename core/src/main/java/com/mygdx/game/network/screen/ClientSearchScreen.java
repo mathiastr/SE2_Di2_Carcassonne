@@ -108,6 +108,7 @@ public class ClientSearchScreen implements Screen {
                                     }
                                 });
                             }
+                                                game.setScreen((Screen)new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
                         } catch (Exception e) {
 
                         }
@@ -225,6 +226,9 @@ public class ClientSearchScreen implements Screen {
             public void run() {
                 // TODO get "me" from settings (your user name and etc.)
                 game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                NetworkHelper.setGameManager(null);
+                game.setScreen((Screen)new MainMenuScreen(game));
             }
         });
     }

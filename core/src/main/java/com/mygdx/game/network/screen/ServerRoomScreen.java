@@ -75,6 +75,7 @@ public class ServerRoomScreen implements Screen {
         }
         final GameServer f = server;
         TextButton back = getBackTextButton(game);
+                game.setScreen((Screen)new MainMenuScreen(game));
         stage.addActor(back);
 
         TextButton start = getStartTextButton(game, f);
@@ -116,7 +117,7 @@ public class ServerRoomScreen implements Screen {
                 NetworkHelper.getGameManager().sendToServer(ig);
 
                 // TODO get "me" from settings
-                game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), f.localClient));
+                game.setScreen((Screen)new GameScreen(game, players, false, NetworkHelper.getPlayer(), f.localClient));
             }
         });
         return start;

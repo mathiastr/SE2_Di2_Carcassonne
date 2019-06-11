@@ -79,30 +79,6 @@ public class Board {
         return score;
     }
 
-    public int getScore(TileActor tile) {
-        int score = 0;
-        for (Feature feature: tile.getFeatures()) {
-            if(feature instanceof City || feature instanceof Road) {
-                score += scoreRoadOrCity(tile, feature);
-            }
-            else if (feature instanceof Monastery) {
-                score += scoreMonastery(tile);
-            }
-            // TODO check for monastery around
-        }
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                TileActor tileAround = placedTiles.get(tile.getPosition().add(new Position(i, j)));
-                if ( tileAround != null ) {
-                    if (tileAround.isMonastery()) {
-                        score += scoreMonastery(tileAround);
-                    }
-                }
-            }
-        }
-        return score;
-    }
-
     // e.g. for TOP we want BOTTOM, for RIGHT we want LEFT ...
     public Side getFacingSideOfSurroundingTile(Side side) {
         return Side.values()[side.ordinal() ^ 2];
@@ -157,25 +133,7 @@ public class Board {
     }
 
     public int getScore(TileActor tile, Feature feature) {
-        int score = 0;
-        if((feature instanceof City || feature instanceof Road)) {
-            score += scoreRoadOrCity(tile, feature);
-        }
-        else if (feature instanceof Monastery) {
-            score += scoreMonastery(tile);
-        }
-        // TODO check for monastery around
-        for (int i = -1; i < 2; i++) {
-            for (int j = -1; j < 2; j++) {
-                TileActor tileAround = placedTiles.get(tile.getPosition().add(new Position(i, j)));
-                if ( tileAround != null) {
-                    if (tileAround.isMonastery()) {
-                        score += scoreMonastery(tileAround);
-                    }
-                }
-            }
-        }
-        return score;
+        return tile.getScore(feature, this);
     }
 
     public void createDeckTilesAndStartTile() {
