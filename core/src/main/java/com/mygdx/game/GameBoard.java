@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -30,13 +29,10 @@ import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
-import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
-import com.mygdx.game.tile.Monastery;
-import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -364,29 +360,16 @@ public class GameBoard {
             }
         }
 
-        finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
-
-        finishTurnButton.setWidth(300);
-        finishTurnButton.getLabel().setFontScale(0.8f);
-        finishTurnButton.setPosition((float)Gdx.graphics.getWidth() - 300f - 100f, 0);
-        finishTurnButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (gameClient != null && isMyTurn()) {
-                    if (tileIsPlaced) {
-                        endMyTurn();
-                    }
-                } else if (gameClient == null) {
-                    endMyTurn();
-                }
-
-            }
-        });
+        createFinishTurnButton();
 
         stageOfUI.addActor(finishTurnButton);
         playerActorList = new ArrayList<>();
 
-        for (com.mygdx.game.Player p : players) {
+        createPlayerStatuses();
+    }
+
+    private void createPlayerStatuses() {
+        for (Player p : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(p);
             statuses.add(playerStatusActor);
             playerStatusActor.setPosition((float) players.indexOf(p) * PlayerStatusActor.WIDTH , Gdx.graphics.getHeight(), Align.topLeft);
@@ -409,6 +392,27 @@ public class GameBoard {
             stageOfUI.addActor(playerStatusActor);
             playerActorList.add(playerStatusActor);
         }
+    }
+
+    private void createFinishTurnButton() {
+        finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
+
+        finishTurnButton.setWidth(300);
+        finishTurnButton.getLabel().setFontScale(0.8f);
+        finishTurnButton.setPosition((float) Gdx.graphics.getWidth() - 300f - 100f, 0);
+        finishTurnButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (gameClient != null && isMyTurn()) {
+                    if (tileIsPlaced) {
+                        endMyTurn();
+                    }
+                } else if (gameClient == null) {
+                    endMyTurn();
+                }
+
+            }
+        });
     }
 
     public List<com.mygdx.game.Player> getFeatureOwners(TileActor tile, Feature feature) {
