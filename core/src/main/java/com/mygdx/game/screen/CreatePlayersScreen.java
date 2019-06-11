@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CreatePlayersScreen implements Screen {
+public class CreatePlayersScreen extends BaseScreen {
 
     private Game game;
     private Stage stage;
@@ -125,36 +125,61 @@ public class CreatePlayersScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
 
-        players.add(new Player(GameBoard.Color.RED, "Player 1"));
-        players.add(new Player(GameBoard.Color.BLUE, "Player 2"));
+        initilizeBasicPlayers();
 
         NetworkHelper.setPlayer(players.get(0));
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
+        setBackground();
+
+        int marginTop = 10;
+
+        TextButton startGameButton = createStartGameButton(game, marginTop);
+        TextButton addPlayer = createAddPlayerButton(marginTop, startGameButton);
+
+        stage.addActor(addPlayer);
+        stage.addActor(startGameButton);
+
+        font = new BitmapFont(Gdx.files.internal("font/font.fnt"));
+        font.getData().setScale(5);
+
+        renderPlayersList();
+        Gdx.input.setInputProcessor(stage);
+
+    }
+
+    private void setBackground() {
         background = new Texture("background.png");
         Image backgroundImage = new Image(background);
         backgroundImage.setWidth(Gdx.graphics.getWidth());
         backgroundImage.setHeight(Gdx.graphics.getHeight());
         stage.addActor(backgroundImage);
+    }
 
-        int marginTop = 10;
+    private void initilizeBasicPlayers() {
+        players.add(new Player(GameBoard.Color.RED, "Player 1"));
+        players.add(new Player(GameBoard.Color.BLUE, "Player 2"));
+    }
 
-        // TODO place these buttons inside the table
+    private TextButton createStartGameButton(Game game, int marginTop) {
         TextButton startGameButton = new TextButton("Start Game", Carcassonne.skin, "menu");
-        startGameButton.setWidth((float)Gdx.graphics.getWidth() / 4);
+        startGameButton.setWidth((float) Gdx.graphics.getWidth() / 4);
         startGameButton.setPosition((float)Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6 / 9 - marginTop);
         startGameButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start button is touched");
                 // in this case "me" doesn't matter
-                game.setScreen(new GameScreen(game, players, true, players.get(0), null));
+                game.setScreen((Screen)new GameScreen(game, players, true, players.get(0), null));
             }
         });
+        return startGameButton;
+    }
 
+    private TextButton createAddPlayerButton(int marginTop, TextButton startGameButton) {
         TextButton addPlayer = new TextButton("Add player", Carcassonne.skin, "menu");
-        addPlayer.setWidth((float)Gdx.graphics.getWidth() / 4);
+        addPlayer.setWidth((float) Gdx.graphics.getWidth() / 4);
         addPlayer.setPosition((float)Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6 / 9 + startGameButton.getHeight() * 3 / 2 - marginTop);
         addPlayer.addListener(new ClickListener(){
             @Override
@@ -176,26 +201,13 @@ public class CreatePlayersScreen implements Screen {
                 Gdx.app.debug("touch", "add player button is touched");
             }
         });
-
-        stage.addActor(addPlayer);
-        stage.addActor(startGameButton);
-        // TODO what is that?
-
-        font = new BitmapFont(Gdx.files.internal("font/font.fnt"));
-        font.getData().setScale(5);
-
-        renderPlayersList();
-
-        Gdx.input.setInputProcessor(stage);
-
+        return addPlayer;
     }
 
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -203,27 +215,6 @@ public class CreatePlayersScreen implements Screen {
         stage.draw();
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
     public void dispose() {
         stage.dispose();
     }

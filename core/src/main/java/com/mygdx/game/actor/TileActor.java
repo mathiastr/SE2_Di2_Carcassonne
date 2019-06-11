@@ -3,13 +3,17 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.mygdx.game.Board;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.TilePlacementMessage;
+import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.FeatureType;
+import com.mygdx.game.tile.Monastery;
+import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
 import java.util.ArrayList;
@@ -244,6 +248,28 @@ public class TileActor extends Actor {
 
     public void placeMeepleOnFeature(Feature feature, Meeple meeple) {
 
+    }
+
+    public int getScore(Feature feature, Board board) {
+        int score = 0;
+        if((feature instanceof City || feature instanceof Road)) {
+            score += board.scoreRoadOrCity(this, feature);
+        }
+        else if (feature instanceof Monastery) {
+            score += board.scoreMonastery(this);
+        }
+        // TODO check for monastery around
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                TileActor tileAround = board.placedTiles.get(getPosition().add(new Position(i, j)));
+                if ( tileAround != null) {
+                    if (tileAround.isMonastery()) {
+                        score += board.scoreMonastery(tileAround);
+                    }
+                }
+            }
+        }
+        return score;
     }
 
     public int getMeepleCount() {
