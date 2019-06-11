@@ -5,7 +5,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -14,18 +13,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.meeple.MeepleTextureFactory;
 import com.mygdx.game.tile.Feature;
-import com.mygdx.game.GameBoard;
-import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
-import com.mygdx.game.actor.TileActor;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChosenMeeplePlacementScreen extends Actor implements Screen {
+public class ChosenMeeplePlacementScreen extends BaseScreen {
 
     private Stage stage;
     private GameBoard gb;
@@ -39,7 +38,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
     ChosenMeeplePlacementScreen(GameScreen previousScreen, Game game, GameBoard gb)
     {
         this.gb = gb;
-        this.previousScreen = previousScreen;
+        this.previousScreen = (Screen)previousScreen;
         this.game = game;
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
         stage = new Stage(new ScreenViewport());
@@ -86,7 +85,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button)
             {
-                game.setScreen(previousScreen);
+                game.setScreen((Screen)previousScreen);
             }
         });
         stage.addActor(back);
@@ -161,13 +160,11 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
         }
     }
 
-    @Override
     public void show()
     {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
     public void render(float delta)
     {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
@@ -177,32 +174,8 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
     }
 
     @Override
-    public void resize(int width, int height)
-    {
-
+    public void dispose() {
+        stage.dispose();
     }
 
-    @Override
-    public void pause()
-    {
-
-    }
-
-    @Override
-    public void resume()
-    {
-
-    }
-
-    @Override
-    public void hide()
-    {
-
-    }
-
-    @Override
-    public void dispose()
-    {
-
-    }
 }

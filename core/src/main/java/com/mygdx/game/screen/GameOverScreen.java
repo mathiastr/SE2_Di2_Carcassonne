@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Player;
 
-public class GameOverScreen implements Screen {
+public class GameOverScreen extends BaseScreen implements Screen {
 
     private Stage stage;
     private Player winner;
@@ -82,7 +82,7 @@ public class GameOverScreen implements Screen {
         stage.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen((Screen)new MainMenuScreen(game));
             }
         });
         Gdx.input.setInputProcessor(stage);
@@ -97,26 +97,6 @@ public class GameOverScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
     }
 
     @Override

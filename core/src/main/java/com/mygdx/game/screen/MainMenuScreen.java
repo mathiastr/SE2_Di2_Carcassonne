@@ -18,7 +18,7 @@ import com.mygdx.game.Carcassonne;
 import com.mygdx.game.network.screen.ClientSearchScreen;
 import com.mygdx.game.network.screen.ServerRoomScreen;
 
-public class MainMenuScreen implements Screen {
+public class MainMenuScreen extends BaseScreen {
     private Game game;
     private Stage stage;
     private String touch = "touch";
@@ -62,7 +62,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug(touch, "local game touch up");
-                game.setScreen(new CreatePlayersScreen(game));
+                game.setScreen((Screen)new CreatePlayersScreen(game));
 
             }
         });
@@ -87,7 +87,7 @@ public class MainMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug(touch, start);
-                game.setScreen(new SettingScreen(game));
+                game.setScreen((Screen)new SettingScreen(game));
             }
         });
         stage.addActor(settButton);
@@ -95,7 +95,6 @@ public class MainMenuScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -104,32 +103,10 @@ public class MainMenuScreen implements Screen {
 
     }
 
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
     public void dispose() {
         stage.dispose();
     }
