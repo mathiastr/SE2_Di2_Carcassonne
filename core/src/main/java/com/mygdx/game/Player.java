@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.meeple.Meeple;
+import com.mygdx.game.network.response.CheatType;
 import com.mygdx.game.network.response.PlayerGameMessage;
 
 import java.util.ArrayList;
@@ -117,9 +118,12 @@ public class Player {
         setTimeToDetectUsedCheats(3);
     }
 
-    public void detectCheat() {
-        meeples = new ArrayList<>();
+    public void punish() {
+
         subtractScore(CHEAT_SCORE * 3);
+
+        meeples = new ArrayList<>();
+
         setTimeToDetectUsedCheats(0);
     }
 

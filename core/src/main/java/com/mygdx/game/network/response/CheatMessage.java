@@ -1,6 +1,5 @@
 package com.mygdx.game.network.response;
 
-import com.mygdx.game.CheatType;
 import com.mygdx.game.Player;
 
 public class CheatMessage {

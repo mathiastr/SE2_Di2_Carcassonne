@@ -4,26 +4,23 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
+import com.mygdx.game.Position;
+import com.mygdx.game.emotes.Emote;
 import com.mygdx.game.network.response.CheatMessage;
+import com.mygdx.game.network.response.CheatType;
 import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Field;
-import com.mygdx.game.GameBoard;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.meeple.MeepleType;
-import com.mygdx.game.network.response.BlameCheatMessage;
-import com.mygdx.game.network.response.CheatType;
 import com.mygdx.game.network.response.ConnectMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
-import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.InitGameMessage;
 import com.mygdx.game.network.response.PlayerGameMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
-import com.mygdx.game.tile.City;
-import com.mygdx.game.tile.Field;
 import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
@@ -62,7 +59,6 @@ public class Network {
         kryo.register(EmoteMessage.class);
         kryo.register(Emote.class);
         kryo.register(CheatType.class);
-        kryo.register(BlameCheatMessage.class);
     }
 }
 

@@ -22,6 +22,7 @@ import com.mygdx.game.meeple.MeepleTextureFactory;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.CheatMessage;
+import com.mygdx.game.network.response.CheatType;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
@@ -380,45 +381,26 @@ public class GameBoard {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(player);
             statuses.add(playerStatusActor);
             playerStatusActor.setPosition((float) players.indexOf(player) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
-            if (player.getId() == NetworkHelper.getPlayer().getId()) {
-                playerStatusActor.addListener(new ActorGestureListener(20, 0.4f, 5f, 0.15f) {
-                    @Override
-                    public boolean longPress(Actor actor, float x, float  y) {
-                        Gdx.app.debug("DEBUG","Long Press");
-                        cheat(CheatType.SCORE, p);
-                        return false;
-                    }
+            playerStatusActor.addListener(new ActorGestureListener(20, 0.4f, 5f, 0.15f) {
+                @Override
+                public boolean longPress(Actor actor, float x, float  y) {
+                    Gdx.app.debug("DEBUG","Long Press");
+                    cheat(CheatType.SCORE, player);
+                    return false;
+                }
 
-                    @Override
-                    public void tap(InputEvent event, float x, float y, int count, int button) {
-                        if (count == 2) {
-                            Gdx.app.debug("DEBUG","double tap");
-                            cheat(CheatType.MEEPLE, p);
-                        }
-                    }
+                @Override
+                public void tap(InputEvent event, float x, float y, int count, int button) {
+                    Gdx.app.debug("DEBUG","double tap");
+                    cheat(CheatType.MEEPLE, player);
+                }
 
-                    @Override
-                    public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                @Override
+                public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-                        Gdx.app.debug("DEBUG", "Touch Down on yourself");
-                    }
-                });
-            } else {
-                playerStatusActor.addListener(new ActorGestureListener(20, 0.4f, 5f, 0.15f) {
-                    @Override
-                    public boolean longPress(Actor actor, float x, float y) {
-                        Gdx.app.debug("DEBUG", "Long Press");
-                        blameCheating(player);
-                        return false;
-                    }
-
-                    @Override
-                    public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
-                        Gdx.app.debug("DEBUG", "Touch Down on others");
-                    }
-                });
-            }
+                    Gdx.app.debug("DEBUG", "Touch Down on yourself");
+                }
+            });
             stageOfUI.addActor(playerStatusActor);
             playerActorList.add(playerStatusActor);
         }
@@ -443,33 +425,6 @@ public class GameBoard {
 
             }
         });
-    }
-
-    public void onBlameCheat(BlameCheatMessage message) {
-        for (Player player : players
-        ) {
-            if (player.getId() == message.getTargetId()) {
-                if (player.getTimeToDetectUsedCheats() > 0) {
-                    player.setScore(0);
-                    Gdx.app.debug("DEBUG", "Blame cheat on (" + player.getName() + ") worked: " + player.getScore());
-                } else {
-                    for (Player self : players
-                    ) {
-                        if (self.getId() == message.getSourceId()) {
-                            self.setScore(0);
-                            Gdx.app.debug("DEBUG", "Blame cheat on (" + player.getName() + ") failed: " + self.getScore());
-                        }
-                    }
-                }
-                updatePlayersInfo();
-            }
-        }
-    }
-
-    public void blameCheating(Player p) {
-        BlameCheatMessage message = new BlameCheatMessage(p.getId(), NetworkHelper.getPlayer().getId());
-        NetworkHelper.getGameManager().sendToServer(message);
-        onBlameCheat(message);
     }
 
     public List<Player> getFeatureOwners(TileActor tile, Feature feature) {
@@ -551,9 +506,9 @@ public class GameBoard {
         if (callee.equals(caller)) {
             callee.cheat(type);
         } else if (callee.isCheater()) {
-            callee.detectCheat();
+            callee.punish();
         } else {
-            caller.detectCheat();
+            caller.punish();
         }
         updatePlayersInfo();
     }
