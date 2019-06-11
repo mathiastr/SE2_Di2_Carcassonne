@@ -1,7 +1,6 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -30,13 +29,9 @@ import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
-import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
-import com.mygdx.game.tile.Monastery;
-import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -313,7 +308,7 @@ public class GameBoard {
     }
 
     public void init() {
-        board.createDeckTilesAndStartTile();
+        board.availableTiles = Deck.createDeckTilesAndStartTile();
         TileActor startTile = board.getAvailableTiles().remove(0);
         board.getPlacedTiles().put(new Position(0, 0), startTile);
         stageOfBoard.addActor(startTile);
