@@ -514,6 +514,7 @@ public class GameBoard {
     }
 
     private void onEmote(EmoteMessage emoteMessage) {
+        //Cant test emotes with api 21 :(
         players.stream().filter(p -> p.getId() == (emoteMessage.getPlayer().getId())).findAny().ifPresent(player -> gameScreen.showEmote(emoteMessage));
     }
 

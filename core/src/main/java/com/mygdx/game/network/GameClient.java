@@ -8,6 +8,10 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.rmi.CORBA.Util;
+
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 public class GameClient extends AbstractGameManager{
     Client client;
 
@@ -72,13 +76,6 @@ public class GameClient extends AbstractGameManager{
                 client.sendTCP(message);
             }
         }.start();
-    }
-
-
-    @Override
-    public void sendToHost(final Object message){
-        super.sendToHost(message);
-        //to do
     }
 
     @Override

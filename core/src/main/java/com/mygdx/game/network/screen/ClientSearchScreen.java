@@ -5,6 +5,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.esotericsoftware.kryonet.Client;
 import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.Listener;
 import com.mygdx.game.Carcassonne;
@@ -40,6 +42,7 @@ public class ClientSearchScreen implements Screen {
     private Stage stage;
     private Label output;
     private List<TextButton> server;
+    private TextButton refresh;
 
     private final List<Toast> toasts = new LinkedList<Toast>();
     private Toast.ToastFactory toastFactory;
@@ -63,12 +66,20 @@ public class ClientSearchScreen implements Screen {
 
         server = new ArrayList<TextButton>();
         final GameClient gameClient = new GameClient();
-        /*
-        gameClient.getClient().addListener(new Listener(){
-            public void received (Connection connection, Object object) {
-                receive(connection,object);
-            }
-        }); */
+
+        setServerButtons(game, gameClient);
+
+        setServerTextButtons();
+
+        refresh = getRefreshTextButton();
+        stage.addActor(refresh);
+
+        TextButton back = getBackTextButton(game);
+        stage.addActor(back);
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    private void setServerButtons(Game game, GameClient gameClient) {
         NetworkHelper.setGameManager(gameClient);
         List<InetAddress> hosts = gameClient.discover();
         if (!hosts.isEmpty()) {
@@ -85,56 +96,18 @@ public class ClientSearchScreen implements Screen {
                     public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                         try {
                             //TODO send player name + color
-                            if (NetworkHelper.getPlayer() == null) {
-                                gameClient.initConnection(host, new ConnectMessage(new Player(GameBoard.Color.getRandom(), "Guest")));
-                            } else {
-                                gameClient.initConnection(host, new ConnectMessage(NetworkHelper.getPlayer()));
-                            }
-                            gameClient.addListener(new Listener() {
-                                public void received(Connection connection, Object object) {
-                                    System.out.println("DEBUG ::: Client received: " + object.toString());
-                                    if (object instanceof InitGameMessage) {
-                                        // get the init info from here
-                                        InitGameMessage response = (InitGameMessage) object;
-                                        ArrayList<Player> players = response.getPlayers();
-                                        System.out.println("info is here");
-                                        Gdx.app.postRunnable(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                // TODO get "me" from settings (your user name and etc.)
-                                                game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
-                                            }
-                                        });
-                                    }
-
-                                    if (object instanceof ConnectMessage) {
-                                        ConnectMessage response = (ConnectMessage) object;
-                                        if(NetworkHelper.getPlayer().getId() == 0){
-                                            NetworkHelper.setPlayer(response.player);
-
-                                            System.out.println("DEBUG ::: Client is now: " + response.player.getName() + " " + connection.getID());
-                                            Gdx.app.postRunnable(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    toastLong("You are now " + NetworkHelper.getPlayer().getName());
-                                                }
-                                            });
-                                        }
-                                    }
-
-                                    if (object instanceof ErrorMessage) {
-                                        ErrorMessage response = (ErrorMessage) object;
-                                        if (response.errorNumber == ErrorNumber.TOOMANYCLIENTS) {
-                                            //toastLong(response.message);
-                                        }
-                                    }
-
-                                    if (object instanceof CurrentTileMessage) {
-                                        NetworkHelper.setLastMessage(object);
-                                        NetworkHelper.getGameManager().sendToServer(new ErrorMessage("Game not started", ErrorNumber.GAMENOTSTARTED));
-                                    }
+                            if(!((GameClient)NetworkHelper.getGameManager()).getClient().isConnected()){
+                                if (NetworkHelper.getPlayer() == null) {
+                                    gameClient.initConnection(host, new ConnectMessage(new Player(GameBoard.Color.getRandom(), "Guest")));
+                                } else {
+                                    gameClient.initConnection(host, new ConnectMessage(NetworkHelper.getPlayer()));
                                 }
-                            });
+                                gameClient.addListener(new Listener() {
+                                    public void received(Connection connection, Object object) {
+                                        ClientSearchScreen.this.received(connection, object, game, gameClient);
+                                    }
+                                });
+                            }
                         } catch (Exception e) {
 
                         }
@@ -145,11 +118,30 @@ public class ClientSearchScreen implements Screen {
         } else {
             toastShort("No game found.");
         }
+    }
 
-        setServerTextButtons();
+    private TextButton getBackTextButton(Game game) {
+        TextButton back = new TextButton("Back", Carcassonne.skin);
+        back.setWidth((float) Gdx.graphics.getWidth() / 5 - 40);
+        back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
+        back.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
 
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                NetworkHelper.setGameManager(null);
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+        return back;
+    }
+
+    private TextButton getRefreshTextButton() {
         TextButton start = new TextButton("Refresh", Carcassonne.skin);
-        start.setWidth((float)Gdx.graphics.getWidth() / 5 * 2 - 40);
+        start.setWidth((float) Gdx.graphics.getWidth() / 5 * 2 - 40);
         start.setHeight((float)Gdx.graphics.getHeight() / 5 - 60);
         start.setPosition((float)Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 - 20, 40);
         start.addListener(new InputListener() {
@@ -176,25 +168,65 @@ public class ClientSearchScreen implements Screen {
                 }
             }
         });
-        stage.addActor(start);
+        return start;
+    }
 
-        TextButton back = new TextButton("Back", Carcassonne.skin);
-        back.setWidth((float)Gdx.graphics.getWidth() / 5 - 40);
-        back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
-        back.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
+    private void received(Connection connection, Object object, Game game, GameClient gameClient) {
+        System.out.println("DEBUG ::: Client received: " + object.toString());
+        if (object instanceof InitGameMessage) {
+            initGame((InitGameMessage) object, game, gameClient);
+        }
+
+        if (object instanceof ConnectMessage) {
+            connect(connection, (ConnectMessage) object);
+        }
+
+        if (object instanceof ErrorMessage) {
+            ErrorMessage response = (ErrorMessage) object;
+            if (response.errorNumber == ErrorNumber.TOOMANYCLIENTS) {
+                Gdx.app.postRunnable(new Runnable() {
+                    @Override
+                    public void run() {
+                        toastLong(response.message);
+                    }
+                });
             }
+        }
 
+        if (object instanceof CurrentTileMessage) {
+            NetworkHelper.setLastMessage(object);
+            NetworkHelper.getGameManager().sendToServer(new ErrorMessage("Game not started", ErrorNumber.GAMENOTSTARTED));
+        }
+    }
+
+    private void connect(Connection connection, ConnectMessage object) {
+        ConnectMessage response = object;
+        if(NetworkHelper.getPlayer().getId() == 0){
+            NetworkHelper.setPlayer(response.player);
+
+            System.out.println("DEBUG ::: Client is now: " + response.player.getName() + " " + connection.getID());
+            Gdx.app.postRunnable(new Runnable() {
+                @Override
+                public void run() {
+                    toastLong("You are now " + NetworkHelper.getPlayer().getName());
+                    refresh.remove();
+                }
+            });
+        }
+    }
+
+    private void initGame(InitGameMessage object, Game game, GameClient gameClient) {
+        // get the init info from here
+        InitGameMessage response = object;
+        ArrayList<Player> players = response.getPlayers();
+        System.out.println("info is here");
+        Gdx.app.postRunnable(new Runnable() {
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                NetworkHelper.setGameManager(null);
-                game.setScreen(new MainMenuScreen(game));
+            public void run() {
+                // TODO get "me" from settings (your user name and etc.)
+                game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
             }
         });
-        stage.addActor(back);
-        Gdx.input.setInputProcessor(stage);
     }
 
 
