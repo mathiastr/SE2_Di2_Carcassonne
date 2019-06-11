@@ -75,7 +75,6 @@ public class ServerRoomScreen implements Screen {
         }
         final GameServer f = server;
         TextButton back = getBackTextButton(game);
-                game.setScreen((Screen)new MainMenuScreen(game));
         stage.addActor(back);
 
         TextButton start = getStartTextButton(game, f);
@@ -106,11 +105,6 @@ public class ServerRoomScreen implements Screen {
 
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-                // TODO get players from
-                //players.add(new Player(GameBoard.Color.GREEN, "Client"));
-                //players.add(new Player(GameBoard.Color.BLUE, "Server"));
-
                 InitGameMessage ig = new InitGameMessage();
                 ig.setPlayers(players);
 
@@ -137,7 +131,7 @@ public class ServerRoomScreen implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 ((GameServer) NetworkHelper.getGameManager()).destroy();
                 NetworkHelper.setGameManager(null);
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen((Screen)new MainMenuScreen(game));
             }
         });
         return back;

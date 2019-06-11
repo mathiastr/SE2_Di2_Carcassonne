@@ -108,7 +108,6 @@ public class ClientSearchScreen implements Screen {
                                     }
                                 });
                             }
-                                                game.setScreen((Screen)new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
                         } catch (Exception e) {
 
                         }
@@ -134,7 +133,7 @@ public class ClientSearchScreen implements Screen {
             @Override
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 NetworkHelper.setGameManager(null);
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen((Screen)new MainMenuScreen(game));
             }
         });
         return back;
@@ -222,15 +221,12 @@ public class ClientSearchScreen implements Screen {
         ArrayList<Player> players = response.getPlayers();
         System.out.println("info is here");
         Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                // TODO get "me" from settings (your user name and etc.)
-                game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                NetworkHelper.setGameManager(null);
-                game.setScreen((Screen)new MainMenuScreen(game));
-            }
-        });
+                                 @Override
+                                 public void run() {
+                                     game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), gameClient));
+                                 }
+                             }
+            );
     }
 
 
