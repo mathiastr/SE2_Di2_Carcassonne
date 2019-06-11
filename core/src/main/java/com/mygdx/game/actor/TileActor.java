@@ -117,10 +117,10 @@ public class TileActor extends Actor {
         return GameBoard.getUsedTileHash().get(this.position.getPositionOnSide(side));
     }
 
-    private void updateTileFeaturesRecursive(){
-        for (Side side : Side.values()){
+    private void updateTileFeaturesRecursive() {
+        for (Side side : Side.values()) {
             TileActor borderingTile = this.getTileOnSide(side);
-            Feature feature = this. getFeatureAtSide(side);
+            Feature feature = this.getFeatureAtSide(side);
             try {
                 if (borderingTile != null) {
                     Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
@@ -246,17 +246,16 @@ public class TileActor extends Actor {
 
     public int getScore(Feature feature, Board board) {
         int score = 0;
-        if((feature instanceof City || feature instanceof Road)) {
+        if ((feature instanceof City || feature instanceof Road)) {
             score += board.scoreRoadOrCity(this, feature);
-        }
-        else if (feature instanceof Monastery) {
+        } else if (feature instanceof Monastery) {
             score += board.scoreMonastery(this);
         }
         // TODO check for monastery around
         for (int i = -1; i < 2; i++) {
             for (int j = -1; j < 2; j++) {
                 TileActor tileAround = board.placedTiles.get(getPosition().add(new Position(i, j)));
-                if ( tileAround != null) {
+                if (tileAround != null) {
                     if (tileAround.isMonastery()) {
                         score += board.scoreMonastery(tileAround);
                     }

@@ -6,7 +6,7 @@ public class NetworkDevice {
     private String deviceName;
     private InetAddress ip;
 
-    public NetworkDevice(String deviceName, InetAddress ip){
+    public NetworkDevice(String deviceName, InetAddress ip) {
         this.deviceName = deviceName;
         this.ip = ip;
     }

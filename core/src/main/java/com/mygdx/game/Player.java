@@ -94,6 +94,7 @@ public class Player {
         this.timeToDetectUsedCheats = 0;
         this.cheater = false;
     }
+
     public Meeple getUnusedMeeple() {
         if (this.meeples.size() != 0) {
             Meeple lastMeeple = this.meeples.get(this.meeples.size() - 1);
@@ -128,7 +129,7 @@ public class Player {
         this.timeToDetectUsedCheats = timeToDetectUsedCheats;
     }
 
-    public void reduceCheatTimeByOne(){
+    public void reduceCheatTimeByOne() {
         if (timeToDetectUsedCheats > 0) {
             timeToDetectUsedCheats--;
         }
@@ -146,5 +147,6 @@ public class Player {
         this.id = id;
     }
 
-    public Player(){}
+    public Player() {
+    }
 }

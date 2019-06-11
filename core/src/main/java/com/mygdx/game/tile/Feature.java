@@ -7,7 +7,7 @@ import java.util.List;
 public class Feature {
 
     private ArrayList<Side> sides; //Changed Set to ArrayList
-    private  HashMap<Side, Side> connections; // probably don't need that
+    private HashMap<Side, Side> connections; // probably don't need that
     private boolean hasMeepleOnIt;
 
     public Feature() {
@@ -46,16 +46,16 @@ public class Feature {
                 '}';
     }
 
-    public boolean hasMeepleOnIt(){
+    public boolean hasMeepleOnIt() {
         return hasMeepleOnIt;
     }
 
-    public void setHasMeepleOnIt(boolean hasMeepleOnIt){
+    public void setHasMeepleOnIt(boolean hasMeepleOnIt) {
         this.hasMeepleOnIt = hasMeepleOnIt;
     }
 
-    public void addMeeple(){
-        if(!hasMeepleOnIt){
+    public void addMeeple() {
+        if (!hasMeepleOnIt) {
             setHasMeepleOnIt(true);
         }
     }

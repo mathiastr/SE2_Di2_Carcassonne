@@ -18,7 +18,7 @@ public class PlayerGameMessage {
     public PlayerGameMessage(Player player) {
         this.score = player.getScore();
         this.name = player.getName();
-       // this.color = player.getColor();
+        // this.color = player.getColor();
     }
 
     public PlayerGameMessage() {

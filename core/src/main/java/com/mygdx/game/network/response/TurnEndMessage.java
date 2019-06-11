@@ -1,5 +1,6 @@
 package com.mygdx.game.network.response;
 
+
 import com.mygdx.game.Player;
 import com.mygdx.game.meeple.Meeple;
 

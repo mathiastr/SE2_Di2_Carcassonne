@@ -1,7 +1,5 @@
 package com.mygdx.game.network.response;
 
-import com.mygdx.game.Player;
-
 public class CheatOnScoreMessage {
     private int cheatTime;
     private int targetId;

@@ -8,8 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.mygdx.game.GameBoard;
 
 public class MeepleTextureFactory {
-    private Texture createMeepleTexture(GameBoard.Color color)
-    {
+    private Texture createMeepleTexture(GameBoard.Color color) {
         switch (color) {
             case RED:
                 return new Texture(Gdx.files.internal("redmeeple.png"));
@@ -28,8 +27,7 @@ public class MeepleTextureFactory {
         }
     }
 
-    public ImageButton createMeepleImage(GameBoard.Color color)
-    {
+    public ImageButton createMeepleImage(GameBoard.Color color) {
         Texture meepleTexture = createMeepleTexture(color);
         ImageButton imageButton = new ImageButton(
                 new TextureRegionDrawable(new TextureRegion(meepleTexture)),

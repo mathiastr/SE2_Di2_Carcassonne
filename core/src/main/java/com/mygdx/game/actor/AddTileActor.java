@@ -9,6 +9,7 @@ import com.mygdx.game.Position;
 
 public class AddTileActor extends TileActor {
     private GameBoard gameBoard;
+
     public AddTileActor(Position aPosition, final GameBoard gb) {
         super(aPosition);
         gameBoard = gb;
@@ -18,7 +19,7 @@ public class AddTileActor extends TileActor {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                AddTileActor clicked = (AddTileActor)event.getListenerActor();
+                AddTileActor clicked = (AddTileActor) event.getListenerActor();
 
                 gameBoard.placeMyTile(clicked.getPosition());
             }
