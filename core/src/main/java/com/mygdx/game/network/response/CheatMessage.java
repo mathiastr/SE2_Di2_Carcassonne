@@ -1,27 +1,33 @@
 package com.mygdx.game.network.response;
 
-import com.mygdx.game.Player;
-
 public class CheatMessage {
-    private Player caller;
-    private Player callee;
+    private int caller;
+    private int callee;
     private CheatType type;
 
     public CheatMessage() {
     }
 
-    public CheatMessage(Player caller, Player callee, CheatType type) {
+    public CheatMessage(int caller, int callee, CheatType type) {
         this.caller = caller;
         this.callee = callee;
         this.type = type;
     }
 
-    public Player getCaller() {
+    public int getCaller() {
         return caller;
     }
 
-    public void setCaller(Player caller) {
+    public void setCaller(int caller) {
         this.caller = caller;
+    }
+
+    public int getCallee() {
+        return callee;
+    }
+
+    public void setCallee(int callee) {
+        this.callee = callee;
     }
 
     public CheatType getType() {
@@ -30,13 +36,5 @@ public class CheatMessage {
 
     public void setType(CheatType type) {
         this.type = type;
-    }
-
-    public Player getCallee() {
-        return callee;
-    }
-
-    public void setCallee(Player callee) {
-        this.callee = callee;
     }
 }

@@ -487,23 +487,31 @@ public class GameBoard {
         }
     }
 
+    private Player findPlayerById(int id) {
+        for (Player player : players) {
+            if (player.getId() == id) return player;
+        }
+        return null;
+    }
+
     private void onCheat(CheatMessage message) {
-        performCheatAction(message.getCaller(), message.getCallee(), message.getType());
+        performCheatAction(findPlayerById(message.getCaller()), findPlayerById(message.getCallee()), message.getType());
     }
 
     public void cheat(CheatType type, Player player) {
 
+        Player currentPlayer = findPlayerById(NetworkHelper.getPlayer().getId());
         performCheatAction(currentPlayer, player, type);
 
-        if(NetworkHelper.getGameManager() != null){
-            NetworkHelper.getGameManager().sendToServer(new CheatMessage(currentPlayer, player, type));
+        if(currentPlayer != null && NetworkHelper.getGameManager() != null){
+            NetworkHelper.getGameManager().sendToServer(new CheatMessage(currentPlayer.getId(), player.getId(), type));
         }
 
 
     }
 
     public void performCheatAction(Player caller, Player callee, CheatType type) {
-        if (callee.equals(caller)) {
+        if (callee.getId() == caller.getId()) {
             callee.cheat(type);
         } else if (callee.isCheater()) {
             callee.punish();
