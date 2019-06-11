@@ -116,8 +116,8 @@ public class ServerRoomScreen implements Screen {
             public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
 
                 // TODO get players from
-                //players.add(new Player(GameBoard.Color.green, "Client"));
-                //players.add(new Player(GameBoard.Color.blue, "Server"));
+                //players.add(new Player(GameBoard.Color.GREEN, "Client"));
+                //players.add(new Player(GameBoard.Color.BLUE, "Server"));
 
                 InitGameMessage ig = new InitGameMessage();
                 ig.setPlayers(players);
@@ -134,7 +134,7 @@ public class ServerRoomScreen implements Screen {
             NetworkHelper.getPlayer().setId(1);
             players.add(NetworkHelper.getPlayer());
         } else {
-            Player p = new Player(GameBoard.Color.blue, "Server");
+            Player p = new Player(GameBoard.Color.BLUE, "Server");
             p.setId(1);
             players.add(p);
         }
@@ -149,7 +149,7 @@ public class ServerRoomScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        // clear the screen with dark blue
+        // clear the screen with dark BLUE
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 

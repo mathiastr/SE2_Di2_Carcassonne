@@ -1,5 +1,7 @@
 package com.mygdx.game;
 
+import com.mygdx.game.tile.Side;
+
 import java.util.Objects;
 
 public class Position {
@@ -24,6 +26,22 @@ public class Position {
                 new Position(x+1, y),
                 new Position(x, y-1),
                 new Position(x-1, y)};
+    }
+
+    public Position getPositionOnSide(Side side){
+        switch (side)
+        {
+            case TOP:
+                return new Position(x, y+1);
+            case RIGHT:
+                return new Position(x + 1, y);
+            case BOTTOM:
+                return new Position( x, y-1);
+            case LEFT:
+                return new Position( x - 1, y);
+            default:
+                throw new IllegalArgumentException("Cannot get position from this side.");
+        }
     }
 
     @Override

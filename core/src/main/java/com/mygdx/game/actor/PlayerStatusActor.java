@@ -6,10 +6,12 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.game.Player;
+import com.mygdx.game.emotes.Emote;
 
 public class PlayerStatusActor extends Actor {
     private Texture texture;
@@ -22,7 +24,6 @@ public class PlayerStatusActor extends Actor {
     private Texture meeple;
     private Texture score;
     private Label.LabelStyle textStyle;
-
 
     public PlayerStatusActor(Player player) {
         this.texture = new Texture("playerStatusBackground.jpg");
@@ -44,12 +45,12 @@ public class PlayerStatusActor extends Actor {
         textStyle.font = font;
         textStyle.fontColor = Color.BLACK;
 
-        update();
+        updateInfo();
 
         info.setDebug(true);
     }
 
-    public void update(){
+    public void updateInfo(){
 
          Label meepleLabel;
          Image meepleImg;
@@ -110,15 +111,13 @@ public class PlayerStatusActor extends Actor {
         return HEIGHT;
     }
 
-    public void updateInfo() {
-        this.info.remove();
-        info = new Table();
-        info.add(new Label("" + player.getName(), textStyle)).colspan(4).center();
-        info.row();
-        info.add(new Image(meeple)).width(50).height(50);
-        info.add(new Label("" + player.getNumberOfMeeples(), textStyle)).padLeft(20);
-        info.add(new Image(score)).width(50).height(50);
-        info.add(new Label("" + player.getScore(), textStyle)).padLeft(20);
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }
 

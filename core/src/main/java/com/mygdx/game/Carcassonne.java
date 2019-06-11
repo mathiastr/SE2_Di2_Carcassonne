@@ -28,7 +28,7 @@ public class Carcassonne extends Game {
     @Override
     public void create() {
         skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
-        NetworkHelper.setPlayer(new Player(GameBoard.Color.red, "Player"));
+        NetworkHelper.setPlayer(new Player(GameBoard.Color.RED, "Player"));
         this.setScreen(new MainMenuScreen(this));
     }
 

@@ -3,6 +3,7 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.TilePlacementMessage;
@@ -13,12 +14,17 @@ import com.mygdx.game.tile.Side;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class TileActor extends Actor {
+    private static final Logger LOGGER = Logger.getLogger(TileActor.class.getSimpleName());
     private int SIZE = 128;
     private Texture texture;
     private Texture textureBig;
     private Position position;
+    private ArrayList<Meeple> meeples = new ArrayList<>();
+    private HashMap<Side, Feature> featureAtSide = new HashMap<>();
+    private boolean monastery = false;
 
     public ArrayList<Meeple> getMeeples() {
         return meeples;
@@ -33,14 +39,11 @@ public class TileActor extends Actor {
     }
 
     public void removeMeeple(Meeple meeple) {
-        for (Meeple m: meeples) {
+        for (Meeple m : meeples) {
             // todo
         }
     }
 
-    private ArrayList<Meeple> meeples = new ArrayList<>();
-    private HashMap<Side, Feature> featureAtSide = new HashMap<>();
-    private boolean monastery = false;
 
     public void setRotation(int rotation) {
         this.rotation = rotation;
@@ -78,7 +81,7 @@ public class TileActor extends Actor {
         position = aPosition;
         setWidth(SIZE);
         setHeight(SIZE);
-        setPosition((float)position.getX() * SIZE, (float)position.getY() * SIZE);
+        setPosition((float) position.getX() * SIZE, (float) position.getY() * SIZE);
     }
 
     public TileActor() {
@@ -104,6 +107,64 @@ public class TileActor extends Actor {
             else
                 featureAtSide.put(side, feature);
         this.features.add(feature);
+    }
+
+    private TileActor getTileOnSide(Side side) {
+        return GameBoard.getUsedTileHash().get(this.position.getPositionOnSide(side));
+    }
+
+    private void updateTileFeaturesRecursive(){
+        for (Side side : Side.values()){
+            TileActor borderingTile = this.getTileOnSide(side);
+            Feature feature = this. getFeatureAtSide(side);
+            try {
+                if (borderingTile != null) {
+                    Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
+
+                    // if features are of the same type
+                    if (feature.getClass().equals(borderingFeature.getClass())) {
+                        // then act like the feature of this tile has a meeple on it
+                        // if the bordering feature has a meeple on it.
+                        borderingFeature.setHasMeepleOnIt(true);
+                    }
+
+                }
+
+            } catch (NullPointerException e) {
+
+                LOGGER.warning("NullPointerException");
+
+            }
+        }
+    }
+
+
+    public void updateTileFeatures() {
+        for (Side side : Side.values()) {
+            TileActor borderingTile = this.getTileOnSide(side);
+            Feature feature = this.getFeatureAtSide(side);
+            try {
+                if (borderingTile != null) {
+                    Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
+
+                    // if features are of the same type
+                    if (feature.getClass().equals(borderingFeature.getClass())) {
+                        // then act like the feature of this tile has a meeple on it
+                        // if the bordering feature has a meeple on it.
+                        feature.setHasMeepleOnIt(borderingFeature.hasMeepleOnIt());
+                        updateTileFeaturesRecursive();
+
+                    }
+
+                }
+
+            } catch (NullPointerException e) {
+
+                LOGGER.warning("NullPointerException");
+
+            }
+
+        }
     }
 
     public Feature getFeatureAtSide(Side side) {
@@ -132,7 +193,7 @@ public class TileActor extends Actor {
     @Override
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
-        batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, 360f - rotation * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
+        batch.draw(texture, getX(), getY(), getWidth() / 2, getHeight() / 2, getWidth(), getHeight(), 1, 1, (float) 360 - rotation * 90, 0, 0, texture.getWidth(), texture.getHeight(), false, false);
     }
 
     public Texture getTexture() {
@@ -149,13 +210,16 @@ public class TileActor extends Actor {
 
     public void setPosition(Position position) {
         this.position = position;
-        setPosition((float)position.getX() * SIZE, (float)position.getY() * SIZE);
+        setPosition((float) position.getX() * SIZE, (float) position.getY() * SIZE);
     }
+
     public void setMonastery() {
         monastery = true;
     }
 
-    public boolean isMonastery() { return monastery; }
+    public boolean isMonastery() {
+        return monastery;
+    }
 
     public boolean areSidesConnected(Side side1, Side side2, FeatureType type) {
 

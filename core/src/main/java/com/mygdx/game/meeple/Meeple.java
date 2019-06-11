@@ -59,9 +59,6 @@ public class Meeple {
         this.isBusy = true;
     }
 
-    public boolean isBusy() {
-        return isBusy;
-    }
 
     public void setFree() {
         this.isBusy = false;
