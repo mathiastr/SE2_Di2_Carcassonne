@@ -21,8 +21,7 @@ import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.meeple.MeepleTextureFactory;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.NetworkHelper;
-import com.mygdx.game.network.response.BlameCheatMessage;
-import com.mygdx.game.network.response.CheatOnScoreMessage;
+import com.mygdx.game.network.response.CheatMessage;
 import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
@@ -335,11 +334,8 @@ public class GameBoard {
                     if (object instanceof TurnEndMessage) {
                         onTurnEnd((TurnEndMessage) object);
                     }
-                    if (object instanceof CheatOnScoreMessage) {
-                        onCheatOnScore((CheatOnScoreMessage) object);
-                    }
-                    if (object instanceof BlameCheatMessage) {
-                        onBlameCheat((BlameCheatMessage) object);
+                    if (object instanceof CheatMessage) {
+                        onCheat((CheatMessage) object);
                     }
                     if (object instanceof ErrorMessage) {
                         errorHandling((ErrorMessage) object, connection);
@@ -387,10 +383,18 @@ public class GameBoard {
             if (player.getId() == NetworkHelper.getPlayer().getId()) {
                 playerStatusActor.addListener(new ActorGestureListener(20, 0.4f, 5f, 0.15f) {
                     @Override
-                    public boolean longPress(Actor actor, float x, float y) {
-                        Gdx.app.debug("DEBUG", "Long Press");
-                        CheatOnScore();
+                    public boolean longPress(Actor actor, float x, float  y) {
+                        Gdx.app.debug("DEBUG","Long Press");
+                        cheat(CheatType.SCORE, p);
                         return false;
+                    }
+
+                    @Override
+                    public void tap(InputEvent event, float x, float y, int count, int button) {
+                        if (count == 2) {
+                            Gdx.app.debug("DEBUG","double tap");
+                            cheat(CheatType.MEEPLE, p);
+                        }
                     }
 
                     @Override
@@ -528,39 +532,28 @@ public class GameBoard {
         }
     }
 
-    private void onCheatOnScore(CheatOnScoreMessage message) {
-        for (Player player :
-                players) {
-            if (player.getId() == message.getTargetId()) {
-                player.addScore(100);
-                player.addTimeToDetectUsedCheats(message.getCheatTime());
-                updatePlayersInfo();
-            }
+    private void onCheat(CheatMessage message) {
+        performCheatAction(message.getCaller(), message.getCallee(), message.getType());
+    }
+
+    private void cheat(CheatType type, Player player) {
+
+        performCheatAction(currentPlayer, player, type);
+
+        if(NetworkHelper.getGameManager() != null){
+            NetworkHelper.getGameManager().sendToServer(new CheatMessage(currentPlayer, player, type));
         }
+
 
     }
 
-    public void CheatOnScore() {
-        for (Player player : players
-        ) {
-            if (player.getId() == NetworkHelper.getPlayer().getId()) {
-                player.addScore(100);
-                player.setTimeToDetectUsedCheats(3);
-                if (NetworkHelper.getGameManager() != null) {
-                    NetworkHelper.getGameManager().sendToServer(new CheatOnScoreMessage(3, NetworkHelper.getPlayer().getId()));
-                }
-                updatePlayersInfo();
-            }
-        }
-    }
-
-    public void performCheatAction(Player p) {
-        if (p.equals(currentPlayer)) {
-            p.cheatMeeple();
-        } else if (p.isCheater()) {
-            p.detectCheat();
+    public void performCheatAction(Player caller, Player callee, CheatType type) {
+        if (callee.equals(caller)) {
+            callee.cheat(type);
+        } else if (callee.isCheater()) {
+            callee.detectCheat();
         } else {
-            currentPlayer.detectCheat();
+            caller.detectCheat();
         }
         updatePlayersInfo();
     }

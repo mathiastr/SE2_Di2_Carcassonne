@@ -1,6 +1,6 @@
-package com.mygdx.game.network.response;
+package com.mygdx.game;
 
 public enum CheatType {
-    SCORE,
-    MEEPLE
+    MEEPLE,
+    SCORE;
 }
