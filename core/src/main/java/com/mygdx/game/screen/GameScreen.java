@@ -21,7 +21,6 @@ import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
 import com.mygdx.game.emotes.EmoteManager;
-import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.response.EmoteMessage;
@@ -35,7 +34,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GameScreen implements Screen {
+public class GameScreen extends BaseScreen {
     private Game game;
     private Stage stage;
     private Stage stageUI;
@@ -78,7 +77,7 @@ public class GameScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start touch up");
-                game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this, game, gameBoard));
+                game.setScreen((Screen)new ChosenMeeplePlacementScreen(GameScreen.this, game, gameBoard));
             }
         });
         stageUI.addActor(placeMeeple);
@@ -172,12 +171,10 @@ public class GameScreen implements Screen {
         show_emote = true;
     }
 
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(multiplexer);
     }
 
-    @Override
     public void render(float delta) {
         if (gameBoard.tilesLeft() == 0)
             game.setScreen(new GameOverScreen(game, gameBoard.getWinningPlayer()));
@@ -214,27 +211,7 @@ public class GameScreen implements Screen {
         }
     }
 
-    @Override
-    public void resize(int width, int height) {
 
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
     public void dispose() {
         stage.dispose();
         stageUI.dispose();
