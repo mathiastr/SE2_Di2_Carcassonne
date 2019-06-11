@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
@@ -84,6 +85,69 @@ public class ScoreRoadTest {
 
 
     }
+
+    @Test
+    public void isValidAtPosition() {
+
+        preparePlayers();
+
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+
+        {
+            TileActor t = new TileActor();
+            t.addFeature(new Road(Arrays.asList(Side.RIGHT)));
+            gb.addTileOnBoard(t, new Position(0, 0));
+        }
+
+        TileActor t;
+
+        {
+            t = new TileActor();
+            t.addFeature(new Road(Arrays.asList(Side.LEFT)));
+           // gb.addTileOnBoard(t, new Position(1, 0));
+        }
+        boolean result = gb.getBoard().isValidAtPosition(t, new Position(1, 0));
+        Assert.assertEquals(true, result);
+    }
+
+    @Test
+    public void getValidPositions() {
+
+        preparePlayers();
+
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+
+        {
+            TileActor t = new TileActor();
+            t.addFeature(new Road(Arrays.asList(Side.RIGHT, Side.BOTTOM)));
+            gb.addTileOnBoard(t, new Position(0, 0));
+        }
+
+        {
+            TileActor t = new TileActor();
+            t.addFeature(new Road(Arrays.asList(Side.RIGHT, Side.LEFT)));
+            gb.addTileOnBoard(t, new Position(1, 0));
+        }
+
+
+        TileActor t;
+
+        {
+            t = new TileActor();
+            t.addFeature(new Road(Arrays.asList(Side.LEFT, Side.RIGHT)));
+            // gb.addTileOnBoard(t, new Position(1, 0));
+        }
+
+        HashSet<Position> expectedPositions = new HashSet<>();
+        expectedPositions.add(new Position(2, 0));
+        expectedPositions.add(new Position(1, -1));
+        expectedPositions.add(new Position(1, 1));
+        expectedPositions.add(new Position(0, 1));
+
+        Assert.assertTrue(expectedPositions.containsAll(gb.getBoard().getValidPositionsForTile(t)));
+        Assert.assertEquals(expectedPositions.size(), gb.getBoard().getValidPositionsForTile(t).size());
+    }
+
 
     @Test
     public void circleRoad() {
@@ -157,7 +221,6 @@ public class ScoreRoadTest {
         Assert.assertEquals(8, result);
 
     }
-
 
     @Test
     public void roadOwners() {
