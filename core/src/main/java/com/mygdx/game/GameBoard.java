@@ -491,7 +491,7 @@ public class GameBoard {
         performCheatAction(message.getCaller(), message.getCallee(), message.getType());
     }
 
-    private void cheat(CheatType type, Player player) {
+    public void cheat(CheatType type, Player player) {
 
         performCheatAction(currentPlayer, player, type);
 
