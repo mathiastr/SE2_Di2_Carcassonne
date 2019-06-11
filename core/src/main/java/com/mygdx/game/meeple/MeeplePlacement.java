@@ -20,13 +20,13 @@ public class MeeplePlacement {
     private MeepleTextureFactory textureFactory;
     private Feature featureForMT = null;
     private TileActor newestTile;
+    private int meepleCount;
 
 
     public MeeplePlacement(GameBoard gb, GameScreen gameScreen){
         this.gb = gb;
         this.gameScreen = gameScreen;
     }
-
 
     public MeeplePlacement(GameBoard gb, GameScreen gameScreen, MeepleTextureFactory textureFactory)
     {
@@ -88,6 +88,7 @@ public class MeeplePlacement {
         meepleImg.setPosition(x, y);
         gb.getNewestTile().setMeepleButton(meepleImg);
 
+
         for (int i = 0; i < gb.getPlayers().size(); i++)
         {
             gb.getPlayerActor(i).updateInfo();
@@ -99,13 +100,23 @@ public class MeeplePlacement {
     }
 
 
-    public void removeMeeple(TileActor ta){
+    public void removeMeeple(TileActor ta)
+    {
+        meepleCount = 0;
         newestTile = ta;
         newestTile.updateTileFeatures(false);
-        int numberOfMeeples = newestTile.getMeepleCount();
-        gb.getCurrentPlayer().addMeeples(numberOfMeeples);
-        if(newestTile.getMeepleButton() != null){
+
+        if(newestTile.getMeepleButton() != null)
+        {
             newestTile.getMeepleButton().setVisible(false);
+            meepleCount++;
         }
+
+        int numberOfMeeples = getMeepleCount();
+        gb.getCurrentPlayer().addMeeples(numberOfMeeples);
+    }
+
+    public int getMeepleCount() {
+        return meepleCount;
     }
 }

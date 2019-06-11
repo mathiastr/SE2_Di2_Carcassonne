@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,14 +27,16 @@ import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
-import com.mygdx.game.network.response.MeepleIsPlacedMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
+import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
+import com.mygdx.game.tile.Monastery;
+import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
-
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -44,7 +47,7 @@ import java.util.Random;
 
 public class GameBoard {
 
-   private ArrayList<PlayerStatusActor> playerActorList;
+    private ArrayList<PlayerStatusActor> playerActorList;
 
     public enum Color {
         YELLOW, RED, GREEN, BLUE, BLACK, GREY;
@@ -338,9 +341,6 @@ public class GameBoard {
                     if (object instanceof EmoteMessage) {
                         onEmote((EmoteMessage)object);
                     }
-                    if (object instanceof MeepleIsPlacedMessage) {
-                        onEmote((EmoteMessage)object);
-                    }
                 }
             });
         }
@@ -378,9 +378,10 @@ public class GameBoard {
                 if (gameClient != null && isMyTurn()) {
                     if (tileIsPlaced) {
                         endMyTurn();
+                      //  mp.removeMeeple(getCurrentTile());
                     }
                 } else if (gameClient == null) {
-                    mp.removeMeeple(getCurrentTile());
+                   // mp.removeMeeple(getCurrentTile());
                     endMyTurn();
                 }
 
@@ -473,7 +474,6 @@ public class GameBoard {
             NetworkHelper.getGameManager().sendToServer(new EmoteMessage(emote, me));
         }
     }
-
 
     private void onCheatOnScore(CheatOnScoreMessage message) {
         for (com.mygdx.game.Player p :

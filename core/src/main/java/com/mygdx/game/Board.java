@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
@@ -69,10 +70,11 @@ public class Board {
 
     public int scoreRoadOrCityRec(TileActor tile, Feature feature, TileActor parent, Set<TileActor> visited) {
         int score = feature instanceof City ? 2 : 1; // tile itself
-
+        MeeplePlacement mp = new MeeplePlacement(gb, gs);
         if (!visited.add(tile)){
             return 0; // we found a loop => road close
         }
+
         for (Side side : feature.getSides()) {
             side = tile.getSideAfterRotation(side);
             TileActor nextTile = getTileInDirectionOfSide(tile, side);
@@ -85,7 +87,9 @@ public class Board {
 
             score += currScore;
         }
+        mp.removeMeeple(tile);
         return score;
+
     }
 
     public int getScore(TileActor tile) {

@@ -95,7 +95,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
 
     private TextButton createMeeplePlacementButton(Feature feature)
     {
-        TextButton placeMeepleButton = new TextButton(("On " + feature.getClass().getSimpleName() + " " + feature.getSides().get(0)), Carcassonne.skin);
+        TextButton placeMeepleButton = new TextButton(("On " + feature.getClass().getSimpleName() + " " + newestTile.getSideAfterRotation(feature.getSides().get(0))), Carcassonne.skin);
         placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8f);
         placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8f);
 
@@ -119,7 +119,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
                     newestTile = gb.getNewestTile();
                     side = newestTile.getSideAfterRotation(side);
                 } else
-                    {
+                {
                     for (Feature f : features)
                     {
                         if (f instanceof Road)
@@ -128,7 +128,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
                             side = sides.get(0);
                             side = newestTile.getSideAfterRotation(side);
                         } else
-                            {
+                        {
                             side = Side.TOP;
                         }
                     }
@@ -154,12 +154,14 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
             {
                 button.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5f * (i / 2f + 2) + 40f);
             } else
-                {
+            {
                 button.setPosition(20f + Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5f * (i / 2f + 2) + 40f);
             }
             stage.addActor(button);
         }
     }
+
+
 
     @Override
     public void show()

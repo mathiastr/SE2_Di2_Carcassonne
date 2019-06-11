@@ -41,13 +41,6 @@ public class TileActor extends Actor {
         this.meeples.add(meeple);
     }
 
-    public void removeMeeple(Meeple meeple) {
-        for (Meeple m : meeples) {
-            // todo
-        }
-    }
-
-
     public void setRotation(int rotation) {
         this.rotation = rotation;
     }
@@ -130,7 +123,8 @@ public class TileActor extends Actor {
                         // then act like the feature of this tile has a meeple on it
                         // if the bordering feature has a meeple on it.
                         borderingFeature.setHasMeepleOnIt(varBoo);
-                        meepleCount++;
+                        //meepleCount++;
+
                     }
 
                 }
@@ -144,19 +138,25 @@ public class TileActor extends Actor {
     }
 
 
-    public void updateTileFeatures(boolean varBoo) {
+    public void updateTileFeatures(boolean varBoo)
+    {
 
-        meepleCount = 1;
+        //meepleCount = 1;
 
-        for (Side side : Side.values()) {
+        for (Side side : Side.values())
+        {
             TileActor borderingTile = this.getTileOnSide(side);
             Feature feature = this.getFeatureAtSide(side);
-            try {
-                if (borderingTile != null) {
+
+            try
+            {
+                if (borderingTile != null)
+                {
                     Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
 
                     // if features are of the same type
-                    if (feature.getClass().equals(borderingFeature.getClass())) {
+                    if (feature.getClass().equals(borderingFeature.getClass()))
+                    {
                         // then act like the feature of this tile has a meeple on it
                         // if the bordering feature has a meeple on it.
                         feature.setHasMeepleOnIt(borderingFeature.hasMeepleOnIt());
@@ -246,9 +246,7 @@ public class TileActor extends Actor {
 
     }
 
-    public int getMeepleCount() {
-        return meepleCount;
-    }
+
 
     public ImageButton getMeepleButton(){
         return meepleButton;
