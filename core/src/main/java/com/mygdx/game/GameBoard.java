@@ -307,7 +307,7 @@ public class GameBoard {
         this.me = me;
         this.gameClient = gameClient;
         this.gameScreen = gameScreen;
-        this.board = new Board();
+        this.board = new Board(this, gameScreen);
         this.rand = new Random();
 
     }
@@ -369,14 +369,18 @@ public class GameBoard {
         finishTurnButton.setWidth(300);
         finishTurnButton.getLabel().setFontScale(0.8f);
         finishTurnButton.setPosition((float)Gdx.graphics.getWidth() - 300f - 100f, 0);
+        MeeplePlacement mp = new MeeplePlacement(this, gameScreen);
+
         finishTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (gameClient != null && isMyTurn()) {
                     if (tileIsPlaced) {
                         endMyTurn();
+                        mp.removeMeeple(getCurrentTile());
                     }
                 } else if (gameClient == null) {
+                    mp.removeMeeple(getCurrentTile());
                     endMyTurn();
                 }
 

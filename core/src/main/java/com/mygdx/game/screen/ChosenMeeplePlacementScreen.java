@@ -57,7 +57,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
         output.setFontScale(3);
         stage.addActor(output);
 
-        newestTile.updateTileFeatures();
+        newestTile.updateTileFeatures(true);
 
 
 

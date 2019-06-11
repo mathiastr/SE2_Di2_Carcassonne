@@ -3,6 +3,7 @@ package com.mygdx.game.actor;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.meeple.Meeple;
@@ -25,6 +26,8 @@ public class TileActor extends Actor {
     private ArrayList<Meeple> meeples = new ArrayList<>();
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
     private boolean monastery = false;
+    private int meepleCount;
+    private ImageButton meepleButton = null;
 
     public ArrayList<Meeple> getMeeples() {
         return meeples;
@@ -113,7 +116,8 @@ public class TileActor extends Actor {
         return GameBoard.getUsedTileHash().get(this.position.getPositionOnSide(side));
     }
 
-    private void updateTileFeaturesRecursive(){
+    private void updateTileFeaturesRecursive(boolean varBoo){
+
         for (Side side : Side.values()){
             TileActor borderingTile = this.getTileOnSide(side);
             Feature feature = this. getFeatureAtSide(side);
@@ -125,7 +129,8 @@ public class TileActor extends Actor {
                     if (feature.getClass().equals(borderingFeature.getClass())) {
                         // then act like the feature of this tile has a meeple on it
                         // if the bordering feature has a meeple on it.
-                        borderingFeature.setHasMeepleOnIt(true);
+                        borderingFeature.setHasMeepleOnIt(varBoo);
+                        meepleCount++;
                     }
 
                 }
@@ -139,7 +144,10 @@ public class TileActor extends Actor {
     }
 
 
-    public void updateTileFeatures() {
+    public void updateTileFeatures(boolean varBoo) {
+
+        meepleCount = 1;
+
         for (Side side : Side.values()) {
             TileActor borderingTile = this.getTileOnSide(side);
             Feature feature = this.getFeatureAtSide(side);
@@ -152,10 +160,8 @@ public class TileActor extends Actor {
                         // then act like the feature of this tile has a meeple on it
                         // if the bordering feature has a meeple on it.
                         feature.setHasMeepleOnIt(borderingFeature.hasMeepleOnIt());
-                        updateTileFeaturesRecursive();
-
+                        updateTileFeaturesRecursive(varBoo);
                     }
-
                 }
 
             } catch (NullPointerException e) {
@@ -238,5 +244,17 @@ public class TileActor extends Actor {
 
     public void placeMeepleOnFeature(Feature feature, Meeple meeple) {
 
+    }
+
+    public int getMeepleCount() {
+        return meepleCount;
+    }
+
+    public ImageButton getMeepleButton(){
+        return meepleButton;
+    }
+
+    public void setMeepleButton(ImageButton button){
+        this.meepleButton = button;
     }
 }

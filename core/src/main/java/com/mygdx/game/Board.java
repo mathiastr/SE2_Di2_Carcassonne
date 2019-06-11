@@ -3,6 +3,7 @@ package com.mygdx.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Monastery;
@@ -20,10 +21,17 @@ import java.util.Set;
 public class Board {
     private List<TileActor> availableTiles = new ArrayList<>();
     public HashMap<Position, TileActor> placedTiles = new HashMap<>();
+    private GameBoard gb;
+    private GameScreen gs;
 
     public List<TileActor> getAvailableTiles() {
         return availableTiles;
 
+    }
+
+    public Board(GameBoard gb, GameScreen gs) {
+        this.gb = gb;
+        this.gs = gs;
     }
 
     public Map<Position, TileActor> getPlacedTiles() {
@@ -62,8 +70,9 @@ public class Board {
     public int scoreRoadOrCityRec(TileActor tile, Feature feature, TileActor parent, Set<TileActor> visited) {
         int score = feature instanceof City ? 2 : 1; // tile itself
 
-        if (!visited.add(tile)) return 0; // we found a loop => road closed
-
+        if (!visited.add(tile)){
+            return 0; // we found a loop => road close
+        }
         for (Side side : feature.getSides()) {
             side = tile.getSideAfterRotation(side);
             TileActor nextTile = getTileInDirectionOfSide(tile, side);
