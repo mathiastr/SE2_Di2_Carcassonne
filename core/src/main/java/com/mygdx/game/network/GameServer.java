@@ -94,13 +94,6 @@ public class GameServer extends AbstractGameManager{
         }.start();
     }
 
-
-    @Override
-    public void sendToHost(final Object message){
-        super.sendToHost(message);
-        //to do
-    }
-
     @Override
     public void addListener(Listener listener) {
         server.addListener(listener);
