@@ -3,6 +3,8 @@ package com.mygdx.game.meeple;
 
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.network.NetworkHelper;
+import com.mygdx.game.network.response.RemoveMeepleMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
@@ -23,23 +25,20 @@ public class MeeplePlacement {
     private int meepleCount;
 
 
-    public MeeplePlacement(GameBoard gb, GameScreen gameScreen){
+    public MeeplePlacement(GameBoard gb, GameScreen gameScreen) {
         this.gb = gb;
         this.gameScreen = gameScreen;
     }
 
-    public MeeplePlacement(GameBoard gb, GameScreen gameScreen, MeepleTextureFactory textureFactory)
-    {
+    public MeeplePlacement(GameBoard gb, GameScreen gameScreen, MeepleTextureFactory textureFactory) {
         this.gb = gb;
         this.gameScreen = gameScreen;
         this.textureFactory = textureFactory;
     }
 
 
-    public void placeMeeple(Side side, Feature feature, Position pos)
-    {
-        try
-        {
+    public void placeMeeple(Side side, Feature feature, Position pos) {
+        try {
             featureForMT = feature;
             Meeple meepleForPlacement = gb.getUnusedCurrentPlayerMeeple();
             meepleForPlacement.setSide(side);
@@ -48,19 +47,15 @@ public class MeeplePlacement {
             feature.setHasMeepleOnIt(true);
             drawMeeple(side, pos);
             gameScreen.placeMeeple.setVisible(false);
-        } catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             throw e;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             LOGGER.warning("Exception");
         }
     }
 
 
-
-    public void drawMeeple(Side side, Position pos)
-    {
+    public void drawMeeple(Side side, Position pos) {
 
         GameBoard.Color color = gb.getCurrentPlayer().getColor();
 
@@ -69,8 +64,7 @@ public class MeeplePlacement {
         float x = (pos.getX() * 128f) + (128f / 2f) - (meepleImg.getWidth() / 2f);
         float y = (pos.getY() * 128f) + (128f / 2f) - (meepleImg.getHeight() / 2f);
 
-        switch (side)
-        {
+        switch (side) {
             case TOP:
                 y += 42f;
                 break;
@@ -86,28 +80,28 @@ public class MeeplePlacement {
         }
 
         meepleImg.setPosition(x, y);
-        gb.getNewestTile().setMeepleButton(meepleImg);
+        gb.setMeepleButtonOnNewestTile(meepleImg);
 
 
-        for (int i = 0; i < gb.getPlayers().size(); i++)
-        {
+        for (int i = 0; i < gb.getPlayers().size(); i++) {
             gb.getPlayerActor(i).updateInfo();
         }
 
         gb.addActorToBoardStage(meepleImg);
 
-        gameScreen.createMeepleIsPlacedToast(featureForMT);
+        //gameScreen.createMeepleIsPlacedToast(featureForMT);
     }
 
 
-    public void removeMeeple(TileActor ta)
-    {
+    public void removeMeeple(TileActor ta) {
         meepleCount = 0;
         newestTile = ta;
         newestTile.updateTileFeatures(false);
 
-        if(newestTile.getMeepleButton() != null)
-        {
+        if (newestTile.getMeepleButton() != null) {
+
+            //TODO: only from the same feature
+
             newestTile.getMeepleButton().setVisible(false);
             meepleCount++;
         }

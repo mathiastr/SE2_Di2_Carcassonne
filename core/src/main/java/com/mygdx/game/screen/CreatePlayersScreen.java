@@ -26,6 +26,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
+import com.mygdx.game.network.FakeGameManager;
 import com.mygdx.game.network.NetworkHelper;
 
 import java.util.ArrayList;
@@ -150,6 +151,7 @@ public class CreatePlayersScreen implements Screen {
                 Gdx.app.debug("touch", "start button is touched");
                 // in this case "me" doesn't matter
                 game.setScreen(new GameScreen(game, players, true, players.get(0), null));
+                NetworkHelper.setGameManager(new FakeGameManager());
             }
         });
 

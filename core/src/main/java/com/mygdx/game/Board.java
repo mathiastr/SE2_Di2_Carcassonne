@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.MeeplePlacement;
+import com.mygdx.game.network.NetworkHelper;
+import com.mygdx.game.network.response.RemoveMeepleMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
@@ -88,6 +90,7 @@ public class Board {
             score += currScore;
         }
         mp.removeMeeple(tile);
+        NetworkHelper.getGameManager().sendToServer(new RemoveMeepleMessage(tile.getPosition()));
         return score;
 
     }

@@ -18,6 +18,8 @@ public class City extends Feature {
         super(side);
     }
 
+    public City(){}
+
     public void addCoatOfArms() {
         this.coatOfArms = true;
     }

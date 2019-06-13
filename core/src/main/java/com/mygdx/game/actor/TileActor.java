@@ -29,6 +29,7 @@ public class TileActor extends Actor {
     private int meepleCount;
     private ImageButton meepleButton = null;
 
+
     public ArrayList<Meeple> getMeeples() {
         return meeples;
     }
@@ -123,7 +124,7 @@ public class TileActor extends Actor {
                         // then act like the feature of this tile has a meeple on it
                         // if the bordering feature has a meeple on it.
                         borderingFeature.setHasMeepleOnIt(varBoo);
-                        //meepleCount++;
+
 
                     }
 
@@ -140,9 +141,6 @@ public class TileActor extends Actor {
 
     public void updateTileFeatures(boolean varBoo)
     {
-
-        //meepleCount = 1;
-
         for (Side side : Side.values())
         {
             TileActor borderingTile = this.getTileOnSide(side);
@@ -159,8 +157,9 @@ public class TileActor extends Actor {
                     {
                         // then act like the feature of this tile has a meeple on it
                         // if the bordering feature has a meeple on it.
-                        feature.setHasMeepleOnIt(borderingFeature.hasMeepleOnIt());
+                        feature.setHasMeepleOnIt(varBoo);
                         updateTileFeaturesRecursive(varBoo);
+
                     }
                 }
 

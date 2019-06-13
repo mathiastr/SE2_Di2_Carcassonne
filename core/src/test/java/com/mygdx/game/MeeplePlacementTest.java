@@ -59,7 +59,7 @@ public class MeeplePlacementTest {
     @Test
     public void hasMeepleOnRightCityTest() throws Exception {
 
-        preparePlayers();
+        //preparePlayers();
 
         // Set up Player mock (needed by GameBoard mock)
         Player player = mock(Player.class);
