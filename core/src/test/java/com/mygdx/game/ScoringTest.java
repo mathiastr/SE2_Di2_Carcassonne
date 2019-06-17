@@ -8,6 +8,7 @@ import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.City;
+import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
@@ -21,14 +22,14 @@ import java.util.List;
 
 import static org.mockito.Mockito.mock;
 
-public class ScoreRoadTest {
+public class ScoringTest {
 
     private GameScreen screenMock;
     private Stage stageMock;
     private ArrayList<Player> players;
     private final GameScreen gameScreen;
 
-    public ScoreRoadTest() {
+    public ScoringTest() {
         screenMock = mock(GameScreen.class);
         stageMock = mock(Stage.class);
         Gdx.files = mock(Files.class);
@@ -42,9 +43,6 @@ public class ScoreRoadTest {
         players.add(new Player(GameBoard.Color.BLUE, "B"));
     }
 
-    @Test
-    public void scoreMonastery() {
-    }
 
     @Test
     public void scoreRoadOrCity() {
@@ -83,6 +81,75 @@ public class ScoreRoadTest {
 
         Assert.assertEquals(4, result);
 
+
+    }
+
+    @Test
+    public void scoreMonastery() {
+        preparePlayers();
+
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(-1, 0));
+        }
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(0, 1));
+        }
+
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(0, 1));
+        }
+
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(1, 0));
+        }
+
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(1, -1));
+        }
+
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(0, -1));
+        }
+
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(-1, -1));
+        }
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(-1, 1));
+        }
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(1, 1));
+        }
+
+        TileActor t = new TileActor();
+        {
+            t = new TileActor();
+            t.addFeature(new Monastery(Arrays.asList(Side.TOP)));
+            gb.addTileOnBoard(t, new Position(0, 0));
+        }
+
+        int result = gb.getBoard().scoreMonastery(t);
+
+        Assert.assertEquals(result, 9);
 
     }
 
@@ -293,5 +360,4 @@ public class ScoreRoadTest {
         gb.setCurrentTile(newCurrentTile);
         Assert.assertEquals(newCurrentTile, gb.getCurrentTile());
     }
-
 }
