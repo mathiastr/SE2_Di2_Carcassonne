@@ -154,6 +154,37 @@ public class ScoringTest {
     }
 
     @Test
+    public void scoreNotMonastery() {
+        preparePlayers();
+
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(-1, 0));
+        }
+
+        {
+            TileActor t = new TileActor();
+            gb.addTileOnBoard(t, new Position(0, 1));
+        }
+
+
+        TileActor t = new TileActor();
+        {
+            t = new TileActor();
+            t.addFeature(new Monastery(Arrays.asList(Side.TOP)));
+            gb.addTileOnBoard(t, new Position(0, 0));
+        }
+
+        int result = gb.getBoard().scoreMonastery(t);
+
+        Assert.assertEquals(result, 0);
+
+    }
+
+
+    @Test
     public void isValidAtPosition() {
 
         preparePlayers();
