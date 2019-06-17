@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.network.NetworkHelper;
+import com.mygdx.game.network.response.MeeplePlacementMessage;
 import com.mygdx.game.network.response.RemoveMeepleMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.City;
@@ -72,7 +73,6 @@ public class Board {
 
     public int scoreRoadOrCityRec(TileActor tile, Feature feature, TileActor parent, Set<TileActor> visited) {
         int score = feature instanceof City ? 2 : 1; // tile itself
-        MeeplePlacement mp = new MeeplePlacement(gb, gs);
         if (!visited.add(tile)){
             return 0; // we found a loop => road close
         }
@@ -89,8 +89,7 @@ public class Board {
 
             score += currScore;
         }
-        mp.removeMeeple(tile);
-        NetworkHelper.getGameManager().sendToServer(new RemoveMeepleMessage(tile.getPosition()));
+
         return score;
 
     }
@@ -174,6 +173,7 @@ public class Board {
 
     public int getScore(TileActor tile, Feature feature) {
         int score = 0;
+        MeeplePlacement mp = new MeeplePlacement(gb, gs);
         if((feature instanceof City || feature instanceof Road)) {
             score += scoreRoadOrCity(tile, feature);
         }
@@ -191,6 +191,11 @@ public class Board {
                 }
             }
         }
+        if(score != 0) {
+            //mp.removeMeeple(tile);
+            //NetworkHelper.getGameManager().sendToServer(new RemoveMeepleMessage(feature, gb.getCurrentTile().getPosition()));
+        }
+
         return score;
     }
 

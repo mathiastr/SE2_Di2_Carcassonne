@@ -4,20 +4,19 @@ import com.mygdx.game.Position;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Side;
 
-public class RemoveMeepleMessage {
+public class MeeplePlacementMessage {
 
     private Side side;
     private Feature feature;
     private Position position;
 
-    public RemoveMeepleMessage() {
-
+    public MeeplePlacementMessage(){
     }
 
-    public RemoveMeepleMessage(Feature feature, Position position) {
-        this.side = side;
+    public MeeplePlacementMessage(Side side, Feature feature, Position position) {
         this.feature = feature;
         this.position = position;
+        this.side = side;
     }
 
     public Side getSide() {

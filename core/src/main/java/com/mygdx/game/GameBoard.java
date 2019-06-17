@@ -28,6 +28,7 @@ import com.mygdx.game.network.response.CurrentTileMessage;
 import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
+import com.mygdx.game.network.response.MeeplePlacementMessage;
 import com.mygdx.game.network.response.RemoveMeepleMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
@@ -186,7 +187,7 @@ public class GameBoard {
         Gdx.app.debug("DEBUG", " " + currentTile.getName() + " " + currentTile.toString());
         showCurrentTile();
     }
-
+    /*
     public void onRemoveMeeple(RemoveMeepleMessage meepleMessage) {
         Gdx.app.postRunnable(() -> {
                     TileActor tile = getTileOnPosition(meepleMessage.getPosition());
@@ -196,6 +197,17 @@ public class GameBoard {
                 }
         );
     }
+
+    private void onRemoveMeeple(RemoveMeepleMessage object) {
+        MeeplePlacement  mp = new MeeplePlacement(this, gameScreen, new MeepleTextureFactory());
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                TileActor tile = getTileOnPosition(object.getPosition());
+                mp.removeMeeple(tile);
+            }
+        });
+    }*/
 
     public void placeMyTile(Position position) {
         TilePlacementMessage tilePlacementMessage = new TilePlacementMessage(position, currentTile.getRotationValue());
@@ -241,7 +253,13 @@ public class GameBoard {
         for (Player p : turnEndMessage.getScoreChanges().keySet()) {
             getPlayer(p.getColor()).addScore(turnEndMessage.getScoreChanges().get(p));
         }
-        updatePlayersInfo();
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                updatePlayersInfo();
+            }
+        });
+        /*
         if (gameClient != null) {
             GameBoard that = this;
             Position pos = currentTile.getPosition();
@@ -254,7 +272,9 @@ public class GameBoard {
                     }
                 }
             });
+
         }
+        */
         reduceCheatTime();
         nextTurn();
         if (isMyTurn()) {
@@ -350,8 +370,11 @@ public class GameBoard {
                     if (object instanceof EmoteMessage) {
                         onEmote((EmoteMessage) object);
                     }
-                    if (object instanceof RemoveMeepleMessage)
-                        onRemoveMeeple((RemoveMeepleMessage) object);
+                   /* if (object instanceof RemoveMeepleMessage)
+                        onRemoveMeeple((RemoveMeepleMessage) object); */
+
+                    if (object instanceof MeeplePlacementMessage)
+                        onMeeplePlacement((MeeplePlacementMessage) object);
                 }
             });
         }
@@ -381,18 +404,14 @@ public class GameBoard {
         finishTurnButton.setWidth(300);
         finishTurnButton.getLabel().setFontScale(0.8f);
         finishTurnButton.setPosition((float) Gdx.graphics.getWidth() - 300f - 100f, 0);
-        MeeplePlacement mp = new MeeplePlacement(this, gameScreen);
-
         finishTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (gameClient != null && isMyTurn()) {
                     if (tileIsPlaced) {
                         endMyTurn();
-                        //  mp.removeMeeple(getCurrentTile());
                     }
                 } else if (gameClient == null) {
-                    // mp.removeMeeple(getCurrentTile());
                     endMyTurn();
                 }
 
@@ -425,6 +444,16 @@ public class GameBoard {
             stageOfUI.addActor(playerStatusActor);
             playerActorList.add(playerStatusActor);
         }
+    }
+
+    private void onMeeplePlacement(MeeplePlacementMessage object) {
+        MeeplePlacement  mp = new MeeplePlacement(this, gameScreen, new MeepleTextureFactory());
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                mp.placeMeeple(object.getSide(),object.getFeature(),object.getPosition());
+            }
+        });
     }
 
     public List<Player> getFeatureOwners(TileActor tile, Feature feature) {

@@ -3,8 +3,6 @@ package com.mygdx.game.meeple;
 
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.mygdx.game.actor.TileActor;
-import com.mygdx.game.network.NetworkHelper;
-import com.mygdx.game.network.response.RemoveMeepleMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
@@ -93,10 +91,11 @@ public class MeeplePlacement {
     }
 
 
-    public void removeMeeple(TileActor ta) {
+    public void removeMeeple(TileActor tileActor) {
         meepleCount = 0;
-        newestTile = ta;
-        newestTile.updateTileFeatures(false);
+        newestTile = tileActor;
+        newestTile.updateTileFeature3(false);
+        //newestTile.updateTileFeatures(false);
 
         if (newestTile.getMeepleButton() != null) {
 

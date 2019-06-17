@@ -13,7 +13,9 @@ import com.mygdx.game.tile.FeatureType;
 import com.mygdx.game.tile.Side;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -110,11 +112,92 @@ public class TileActor extends Actor {
         return GameBoard.getUsedTileHash().get(this.position.getPositionOnSide(side));
     }
 
-    private void updateTileFeaturesRecursive(boolean varBoo){
+
+
+    public boolean updateTileFeature2(boolean lock, Side actSide, Feature f){
+        ArrayList<Side> values = new ArrayList<>(Arrays.asList(Side.values()));
+        if( actSide != null){
+            for (Iterator<Side> iter = values.listIterator(); iter.hasNext(); ) {
+                Side a = iter.next();
+                if (a.equals(actSide.getOppositeSide())) {
+                    iter.remove();
+                    Feature feature = this.getFeatureAtSide(actSide.getOppositeSide());
+                    if(feature != null && feature.hasMeepleOnIt()){
+                        return true;
+                    }
+                }
+            }
+        }
+        for (Side side : values){
+            Feature feature = this.getFeatureAtSide(side);
+            if (feature != null && f != null && feature.getClass().equals(f.getClass()))
+            {
+                if(feature.hasMeepleOnIt()){
+                    return true;
+                }
+                TileActor borderingTile = this.getTileOnSide(side);
+                if(borderingTile != null) {
+                    Boolean isLocked = borderingTile.updateTileFeature2(lock, side, feature);
+                    if (isLocked) return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean updateTileFeature3(boolean lock){
+        List<Side> values = Arrays.asList(Side.values());
+        for (Side side : values){
+            TileActor borderingTile = this.getTileOnSide(side);
+            Feature feature = this.getFeatureAtSide(side);
+            if (borderingTile != null){
+                boolean isLocked = borderingTile.updateTileFeature2(lock, side, feature);
+                if(isLocked && feature != null){
+                    feature.setHasMeepleOnIt(isLocked);
+                }
+            }
+        }
+        return false;
+    }
+
+
+    public void updateTileFeatures(boolean varBoo)
+    {
+        for (Side side : Side.values())
+        {
+            TileActor borderingTile = this.getTileOnSide(side);
+            Feature feature = this.getFeatureAtSide(side);
+
+            try
+            {
+                if (borderingTile != null)
+                {
+                    Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
+
+                    // if features are of the same type
+                    if (feature.getClass().equals(borderingFeature.getClass()))
+                    {
+                        // then act like the feature of this tile has a meeple on it
+                        // if the bordering feature has a meeple on it.
+                        feature.setHasMeepleOnIt(varBoo);
+                        updateTileFeaturesAgain(varBoo);
+
+                    }
+                }
+
+            } catch (NullPointerException e) {
+
+                LOGGER.warning("NullPointerException");
+
+            }
+
+        }
+    }
+    private void updateTileFeaturesAgain(boolean varBoo){
 
         for (Side side : Side.values()){
             TileActor borderingTile = this.getTileOnSide(side);
-            Feature feature = this. getFeatureAtSide(side);
+            Feature feature = this.getFeatureAtSide(side);
             try {
                 if (borderingTile != null) {
                     Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
@@ -138,39 +221,6 @@ public class TileActor extends Actor {
         }
     }
 
-
-    public void updateTileFeatures(boolean varBoo)
-    {
-        for (Side side : Side.values())
-        {
-            TileActor borderingTile = this.getTileOnSide(side);
-            Feature feature = this.getFeatureAtSide(side);
-
-            try
-            {
-                if (borderingTile != null)
-                {
-                    Feature borderingFeature = borderingTile.getFeatureAtSide(side.getOppositeSide());
-
-                    // if features are of the same type
-                    if (feature.getClass().equals(borderingFeature.getClass()))
-                    {
-                        // then act like the feature of this tile has a meeple on it
-                        // if the bordering feature has a meeple on it.
-                        feature.setHasMeepleOnIt(varBoo);
-                        updateTileFeaturesRecursive(varBoo);
-
-                    }
-                }
-
-            } catch (NullPointerException e) {
-
-                LOGGER.warning("NullPointerException");
-
-            }
-
-        }
-    }
 
     public Feature getFeatureAtSide(Side side) {
         return featureAtSide.get(getTileSideAt(side));

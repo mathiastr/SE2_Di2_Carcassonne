@@ -15,6 +15,8 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.meeple.MeepleTextureFactory;
+import com.mygdx.game.network.NetworkHelper;
+import com.mygdx.game.network.response.MeeplePlacementMessage;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.meeple.MeeplePlacement;
@@ -57,7 +59,8 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
         output.setFontScale(3);
         stage.addActor(output);
 
-        newestTile.updateTileFeatures(true);
+        newestTile.updateTileFeature3(true);
+       // newestTile.updateTileFeatures(true);
 
 
 
@@ -135,6 +138,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
 
                 }
                 mp.placeMeeple(side, feature, gb.getCurrentTile().getPosition());
+                NetworkHelper.getGameManager().sendToServer(new MeeplePlacementMessage(side,feature, gb.getCurrentTile().getPosition()));
 
                 game.setScreen(previousScreen);
             }

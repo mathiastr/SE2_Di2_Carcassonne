@@ -7,7 +7,7 @@ import com.mygdx.game.emotes.Emote;
 import com.mygdx.game.network.response.CheatOnScoreMessage;
 import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorNumber;
-import com.mygdx.game.network.response.MeepleIsPlacedMessage;
+import com.mygdx.game.network.response.MeeplePlacementMessage;
 import com.mygdx.game.network.response.RemoveMeepleMessage;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Field;
@@ -60,9 +60,10 @@ public class Network {
         kryo.register(ErrorNumber.class);
         kryo.register(EmoteMessage.class);
         kryo.register(Emote.class);
-        kryo.register(MeepleIsPlacedMessage.class);
+        kryo.register(MeeplePlacementMessage.class);
         kryo.register(Toast.class);
         kryo.register(RemoveMeepleMessage.class);
+        kryo.register(Position.class);
     }
 }
 

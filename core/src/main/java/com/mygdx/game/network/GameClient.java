@@ -27,12 +27,12 @@ public class GameClient extends AbstractGameManager{
             l.add(InetAddress.getByName("192.168.43.1"));
             l.add(InetAddress.getByName("10.0.0.4"));
             l.add(InetAddress.getByName("10.0.0.13"));
-            return l;
+            //return l;
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return client.discoverHosts(Network.UDP, 5000);
+        return client.discoverHosts(Network.UDP, 2000);
     }
 
     public Client getClient() {
