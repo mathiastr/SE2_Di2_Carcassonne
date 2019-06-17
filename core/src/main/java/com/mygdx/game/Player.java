@@ -1,10 +1,8 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.CheatType;
-import com.mygdx.game.network.response.PlayerGameMessage;
 
 import java.util.ArrayList;
 
@@ -78,20 +76,6 @@ public class Player {
         // TODO change Texture to byte-array, otherwise Texture gets registered.
         //FileHandle defaultPicture = Gdx.files.internal("profilePhoto.png");
         //if (defaultPicture != null) this.photo = new Texture(defaultPicture);
-    }
-
-    public Player(PlayerGameMessage p) {
-        this.score = p.getScore();
-        this.name = p.name;
-        this.color = GameBoard.Color.GREEN;
-        this.meeples = new ArrayList<Meeple>();
-        for (int i = 0; i < MEEPLE_COUNT; i++) {
-            this.meeples.add(new Meeple(this.color));
-        }
-        //standart texture
-        this.photo = new Texture(Gdx.files.internal("profilePhoto.png"));
-
-        this.timeToDetectUsedCheats = 0;
     }
 
     public Player(int id, GameBoard.Color color, String name) {
