@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.mygdx.game.network.response.CheatType;
 import com.mygdx.game.screen.GameScreen;
+import com.mygdx.game.utility.GraphicsBackend;
 
 import org.junit.Test;
 
@@ -38,7 +39,7 @@ public class CheatTest {
     public void testScoreCheating() {
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         gb.cheat(CheatType.SCORE, players.get(0), players.get(0)); //cheat Meeple
         assert players.get(0).getScore() == Player.CHEAT_SCORE;
@@ -58,7 +59,7 @@ public class CheatTest {
     @Test
     public void testMeepleCheating() {
         preparePlayers();
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
         gb.cheat(CheatType.MEEPLE, players.get(0), players.get(0)); //cheat Meeple
         assert players.get(0).getNumberOfMeeples() == Player.MEEPLE_COUNT + 1;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;

@@ -11,6 +11,7 @@ import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
+import com.mygdx.game.utility.GraphicsBackend;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -49,7 +50,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -88,7 +89,7 @@ public class ScoringTest {
     public void scoreMonastery() {
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -157,7 +158,7 @@ public class ScoringTest {
     public void scoreNotMonastery() {
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -189,7 +190,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -213,7 +214,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -252,7 +253,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -289,7 +290,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -336,7 +337,7 @@ public class ScoringTest {
         players.add(player1);
         players.add(player2);
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
 
         {
@@ -386,7 +387,7 @@ public class ScoringTest {
         preparePlayers();
 
         TileActor newCurrentTile = new TileActor();
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         gb.setCurrentTile(newCurrentTile);
         Assert.assertEquals(newCurrentTile, gb.getCurrentTile());

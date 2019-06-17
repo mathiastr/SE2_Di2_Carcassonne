@@ -32,6 +32,7 @@ import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Side;
+import com.mygdx.game.utility.GraphicsBackend;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,6 +79,7 @@ public class GameBoard {
     private List<Player> players;
     private static HashMap<Position, TileActor> usedTileHash = new HashMap<>();
     private ArrayList<TileActor> hints = new ArrayList<>();
+    private GraphicsBackend graphicsBackend;
 
     public ArrayList<TileActor> getUsedTiles() {
         return usedTiles;
@@ -299,7 +301,7 @@ public class GameBoard {
     }
 
 
-    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen) {
+    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen, GraphicsBackend graphicsBackend) {
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
         gameScreen = screen;
@@ -313,11 +315,13 @@ public class GameBoard {
         this.gameScreen = gameScreen;
         this.board = new Board();
         this.rand = new Random();
-
+        this.graphicsBackend = graphicsBackend;
     }
 
     public void init() {
-        board.availableTiles = Deck.createDeckTiles();
+        Deck deck = new Deck(graphicsBackend);
+        board.availableTiles = deck.createDeckTiles();
+
         TileActor startTile = board.getAvailableTiles().remove(0);
         board.getPlacedTiles().put(new Position(0, 0), startTile);
         stageOfBoard.addActor(startTile);

@@ -1,18 +1,22 @@
 package com.mygdx.game.tilefactory;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
+import com.mygdx.game.utility.GraphicsBackend;
 
 import java.util.Arrays;
 
 public class TurningRoadFactory extends AbstractTileFactory {
+
+    public TurningRoadFactory(GraphicsBackend graphicsBackend) {
+        super(graphicsBackend);
+    }
+
     @Override
-    protected TileActor createTile() {
+    public TileActor createTile(GraphicsBackend graphicsBackend) {
         TileActor turningRoad = new TileActor();
-        turningRoad.setTexture(new Texture(Gdx.files.internal("turning_road_128.jpg")));
+        turningRoad.setTexture(graphicsBackend.loadTexture("turning_road_128.jpg"));
         turningRoad.addFeature(new Road(Arrays.asList(Side.LEFT, Side.BOTTOM)));
         return turningRoad;
     }

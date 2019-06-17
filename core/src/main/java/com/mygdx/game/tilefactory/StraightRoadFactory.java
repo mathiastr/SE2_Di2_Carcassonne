@@ -1,18 +1,22 @@
 package com.mygdx.game.tilefactory;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
+import com.mygdx.game.utility.GraphicsBackend;
 
 import java.util.Arrays;
 
 public class StraightRoadFactory extends AbstractTileFactory {
+
+    public StraightRoadFactory(GraphicsBackend graphicsBackend) {
+        super(graphicsBackend);
+    }
+
     @Override
-    protected TileActor createTile() {
+    public TileActor createTile(GraphicsBackend graphicsBackend) {
         TileActor straightRoad = new TileActor();
-        straightRoad.setTexture(new Texture(Gdx.files.internal("straight_road_128.jpg")));
+        straightRoad.setTexture(graphicsBackend.loadTexture("straight_road_128.jpg"));
         straightRoad.addFeature(new Road(Arrays.asList(Side.TOP, Side.BOTTOM)));
         return straightRoad;
     }

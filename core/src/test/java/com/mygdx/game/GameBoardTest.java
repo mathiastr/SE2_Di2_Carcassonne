@@ -4,7 +4,9 @@ import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.screen.GameScreen;
+import com.mygdx.game.utility.GraphicsBackend;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,6 +27,7 @@ public class GameBoardTest {
         stageMock = mock(Stage.class);
         Gdx.files = mock(Files.class);
         Gdx.gl = mock(GL20.class);
+        Gdx.gl20 = mock(GL20.class);
         gameScreen = mock(GameScreen.class);
     }
 
@@ -38,7 +41,7 @@ public class GameBoardTest {
     @Test
     public void getRandomColorTest() {
         preparePlayers();
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
 
         List<GameBoard.Color> except = new ArrayList<GameBoard.Color>();
         except.add(GameBoard.Color.RED);
@@ -46,5 +49,13 @@ public class GameBoardTest {
 
         Assert.assertFalse(except.contains(color));
 
+    }
+
+    @Test
+    public void overall() {
+        preparePlayers();
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        TileActor tile = gb.getCurrentTile();
+        int a = 5;
     }
 }

@@ -9,6 +9,7 @@ import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Side;
+import com.mygdx.game.utility.GraphicsBackend;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -48,7 +49,7 @@ public class CityOwnersTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen);
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen,  new GraphicsBackend());
 
         players = new ArrayList<>();
         Player player1 = new Player();
