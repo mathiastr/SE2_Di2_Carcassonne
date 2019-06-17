@@ -67,6 +67,7 @@ public class GameScreen extends BaseScreen {
         GraphicsBackend graphicsBackend = new GraphicsBackend();
         gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient, this, graphicsBackend);
         gameBoard.init();
+        gameBoard.initGui();
 
         populatePlaceMeeple();
         stageUI.addActor(placeMeeple);
