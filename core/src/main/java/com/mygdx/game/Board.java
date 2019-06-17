@@ -25,12 +25,10 @@ import com.mygdx.game.screen.GameScreen;
 
 public class Board {
     public List<TileActor> availableTiles = new ArrayList<>();
-
+    public HashMap<Position, TileActor> placedTiles = new HashMap<>();
     private GameBoard gb;
     private GameScreen gs;
 
-    private List<TileActor> availableTiles = new ArrayList<>();
-    public HashMap<Position, TileActor> placedTiles = new HashMap<>();
 
     public List<TileActor> getAvailableTiles() {
         return availableTiles;

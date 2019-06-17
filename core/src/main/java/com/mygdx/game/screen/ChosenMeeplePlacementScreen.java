@@ -56,7 +56,8 @@ public class ChosenMeeplePlacementScreen extends BaseScreen {
 
         stage.addActor(getLabel());
 
-        newestTile.updateTileFeatures();
+        //newestTile.updateTileFeatures(true);
+        newestTile.updateTileFeature3(true);
 
 
         for (Feature feature : newestTile.getFeatures()) {
@@ -77,22 +78,9 @@ public class ChosenMeeplePlacementScreen extends BaseScreen {
         output.setY(Gdx.graphics.getHeight() / 8f * 7f);
         output.setWidth(Gdx.graphics.getWidth());
         output.setFontScale(3);
-        stage.addActor(output);
-
-        //newestTile.updateTileFeatures();
-        newestTile.updateTileFeature3(true);
-
-
-
-        for (Feature feature : newestTile.getFeatures())
-        {
-            if (!feature.hasMeepleOnIt())
-            {
-                meepleButtons.add(createMeeplePlacementButton(feature));
-            }
-        }
         return output;
     }
+
 
     private TextButton getTextButton(GameScreen previousScreen, Game game) {
         TextButton back = new TextButton("Back", Carcassonne.skin);

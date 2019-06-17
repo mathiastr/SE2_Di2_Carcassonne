@@ -302,6 +302,7 @@ public class TileActor extends Actor {
             }
         }
         return score;
+    }
     public boolean isFeatureHaMeeple(Feature feature, Side side) {
 
         return true;
