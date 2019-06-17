@@ -18,27 +18,26 @@ public class Position {
     }
 
     public Position add(Position other) {
-        return new Position(x+other.x, y+other.y);
+        return new Position(x + other.x, y + other.y);
     }
 
     public Position[] getSurroundingPositions() {
-        return new Position[] {new Position(x, y+1),
-                new Position(x+1, y),
-                new Position(x, y-1),
-                new Position(x-1, y)};
+        return new Position[]{new Position(x, y + 1),
+                new Position(x + 1, y),
+                new Position(x, y - 1),
+                new Position(x - 1, y)};
     }
 
-    public Position getPositionOnSide(Side side){
-        switch (side)
-        {
+    public Position getPositionOnSide(Side side) {
+        switch (side) {
             case TOP:
-                return new Position(x, y+1);
+                return new Position(x, y + 1);
             case RIGHT:
                 return new Position(x + 1, y);
             case BOTTOM:
-                return new Position( x, y-1);
+                return new Position(x, y - 1);
             case LEFT:
-                return new Position( x - 1, y);
+                return new Position(x - 1, y);
             default:
                 throw new IllegalArgumentException("Cannot get position from this side.");
         }

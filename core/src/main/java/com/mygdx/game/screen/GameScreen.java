@@ -3,7 +3,6 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,7 +20,6 @@ import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
 import com.mygdx.game.emotes.EmoteManager;
-import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.GameClient;
 import com.mygdx.game.network.response.EmoteMessage;
@@ -29,13 +27,14 @@ import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.tile.Road;
+import com.mygdx.game.utility.GraphicsBackend;
 import com.mygdx.game.utility.Toast;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class GameScreen implements Screen {
+public class GameScreen extends BaseScreen {
     private Game game;
     private Stage stage;
     private Stage stageUI;
@@ -46,7 +45,7 @@ public class GameScreen implements Screen {
     private InputMultiplexer multiplexer;
     private Label labelTilesLeft;
     private Label currentPlayerLabel;
-    public  TextButton placeMeeple;
+    public TextButton placeMeeple;
     private Toast.ToastFactory meeplePlaced;
     private final List<Toast> toasts = new LinkedList<>();
 
@@ -59,28 +58,18 @@ public class GameScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         stageUI = new Stage(new ScreenViewport());
         stageEmote = new Stage(new ScreenViewport());
-        for (Player player: players) {
+        for (Player player : players) {
             player.setColor(GameBoard.Color.values()[players.indexOf(player)]);
             for (Meeple m : player.getMeeples()) {
                 m.setColor(player.getColor());
             }
         }
-        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient, this);
+        GraphicsBackend graphicsBackend = new GraphicsBackend();
+        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient, this, graphicsBackend);
         gameBoard.init();
+        gameBoard.initGui();
 
-        placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
-        placeMeeple.setWidth(Gdx.graphics.getWidth() / 4f);
-        placeMeeple.setHeight(Gdx.graphics.getHeight() / 8f);
-        placeMeeple.getLabel().setFontScale(0.8f);
-        placeMeeple.setPosition(10, 0);
-        placeMeeple.addListener(new ClickListener() {
-
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.debug("touch", "start touch up");
-                game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this, game, gameBoard));
-            }
-        });
+        populatePlaceMeeple();
         stageUI.addActor(placeMeeple);
 
         placeMeeple.setVisible(false);
@@ -123,17 +112,9 @@ public class GameScreen implements Screen {
         multiplexer.addProcessor(stageUI);
         multiplexer.addProcessor(stage);
 
-        labelTilesLeft = new Label("", Carcassonne.skin);
-        labelTilesLeft.setAlignment(Align.center);
-        labelTilesLeft.setWidth(Gdx.graphics.getWidth());
-        labelTilesLeft.setFontScale(2);
-        labelTilesLeft.setY(20);
+        populateLabelTilesLeft();
 
-        currentPlayerLabel = new Label("", Carcassonne.skin);
-        currentPlayerLabel.setAlignment(Align.center);
-        currentPlayerLabel.setWidth(Gdx.graphics.getWidth());
-        currentPlayerLabel.setFontScale(2);
-        currentPlayerLabel.setY(60);
+        populateCurrentPlayerLabel();
 
         stageUI.addActor(labelTilesLeft);
         stageUI.addActor(currentPlayerLabel);
@@ -141,29 +122,58 @@ public class GameScreen implements Screen {
         if (!isLocal) emoteManager = new EmoteManager(gameBoard, stageEmote);
     }
 
-    public void createMeepleIsPlacedToast(Feature feature){
+    private void populateCurrentPlayerLabel() {
+        currentPlayerLabel = new Label("", Carcassonne.skin);
+        currentPlayerLabel.setAlignment(Align.center);
+        currentPlayerLabel.setWidth(Gdx.graphics.getWidth());
+        currentPlayerLabel.setFontScale(2);
+        currentPlayerLabel.setY(60);
+    }
+
+    private void populateLabelTilesLeft() {
+        labelTilesLeft = new Label("", Carcassonne.skin);
+        labelTilesLeft.setAlignment(Align.center);
+        labelTilesLeft.setWidth(Gdx.graphics.getWidth());
+        labelTilesLeft.setFontScale(2);
+        labelTilesLeft.setY(20);
+    }
+
+    private void populatePlaceMeeple() {
+        placeMeeple = new TextButton("place Meeple", Carcassonne.skin, "default");
+        placeMeeple.setWidth(Gdx.graphics.getWidth() / 4f);
+        placeMeeple.setHeight(Gdx.graphics.getHeight() / 8f);
+        placeMeeple.getLabel().setFontScale(0.8f);
+        placeMeeple.setPosition(10, 0);
+        placeMeeple.addListener(new ClickListener() {
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.debug("touch", "start touch up");
+                game.setScreen(new ChosenMeeplePlacementScreen(GameScreen.this, game, gameBoard));
+            }
+        });
+    }
+
+    public void createMeepleIsPlacedToast(Feature feature) {
         BitmapFont font = Carcassonne.skin.getFont("font-big");
         font.getData().setScale(0.8f, 0.8f);
         Color backgroundColor = new Color(55f / 256, 55f / 256, 55f / 256, 1);
         Color fontColor = new Color(1, 1, 1, 1);
         String meepleType;
 
-        if(feature.getClass().equals(City.class)){
+        if (feature.getClass().equals(City.class)) {
             meepleType = "knight";
-        }
-        else if(feature.getClass().equals(Monastery.class)){
+        } else if (feature.getClass().equals(Monastery.class)) {
             meepleType = "monk";
-        }
-        else if(feature.getClass().equals(Road.class)){
+        } else if (feature.getClass().equals(Road.class)) {
             meepleType = "highwayman";
-        }
-        else {
+        } else {
             meepleType = "meeple";
         }
 
         String stringForToast = gameBoard.getCurrentPlayer().getName() + " has placed a " + meepleType;
 
-        Toast meeplePlaced = new Toast(stringForToast, Toast.Length.LONG, font, backgroundColor, 0.5f, 1f,fontColor,Gdx.graphics.getHeight() / 2f,10 );
+        Toast meeplePlaced = new Toast(stringForToast, Toast.Length.LONG, font, backgroundColor, 0.5f, 1f, fontColor, Gdx.graphics.getHeight() / 2f, 10);
         toasts.add(meeplePlaced);
     }
 
@@ -172,12 +182,10 @@ public class GameScreen implements Screen {
         show_emote = true;
     }
 
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(multiplexer);
     }
 
-    @Override
     public void render(float delta) {
         if (gameBoard.tilesLeft() == 0)
             game.setScreen(new GameOverScreen(game, gameBoard.getWinningPlayer()));
@@ -214,27 +222,7 @@ public class GameScreen implements Screen {
         }
     }
 
-    @Override
-    public void resize(int width, int height) {
 
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
     public void dispose() {
         stage.dispose();
         stageUI.dispose();

@@ -53,17 +53,7 @@ public class ServerRoomScreen implements Screen {
         devices = new ArrayList<TextButton>();
 
         for (int i = 0; i < 6; i++) {
-            TextButton device = new TextButton("Device " + (i + 1), Carcassonne.skin);
-            device.setWidth((float) Gdx.graphics.getWidth() / 2 - 40);
-            device.setHeight((float) Gdx.graphics.getHeight() / 5 - 40);
-            if (i % 2 == 0) {
-                device.setPosition(20, Gdx.graphics.getHeight() - (float)Gdx.graphics.getHeight() / 5 * ((float)i / 2 + 2) + 40);
-                devices.add(device);
-            } else {
-                device.setPosition(20 + (float)Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - (float)Gdx.graphics.getHeight() / 5 * (i / 2 + 2) + 40);
-                devices.add(device);
-            }
-            stage.addActor(device);
+            getDeviceTextButton(i);
         }
 
         GameServer server = null;
@@ -84,8 +74,52 @@ public class ServerRoomScreen implements Screen {
             Gdx.app.debug("network", "server problem");
         }
         final GameServer f = server;
+        TextButton back = getBackTextButton(game);
+        stage.addActor(back);
+
+        TextButton start = getStartTextButton(game, f);
+        stage.addActor(start);
+
+        if (NetworkHelper.getPlayer() != null) {
+            NetworkHelper.getPlayer().setId(1);
+            players.add(NetworkHelper.getPlayer());
+        } else {
+            Player player = new Player(GameBoard.Color.BLUE, "Server");
+            player.setId(1);
+            players.add(player);
+        }
+
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    private TextButton getStartTextButton(Game game, GameServer f) {
+        TextButton start = new TextButton("Start", Carcassonne.skin);
+        start.setWidth((float) Gdx.graphics.getWidth() / 5 * 2 - 40);
+        start.setHeight((float) Gdx.graphics.getHeight() / 5 - 60);
+        start.setPosition((float) Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 - 20, 40);
+        start.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                InitGameMessage ig = new InitGameMessage();
+                ig.setPlayers(players);
+
+                NetworkHelper.getGameManager().sendToServer(ig);
+
+                // TODO get "me" from settings
+                game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), f.localClient));
+            }
+        });
+        return start;
+    }
+
+    private TextButton getBackTextButton(Game game) {
         TextButton back = new TextButton("Back", Carcassonne.skin);
-        back.setWidth((float)Gdx.graphics.getWidth() / 5 - 40);
+        back.setWidth((float) Gdx.graphics.getWidth() / 5 - 40);
         back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
         back.addListener(new InputListener() {
             @Override
@@ -100,46 +134,21 @@ public class ServerRoomScreen implements Screen {
                 game.setScreen(new MainMenuScreen(game));
             }
         });
-        stage.addActor(back);
+        return back;
+    }
 
-        TextButton start = new TextButton("Start", Carcassonne.skin);
-        start.setWidth((float)Gdx.graphics.getWidth() / 5 * 2 - 40);
-        start.setHeight((float)Gdx.graphics.getHeight() / 5 - 60);
-        start.setPosition((float)Gdx.graphics.getWidth() / 2 - start.getWidth() / 2 - 20, 40);
-        start.addListener(new InputListener() {
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-
-                // TODO get players from
-                //players.add(new Player(GameBoard.Color.GREEN, "Client"));
-                //players.add(new Player(GameBoard.Color.BLUE, "Server"));
-
-                InitGameMessage ig = new InitGameMessage();
-                ig.setPlayers(players);
-
-                NetworkHelper.getGameManager().sendToServer(ig);
-
-                // TODO get "me" from settings
-                game.setScreen(new GameScreen(game, players, false, NetworkHelper.getPlayer(), f.localClient));
-            }
-        });
-        stage.addActor(start);
-
-        if (NetworkHelper.getPlayer() != null) {
-            NetworkHelper.getPlayer().setId(1);
-            players.add(NetworkHelper.getPlayer());
+    private void getDeviceTextButton(int i) {
+        TextButton device = new TextButton("Device " + (i + 1), Carcassonne.skin);
+        device.setWidth((float) Gdx.graphics.getWidth() / 2 - 40);
+        device.setHeight((float) Gdx.graphics.getHeight() / 5 - 40);
+        if (i % 2 == 0) {
+            device.setPosition(20, Gdx.graphics.getHeight() - (float) Gdx.graphics.getHeight() / 5 * ((float) i / 2 + 2) + 40);
+            devices.add(device);
         } else {
-            Player p = new Player(GameBoard.Color.BLUE, "Server");
-            p.setId(1);
-            players.add(p);
+            device.setPosition(20 + (float) Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() - (float) Gdx.graphics.getHeight() / 5 * (i / 2 + 2) + 40);
+            devices.add(device);
         }
-
-        Gdx.input.setInputProcessor(stage);
+        stage.addActor(device);
     }
 
     @Override
@@ -190,8 +199,7 @@ public class ServerRoomScreen implements Screen {
                 connection.sendTCP(new ErrorMessage("The game is full", ErrorNumber.TOOMANYCLIENTS));
             } else {
                 Player player = ((ConnectMessage) object).player;
-                for (Player p : players
-                ) {
+                for (Player p : players) {
                     if (p.getName().equals((player.getName()))) {
                         player.setName(player.getName() + players.size());
                     }

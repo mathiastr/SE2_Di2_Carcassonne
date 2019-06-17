@@ -1,7 +1,6 @@
 package com.mygdx.game.network;
 
 import com.mygdx.game.Player;
-import com.mygdx.game.actor.TileActor;
 
 public class NetworkHelper {
     private static AbstractGameManager gameManager;

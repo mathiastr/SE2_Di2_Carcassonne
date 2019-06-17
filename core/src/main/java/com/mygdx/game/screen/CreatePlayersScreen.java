@@ -33,12 +33,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CreatePlayersScreen implements Screen {
+public class CreatePlayersScreen extends BaseScreen {
 
-    private Game game;
     private Stage stage;
     private Texture background;
-    private List<Player> players = new ArrayList<Player>();
+    private List<Player> players = new ArrayList<>();
     private final BitmapFont font;
     private Table playerListTable;
 
@@ -52,6 +51,45 @@ public class CreatePlayersScreen implements Screen {
         textFieldStyle.font = font;
         textFieldStyle.fontColor = Color.BLACK;
 
+        populatePlayerListTable(textStyle, textFieldStyle);
+    }
+
+    public CreatePlayersScreen(final Game game) {
+        stage = new Stage(new ScreenViewport());
+
+        initilizeBasicPlayers();
+
+        NetworkHelper.setPlayer(players.get(0));
+
+        Gdx.app.setLogLevel(Application.LOG_DEBUG);
+
+        setBackground();
+
+        int marginTop = 10;
+
+        TextButton startGameButton = createStartGameButton(game, marginTop);
+        TextButton addPlayer = createAddPlayerButton(marginTop, startGameButton);
+
+        stage.addActor(addPlayer);
+        stage.addActor(startGameButton);
+
+        font = new BitmapFont(Gdx.files.internal("font/font.fnt"));
+        font.getData().setScale(5);
+
+        renderPlayersList();
+        Gdx.input.setInputProcessor(stage);
+
+    }
+
+    private void setBackground() {
+        background = new Texture("background.png");
+        Image backgroundImage = new Image(background);
+        backgroundImage.setWidth(Gdx.graphics.getWidth());
+        backgroundImage.setHeight(Gdx.graphics.getHeight());
+        stage.addActor(backgroundImage);
+    }
+
+    private void populatePlayerListTable(Label.LabelStyle textStyle, TextField.TextFieldStyle textFieldStyle) {
         if (playerListTable != null) {
             playerListTable.remove();
         }
@@ -80,7 +118,7 @@ public class CreatePlayersScreen implements Screen {
                         Gdx.app.postRunnable(new Runnable() {
                             @Override
                             public void run() {
-                                Texture tex=new Texture(p);
+                                Texture tex = new Texture(p);
                                 Sprite sprite = new Sprite(tex);
                                 sprite.setRotation(180f);
                                 profilePhoto.setDrawable(new SpriteDrawable(sprite));
@@ -94,12 +132,7 @@ public class CreatePlayersScreen implements Screen {
             playerListTable.add(profilePhoto).width(100).height(100);
             nameField.setAlignment(Align.center);
 
-            nameField.setTextFieldListener(new TextField.TextFieldListener() {
-                @Override
-                public void keyTyped(TextField textField, char c) {
-                    player.setName(nameField.getText());
-                }
-            });
+            nameField.setTextFieldListener((textField, c) -> player.setName(nameField.getText()));
             playerListTable.add(nameField).width(500);
             playerListTable.add(new Label("" + player.getColor().name(), textStyle));
 
@@ -122,30 +155,16 @@ public class CreatePlayersScreen implements Screen {
         stage.addActor(playerListTable);
     }
 
-    public CreatePlayersScreen(final Game game) {
-        this.game = game;
-        stage = new Stage(new ScreenViewport());
-
+    private void initilizeBasicPlayers() {
         players.add(new Player(GameBoard.Color.RED, "Player 1"));
         players.add(new Player(GameBoard.Color.BLUE, "Player 2"));
+    }
 
-        NetworkHelper.setPlayer(players.get(0));
-
-        Gdx.app.setLogLevel(Application.LOG_DEBUG);
-
-        background = new Texture("background.png");
-        Image backgroundImage = new Image(background);
-        backgroundImage.setWidth(Gdx.graphics.getWidth());
-        backgroundImage.setHeight(Gdx.graphics.getHeight());
-        stage.addActor(backgroundImage);
-
-        int marginTop = 10;
-
-        // TODO place these buttons inside the table
+    private TextButton createStartGameButton(Game game, int marginTop) {
         TextButton startGameButton = new TextButton("Start Game", Carcassonne.skin, "menu");
-        startGameButton.setWidth((float)Gdx.graphics.getWidth() / 4);
-        startGameButton.setPosition((float)Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6 / 9 - marginTop);
-        startGameButton.addListener(new ClickListener(){
+        startGameButton.setWidth((float) Gdx.graphics.getWidth() / 4);
+        startGameButton.setPosition((float) Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float) Gdx.graphics.getHeight() * 6 / 9 - marginTop);
+        startGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 Gdx.app.debug("touch", "start button is touched");
@@ -154,19 +173,22 @@ public class CreatePlayersScreen implements Screen {
                 NetworkHelper.setGameManager(new FakeGameManager());
             }
         });
+        return startGameButton;
+    }
 
+    private TextButton createAddPlayerButton(int marginTop, TextButton startGameButton) {
         TextButton addPlayer = new TextButton("Add player", Carcassonne.skin, "menu");
-        addPlayer.setWidth((float)Gdx.graphics.getWidth() / 4);
-        addPlayer.setPosition((float)Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6 / 9 + startGameButton.getHeight() * 3 / 2 - marginTop);
-        addPlayer.addListener(new ClickListener(){
+        addPlayer.setWidth((float) Gdx.graphics.getWidth() / 4);
+        addPlayer.setPosition((float) Gdx.graphics.getWidth() / 2 - startGameButton.getWidth() / 2, (float) Gdx.graphics.getHeight() * 6 / 9 + startGameButton.getHeight() * 3 / 2 - marginTop);
+        addPlayer.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (players.size() < GameBoard.MAX_NUM_OF_PLAYERS) {
                     List<GameBoard.Color> colors = new ArrayList<>();
                     List<Integer> numbers = new ArrayList<>();
-                    for (Player p : players) {
-                        numbers.add(Integer.valueOf(p.getName().split(" ")[1]));
-                        colors.add(p.getColor());
+                    for (Player player : players) {
+                        numbers.add(Integer.valueOf(player.getName().split(" ")[1]));
+                        colors.add(player.getColor());
                     }
                     Integer[] arr = {1, 2, 3, 4, 5, 6};
                     List<Integer> rest = (new ArrayList<>(Arrays.asList(arr)));
@@ -178,26 +200,13 @@ public class CreatePlayersScreen implements Screen {
                 Gdx.app.debug("touch", "add player button is touched");
             }
         });
-
-        stage.addActor(addPlayer);
-        stage.addActor(startGameButton);
-        // TODO what is that?
-
-        font = new BitmapFont(Gdx.files.internal("font/font.fnt"));
-        font.getData().setScale(5);
-
-        renderPlayersList();
-
-        Gdx.input.setInputProcessor(stage);
-
+        return addPlayer;
     }
 
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -205,27 +214,6 @@ public class CreatePlayersScreen implements Screen {
         stage.draw();
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
     public void dispose() {
         stage.dispose();
     }

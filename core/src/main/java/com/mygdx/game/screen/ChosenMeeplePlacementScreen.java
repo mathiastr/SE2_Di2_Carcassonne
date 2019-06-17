@@ -14,6 +14,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.meeple.MeepleTextureFactory;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.MeeplePlacementMessage;
@@ -27,7 +30,7 @@ import com.mygdx.game.actor.TileActor;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChosenMeeplePlacementScreen extends Actor implements Screen {
+public class ChosenMeeplePlacementScreen extends BaseScreen {
 
     private Stage stage;
     private GameBoard gb;
@@ -38,8 +41,7 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
     private Screen previousScreen;
     private MeeplePlacement mp;
 
-    ChosenMeeplePlacementScreen(GameScreen previousScreen, Game game, GameBoard gb)
-    {
+    ChosenMeeplePlacementScreen(GameScreen previousScreen, Game game, GameBoard gb) {
         this.gb = gb;
         this.previousScreen = previousScreen;
         this.game = game;
@@ -52,6 +54,24 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
         meepleButtons = new ArrayList<>();
         mp = new MeeplePlacement(gb, previousScreen, new MeepleTextureFactory());
 
+        stage.addActor(getLabel());
+
+        newestTile.updateTileFeatures();
+
+
+        for (Feature feature : newestTile.getFeatures()) {
+            if (!feature.hasMeepleOnIt()) {
+                meepleButtons.add(createMeeplePlacementButton(feature));
+            }
+        }
+
+        Gdx.input.setInputProcessor(stage);
+        setMeepleTextButtons();
+
+        stage.addActor(getTextButton(previousScreen, game));
+    }
+
+    private Label getLabel() {
         Label output = new Label("Where do you want to place your Meeple?", Carcassonne.skin);
         output.setAlignment(Align.center);
         output.setY(Gdx.graphics.getHeight() / 8f * 7f);
@@ -71,67 +91,55 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
                 meepleButtons.add(createMeeplePlacementButton(feature));
             }
         }
+        return output;
+    }
 
-        Gdx.input.setInputProcessor(stage);
-        setMeepleTextButtons();
-
+    private TextButton getTextButton(GameScreen previousScreen, Game game) {
         TextButton back = new TextButton("Back", Carcassonne.skin);
         back.setWidth(Gdx.graphics.getWidth() / 5f - 40f);
         back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
-        back.addListener(new InputListener()
-        {
+        back.addListener(new InputListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
-            {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
 
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button)
-            {
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 game.setScreen(previousScreen);
             }
         });
-        stage.addActor(back);
+        return back;
     }
 
 
-    private TextButton createMeeplePlacementButton(Feature feature)
-    {
+    private TextButton createMeeplePlacementButton(Feature feature) {
         TextButton placeMeepleButton = new TextButton(("On " + feature.getClass().getSimpleName() + " " + newestTile.getSideAfterRotation(feature.getSides().get(0))), Carcassonne.skin);
         placeMeepleButton.setWidth(Gdx.graphics.getWidth() / 8f);
         placeMeepleButton.setHeight(Gdx.graphics.getHeight() / 8f);
 
-        placeMeepleButton.addListener(new InputListener()
-        {
+        placeMeepleButton.addListener(new InputListener() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button)
-            {
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
             }
 
             @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button)
-            {
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
                 List<Side> sides;
                 Side side = null;
-                if (!newestTile.isMonastery())
-                {
+                if (!newestTile.isMonastery()) {
                     sides = feature.getSides();
                     side = sides.get(0);
                     newestTile = gb.getNewestTile();
                     side = newestTile.getSideAfterRotation(side);
-                } else
-                    {
-                    for (Feature f : features)
-                    {
-                        if (f instanceof Road)
-                        {
+                } else {
+                    for (Feature f : features) {
+                        if (f instanceof Road) {
                             sides = feature.getSides();
                             side = sides.get(0);
                             side = newestTile.getSideAfterRotation(side);
-                        } else
-                            {
+                        } else {
                             side = Side.TOP;
                         }
                     }
@@ -146,33 +154,25 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
         return placeMeepleButton;
     }
 
-    private void setMeepleTextButtons()
-    {
-        for (int i = 0; i < meepleButtons.size() && i < 6; i++)
-        {
+    private void setMeepleTextButtons() {
+        for (int i = 0; i < meepleButtons.size() && i < 6; i++) {
             TextButton button = meepleButtons.get(i);
             button.setWidth(Gdx.graphics.getWidth() / 2f - 40f);
             button.setHeight(Gdx.graphics.getHeight() / 5f - 40f);
-            if (i % 2 == 0)
-            {
+            if (i % 2 == 0) {
                 button.setPosition(20, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5f * (i / 2f + 2) + 40f);
-            } else
-                {
+            } else {
                 button.setPosition(20f + Gdx.graphics.getWidth() / 2f, Gdx.graphics.getHeight() - Gdx.graphics.getHeight() / 5f * (i / 2f + 2) + 40f);
             }
             stage.addActor(button);
         }
     }
 
-    @Override
-    public void show()
-    {
+    public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
-    public void render(float delta)
-    {
+    public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
@@ -180,32 +180,8 @@ public class ChosenMeeplePlacementScreen extends Actor implements Screen {
     }
 
     @Override
-    public void resize(int width, int height)
-    {
-
+    public void dispose() {
+        stage.dispose();
     }
 
-    @Override
-    public void pause()
-    {
-
-    }
-
-    @Override
-    public void resume()
-    {
-
-    }
-
-    @Override
-    public void hide()
-    {
-
-    }
-
-    @Override
-    public void dispose()
-    {
-
-    }
 }

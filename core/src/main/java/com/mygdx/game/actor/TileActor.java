@@ -4,12 +4,15 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.mygdx.game.Board;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Position;
 import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.TilePlacementMessage;
+import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
-import com.mygdx.game.tile.FeatureType;
+import com.mygdx.game.tile.Monastery;
+import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
 import java.util.ArrayList;
@@ -27,6 +30,7 @@ public class TileActor extends Actor {
     private Position position;
     private ArrayList<Meeple> meeples = new ArrayList<>();
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
+
     private boolean monastery = false;
     private int meepleCount;
     private ImageButton meepleButton = null;
@@ -271,19 +275,33 @@ public class TileActor extends Actor {
     }
 
     public boolean isMonastery() {
-        return monastery;
+        for (Feature f: getFeatures()) {
+            if (f instanceof Monastery) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public boolean areSidesConnected(Side side1, Side side2, FeatureType type) {
-
-        return true;
-    }
-
-    public boolean hasFeautureOnSide(Side side) {
-
-        return true;
-    }
-
+    public int getScore(Feature feature, Board board) {
+        int score = 0;
+        if ((feature instanceof City || feature instanceof Road)) {
+            score += board.scoreRoadOrCity(this, feature);
+        } else if (feature instanceof Monastery) {
+            score += board.scoreMonastery(this);
+        }
+        // TODO check for monastery around
+        for (int i = -1; i < 2; i++) {
+            for (int j = -1; j < 2; j++) {
+                TileActor tileAround = board.placedTiles.get(getPosition().add(new Position(i, j)));
+                if (tileAround != null) {
+                    if (tileAround.isMonastery()) {
+                        score += board.scoreMonastery(tileAround);
+                    }
+                }
+            }
+        }
+        return score;
     public boolean isFeatureHaMeeple(Feature feature, Side side) {
 
         return true;

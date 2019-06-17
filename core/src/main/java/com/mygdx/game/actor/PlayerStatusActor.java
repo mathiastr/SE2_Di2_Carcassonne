@@ -12,7 +12,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.game.Player;
-import com.mygdx.game.emotes.Emote;
 
 public class PlayerStatusActor extends Group {
     private Image texture;

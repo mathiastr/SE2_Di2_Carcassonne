@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Player;
 
-public class GameOverScreen implements Screen {
+public class GameOverScreen extends BaseScreen implements Screen {
 
     private Stage stage;
     private Player winner;
@@ -52,31 +52,17 @@ public class GameOverScreen implements Screen {
         Label.LabelStyle labelStyle = new Label.LabelStyle();
         labelStyle.font = font24;
 
-        Label winTextLabel = new Label("winner with " + winner.getScore() + " points is ...", labelStyle);
-        winTextLabel.setAlignment(Align.center);
-        winTextLabel.setY(Gdx.graphics.getHeight()/1.2f);
-        winTextLabel.setWidth(Gdx.graphics.getWidth());
-        winTextLabel.setFontScale(0.5f);
+        Label winTextLabel = getWinTextLabel(labelStyle);
         stage.addActor(winTextLabel);
 
 
-        Label winnerLabel = new Label(winner.getName(), labelStyle);
-        winnerLabel.setAlignment(Align.center);
-        winnerLabel.setY(Gdx.app.getGraphics().getHeight()/1.6f);
-        winnerLabel.setWidth(Gdx.graphics.getWidth());
+        Label winnerLabel = getWinnerLabel(labelStyle);
         stage.addActor(winnerLabel);
 
-        Image winnerImage;
-        if (winner.getPhoto() == null) winnerImage = new Image(new Texture(Gdx.files.internal("profilePhoto.png")));
-        else winnerImage = new Image(winner.getPhoto());
-        winnerImage.setSize(Gdx.app.getGraphics().getHeight()/2.5f, Gdx.app.getGraphics().getHeight()/2.5f);
-        winnerImage.setPosition(Gdx.app.getGraphics().getWidth()/2f-Gdx.app.getGraphics().getHeight()/2.5f/2f, Gdx.app.getGraphics().getHeight()/7f);
+        Image winnerImage = getImage();
         stage.addActor(winnerImage);
 
-        Image crown = new Image(new Texture(Gdx.files.internal("crown.png")));
-        crown.setSize(Gdx.app.getGraphics().getHeight()/10f, Gdx.app.getGraphics().getHeight()/10f);
-        crown.setPosition(Gdx.app.getGraphics().getWidth()/2f-Gdx.app.getGraphics().getHeight()/10f/2f,
-                Gdx.app.getGraphics().getHeight()/2f);
+        Image crown = getCrownImage();
         stage.addActor(crown);
 
         stage.addListener(new ClickListener() {
@@ -91,32 +77,47 @@ public class GameOverScreen implements Screen {
         sound.play();
     }
 
+    private Image getCrownImage() {
+        Image crown = new Image(new Texture(Gdx.files.internal("crown.png")));
+        crown.setSize(Gdx.app.getGraphics().getHeight() / 10f, Gdx.app.getGraphics().getHeight() / 10f);
+        crown.setPosition(Gdx.app.getGraphics().getWidth() / 2f - Gdx.app.getGraphics().getHeight() / 10f / 2f,
+                Gdx.app.getGraphics().getHeight() / 2f);
+        return crown;
+    }
+
+    private Image getImage() {
+        Image winnerImage;
+        if (winner.getPhoto() == null)
+            winnerImage = new Image(new Texture(Gdx.files.internal("profilePhoto.png")));
+        else winnerImage = new Image(winner.getPhoto());
+        winnerImage.setSize(Gdx.app.getGraphics().getHeight() / 2.5f, Gdx.app.getGraphics().getHeight() / 2.5f);
+        winnerImage.setPosition(Gdx.app.getGraphics().getWidth() / 2f - Gdx.app.getGraphics().getHeight() / 2.5f / 2f, Gdx.app.getGraphics().getHeight() / 7f);
+        return winnerImage;
+    }
+
+    private Label getWinnerLabel(Label.LabelStyle labelStyle) {
+        Label winnerLabel = new Label(winner.getName(), labelStyle);
+        winnerLabel.setAlignment(Align.center);
+        winnerLabel.setY(Gdx.app.getGraphics().getHeight() / 1.6f);
+        winnerLabel.setWidth(Gdx.graphics.getWidth());
+        return winnerLabel;
+    }
+
+    private Label getWinTextLabel(Label.LabelStyle labelStyle) {
+        Label winTextLabel = new Label("winner with " + winner.getScore() + " points is ...", labelStyle);
+        winTextLabel.setAlignment(Align.center);
+        winTextLabel.setY(Gdx.graphics.getHeight() / 1.2f);
+        winTextLabel.setWidth(Gdx.graphics.getWidth());
+        winTextLabel.setFontScale(0.5f);
+        return winTextLabel;
+    }
+
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.4f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         stage.act();
         stage.draw();
-    }
-
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
     }
 
     @Override

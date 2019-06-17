@@ -2,11 +2,11 @@ package com.mygdx.game.meeple;
 
 
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.mygdx.game.GameBoard;
+import com.mygdx.game.Position;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
-import com.mygdx.game.GameBoard;
-import com.mygdx.game.Position;
 import com.mygdx.game.tile.Side;
 
 import java.util.logging.Logger;
@@ -34,10 +34,8 @@ public class MeeplePlacement {
     }
 
 
-    public void placeMeeple(Side side, Feature feature, Position pos)
-    {
-        try
-        {
+    public void placeMeeple(Side side, Feature feature, Position pos) {
+        try {
             featureForMT = feature;
             Meeple meepleForPlacement = gb.getUnusedCurrentPlayerMeeple();
             meepleForPlacement.setSide(side);
@@ -46,19 +44,15 @@ public class MeeplePlacement {
             feature.setHasMeepleOnIt(true);
             drawMeeple(side, pos);
             gameScreen.placeMeeple.setVisible(false);
-        } catch (NullPointerException e)
-        {
+        } catch (NullPointerException e) {
             throw e;
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             LOGGER.warning("Exception");
         }
     }
 
 
-
-    public void drawMeeple(Side side, Position pos)
-    {
+    public void drawMeeple(Side side, Position pos) {
 
         GameBoard.Color color = gb.getCurrentPlayer().getColor();
 
@@ -67,8 +61,7 @@ public class MeeplePlacement {
         float x = (pos.getX() * 128f) + (128f / 2f) - (meepleImg.getWidth() / 2f);
         float y = (pos.getY() * 128f) + (128f / 2f) - (meepleImg.getHeight() / 2f);
 
-        switch (side)
-        {
+        switch (side) {
             case TOP:
                 y += 42f;
                 break;
@@ -86,8 +79,7 @@ public class MeeplePlacement {
         meepleImg.setPosition(x, y);
         //gb.setMeepleButtonOnNewestTile(meepleImg);
 
-        for (int i = 0; i < gb.getPlayers().size(); i++)
-        {
+        for (int i = 0; i < gb.getPlayers().size(); i++) {
             gb.getPlayerActor(i).updateInfo();
         }
 

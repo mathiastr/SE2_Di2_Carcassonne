@@ -29,11 +29,9 @@ import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
 import com.mygdx.game.network.NetworkHelper;
 
-public class SettingScreen implements Screen {
+public class SettingScreen extends BaseScreen {
 
-    private Game game;
     private Stage stage;
-    private Texture background;
     private final BitmapFont font;
     private Table playerListTable;
 
@@ -67,36 +65,36 @@ public class SettingScreen implements Screen {
         profilePhoto.setDrawable(new TextureRegionDrawable(new TextureRegion(imageTexture)));
 
         profilePhoto.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    Carcassonne.getNativeInterface().getPhoto((byte[] bytes) -> {
-                        Pixmap p = new Pixmap(bytes, 0, bytes.length);
-                        Gdx.app.postRunnable(new Runnable() {
-                            @Override
-                            public void run() {
-                                Texture tex=new Texture(p);
-                                Sprite sprite = new Sprite(tex);
-                                sprite.setRotation(180f);
-                                profilePhoto.setDrawable(new SpriteDrawable(sprite));
-                                NetworkHelper.getPlayer().setPhoto(tex);
-                            }
-                        });
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Carcassonne.getNativeInterface().getPhoto((byte[] bytes) -> {
+                    Pixmap p = new Pixmap(bytes, 0, bytes.length);
+                    Gdx.app.postRunnable(new Runnable() {
+                        @Override
+                        public void run() {
+                            Texture tex = new Texture(p);
+                            Sprite sprite = new Sprite(tex);
+                            sprite.setRotation(180f);
+                            profilePhoto.setDrawable(new SpriteDrawable(sprite));
+                            NetworkHelper.getPlayer().setPhoto(tex);
+                        }
                     });
-                }
-            });
+                });
+            }
+        });
 
-            playerListTable.add(profilePhoto).width(100).height(100);
-            nameField.setAlignment(Align.center);
+        playerListTable.add(profilePhoto).width(100).height(100);
+        nameField.setAlignment(Align.center);
 
-            nameField.setTextFieldListener(new TextField.TextFieldListener() {
-                @Override
-                public void keyTyped(TextField textField, char c) {
-                    NetworkHelper.getPlayer().setName(nameField.getText());
-                }
-            });
-            playerListTable.add(nameField).width(500);
-            playerListTable.add(new Label("" + NetworkHelper.getPlayer().getColor().name(), textStyle));
-            playerListTable.row();
+        nameField.setTextFieldListener(new TextField.TextFieldListener() {
+            @Override
+            public void keyTyped(TextField textField, char c) {
+                NetworkHelper.getPlayer().setName(nameField.getText());
+            }
+        });
+        playerListTable.add(nameField).width(500);
+        playerListTable.add(new Label("" + NetworkHelper.getPlayer().getColor().name(), textStyle));
+        playerListTable.row();
 
         playerListTable.setFillParent(true);
         playerListTable.setY(350);
@@ -104,12 +102,11 @@ public class SettingScreen implements Screen {
     }
 
     public SettingScreen(final Game game) {
-        this.game = game;
         stage = new Stage(new ScreenViewport());
 
         Gdx.app.setLogLevel(Application.LOG_DEBUG);
 
-        background = new Texture("background.png");
+        Texture background = new Texture("background.png");
         Image backgroundImage = new Image(background);
         backgroundImage.setWidth(Gdx.graphics.getWidth());
         backgroundImage.setHeight(Gdx.graphics.getHeight());
@@ -120,13 +117,13 @@ public class SettingScreen implements Screen {
         font = new BitmapFont(Gdx.files.internal("font/font.fnt"));
         font.getData().setScale(5);
 
-        if(NetworkHelper.getPlayer() == null){
+        if (NetworkHelper.getPlayer() == null) {
             NetworkHelper.setPlayer(new Player(GameBoard.Color.RED, "Guest"));
         }
         renderPlayersList();
 
         TextButton back = new TextButton("Back", Carcassonne.skin);
-        back.setWidth(Gdx.graphics.getWidth() / 5 - 40);
+        back.setWidth((float) Gdx.graphics.getWidth() / 5 - 40);
         back.setPosition(Gdx.graphics.getWidth() - back.getWidth() - 20, 40);
         back.addListener(new InputListener() {
             @Override
@@ -144,12 +141,10 @@ public class SettingScreen implements Screen {
 
     }
 
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -157,27 +152,6 @@ public class SettingScreen implements Screen {
         stage.draw();
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
     public void dispose() {
         stage.dispose();
     }

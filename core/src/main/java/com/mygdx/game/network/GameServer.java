@@ -17,18 +17,18 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
-public class GameServer extends AbstractGameManager{
+public class GameServer extends AbstractGameManager {
 
     private Server server;
     private List<NetworkDevice> deviceList;
     public GameClient localClient;
 
     public GameServer() throws IOException {
-        server = new Server(32768,16384);
+        server = new Server(32768, 16384);
         Network.register(server);
 
         deviceList = new ArrayList<NetworkDevice>();
-        server.bind(Network.TCP,Network.UDP);
+        server.bind(Network.TCP, Network.UDP);
         server.start();
         this.setIp(ip());
 
@@ -67,7 +67,6 @@ public class GameServer extends AbstractGameManager{
     }
 
 
-
     public Server getServer() {
         return server;
     }
@@ -88,17 +87,10 @@ public class GameServer extends AbstractGameManager{
     public void sendToServer(final Object message) {
         System.out.println("DEGUG :::  server   sendtoAll   " + message.toString());
         new Thread("Sending") {
-            public void run () {
+            public void run() {
                 localClient.sendToServer(message);
             }
         }.start();
-    }
-
-
-    @Override
-    public void sendToHost(final Object message){
-        super.sendToHost(message);
-        //to do
     }
 
     @Override

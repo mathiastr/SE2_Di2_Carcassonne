@@ -7,7 +7,8 @@ public class EmoteMessage {
     private Emote emote;
     private Player player;
 
-    public EmoteMessage() {}
+    public EmoteMessage() {
+    }
 
     public EmoteMessage(Emote emote, Player player) {
         this.emote = emote;

@@ -8,7 +8,7 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameClient extends AbstractGameManager{
+public class GameClient extends AbstractGameManager {
     Client client;
 
     public GameClient() {
@@ -27,7 +27,8 @@ public class GameClient extends AbstractGameManager{
             l.add(InetAddress.getByName("192.168.1.2"));
             l.add(InetAddress.getByName("10.0.0.4"));
             l.add(InetAddress.getByName("10.0.0.13"));
-            return l;
+            l.add(InetAddress.getByName("143.205.186.57"));
+            //return l;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -39,10 +40,10 @@ public class GameClient extends AbstractGameManager{
         return client;
     }
 
-    public void initConnection (final InetAddress host, final Object message){
+    public void initConnection(final InetAddress host, final Object message) {
         client.setKeepAliveTCP(10000);
         new Thread("Connect") {
-            public void run () {
+            public void run() {
                 try {
                     //
                     client.connect(3000, host, Network.TCP, Network.UDP);
@@ -68,17 +69,10 @@ public class GameClient extends AbstractGameManager{
     public void sendToServer(final Object message) {
         System.out.println("DEGUG ::: sendtoAll   " + message.toString());
         new Thread("Sending") {
-            public void run () {
+            public void run() {
                 client.sendTCP(message);
             }
         }.start();
-    }
-
-
-    @Override
-    public void sendToHost(final Object message){
-        super.sendToHost(message);
-        //to do
     }
 
     @Override

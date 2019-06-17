@@ -18,7 +18,7 @@ import com.mygdx.game.Carcassonne;
 import com.mygdx.game.network.screen.ClientSearchScreen;
 import com.mygdx.game.network.screen.ServerRoomScreen;
 
-public class MainMenuScreen implements Screen {
+public class MainMenuScreen extends BaseScreen {
     private Game game;
     private Stage stage;
     private String touch = "touch";
@@ -36,13 +36,68 @@ public class MainMenuScreen implements Screen {
         stage.addActor(bg);
 
         /* TODO: make labels less pixelated */
-        Label title = new Label("CARCASSONNE", Carcassonne.skin, "menu");
-        title.setAlignment(Align.center);
-        title.setY((float) Gdx.graphics.getHeight() * 7f / 8);
-        title.setWidth(Gdx.graphics.getWidth());
-        title.setFontScale(5);
+        Label title = getLabel();
         stage.addActor(title);
 
+        TextButton jgButton = getJgTextButton();
+        stage.addActor(jgButton);
+
+        TextButton lgButton = getLgTextButton(jgButton);
+        stage.addActor(lgButton);
+
+        TextButton cgButton = getCgTextButton();
+        stage.addActor(cgButton);
+
+        TextButton settButton = getSetButton();
+        stage.addActor(settButton);
+
+        Gdx.input.setInputProcessor(stage);
+    }
+
+    private TextButton getSetButton() {
+        TextButton settButton = new TextButton("Settings", Carcassonne.skin, "menu");
+        settButton.setWidth((float) Gdx.graphics.getWidth() / 4f);
+        settButton.setPosition((float) Gdx.graphics.getWidth() / 2f - settButton.getWidth() / 2, (float) Gdx.graphics.getHeight() * 6f / 9 - settButton.getHeight() * 3);
+        settButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.debug(touch, start);
+                game.setScreen(new SettingScreen(game));
+            }
+        });
+        return settButton;
+    }
+
+    private TextButton getCgTextButton() {
+        TextButton cgButton = new TextButton("Create Game", Carcassonne.skin, "menu");
+        cgButton.setWidth((float) Gdx.graphics.getWidth() / 4f);
+        cgButton.setPosition((float) Gdx.graphics.getWidth() / 2f - cgButton.getWidth() / 2, (float) Gdx.graphics.getHeight() * 6f / 9 - cgButton.getHeight() * 3 / 2);
+        cgButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.debug(touch, start);
+                game.setScreen(new ServerRoomScreen(game));
+            }
+        });
+        return cgButton;
+    }
+
+    private TextButton getLgTextButton(TextButton jgButton) {
+        TextButton lgButton = new TextButton("Local Game", Carcassonne.skin, "menu");
+        lgButton.setWidth((float) Gdx.graphics.getWidth() / 4f);
+        lgButton.setPosition((float) Gdx.graphics.getWidth() / 2f - jgButton.getWidth() / 2, (float) Gdx.graphics.getHeight() * 6f / 9 - lgButton.getHeight() * 9 / 2);
+        lgButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.debug(touch, "local game touch up");
+                game.setScreen(new CreatePlayersScreen(game));
+
+            }
+        });
+        return lgButton;
+    }
+
+    private TextButton getJgTextButton() {
         TextButton jgButton = new TextButton("Join Game", Carcassonne.skin, "menu");
         jgButton.setWidth((float) Gdx.graphics.getWidth() / 4f);
         jgButton.setPosition((float) Gdx.graphics.getWidth() / 2f - jgButton.getWidth() / 2, (float) Gdx.graphics.getHeight() * 6f / 9);
@@ -53,49 +108,18 @@ public class MainMenuScreen implements Screen {
                 game.setScreen(new ClientSearchScreen(game));
             }
         });
-        stage.addActor(jgButton);
-
-        TextButton lgButton = new TextButton("Local Game", Carcassonne.skin, "menu");
-        lgButton.setWidth((float) Gdx.graphics.getWidth() / 4f);
-        lgButton.setPosition((float)Gdx.graphics.getWidth() / 2f - jgButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6f / 9 - lgButton.getHeight() * 9 / 2);
-        lgButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.debug(touch, "local game touch up");
-                game.setScreen(new CreatePlayersScreen(game));
-
-            }
-        });
-        stage.addActor(lgButton);
-
-        TextButton cgButton = new TextButton("Create Game", Carcassonne.skin, "menu");
-        cgButton.setWidth((float)Gdx.graphics.getWidth() / 4f);
-        cgButton.setPosition((float)Gdx.graphics.getWidth() / 2f - cgButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6f / 9 - cgButton.getHeight() * 3 / 2);
-        cgButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.debug(touch, start);
-                game.setScreen(new ServerRoomScreen(game));
-            }
-        });
-        stage.addActor(cgButton);
-
-        TextButton settButton = new TextButton("Settings", Carcassonne.skin, "menu");
-        settButton.setWidth((float)Gdx.graphics.getWidth() / 4f);
-        settButton.setPosition((float)Gdx.graphics.getWidth() / 2f - settButton.getWidth() / 2, (float)Gdx.graphics.getHeight() * 6f / 9 - settButton.getHeight() * 3);
-        settButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                Gdx.app.debug(touch, start);
-                game.setScreen(new SettingScreen(game));
-            }
-        });
-        stage.addActor(settButton);
-
-        Gdx.input.setInputProcessor(stage);
+        return jgButton;
     }
 
-    @Override
+    private Label getLabel() {
+        Label title = new Label("CARCASSONNE", Carcassonne.skin, "menu");
+        title.setAlignment(Align.center);
+        title.setY((float) Gdx.graphics.getHeight() * 7f / 8);
+        title.setWidth(Gdx.graphics.getWidth());
+        title.setFontScale(5);
+        return title;
+    }
+
     public void render(float delta) {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -104,32 +128,10 @@ public class MainMenuScreen implements Screen {
 
     }
 
-    @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
     }
 
-    @Override
-    public void resize(int width, int height) {
-
-    }
-
-    @Override
-    public void pause() {
-
-    }
-
-    @Override
-    public void resume() {
-
-    }
-
-    @Override
-    public void hide() {
-
-    }
-
-    @Override
     public void dispose() {
         stage.dispose();
     }
