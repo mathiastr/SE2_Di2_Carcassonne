@@ -93,6 +93,12 @@ public class Board {
                 Feature feature1 = tile.getFeatureAtSide(side);
                 Feature feature2 = surroundTile.getFeatureAtSide(getFacingSideOfSurroundingTile(side));
 
+                // meeple placement probably needs the top feature of a Monastery to be Monastery,
+                // so this fixes the placement bug caused by it,
+                // without interfering with it.
+                if (feature1 instanceof Monastery && feature2 == null) continue;
+                if (feature2 instanceof Monastery && feature1 == null) continue;
+
                 /* check if features line up */
                 if (feature1 == null && feature2 == null) continue;
                 if (feature1 == null || feature2 == null) return false;

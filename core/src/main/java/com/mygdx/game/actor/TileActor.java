@@ -28,6 +28,7 @@ public class TileActor extends Actor {
     private Position position;
     private ArrayList<Meeple> meeples = new ArrayList<>();
     private HashMap<Side, Feature> featureAtSide = new HashMap<>();
+
     private boolean monastery = false;
 
     public ArrayList<Meeple> getMeeples() {
@@ -223,25 +224,6 @@ public class TileActor extends Actor {
 
     public boolean isMonastery() {
         return monastery;
-    }
-
-    public boolean areSidesConnected(Side side1, Side side2, FeatureType type) {
-
-        return true;
-    }
-
-    public boolean hasFeautureOnSide(Side side) {
-
-        return true;
-    }
-
-    public boolean isFeatureHaMeeple(Feature feature, Side side) {
-
-        return true;
-    }
-
-    public void placeMeepleOnFeature(Feature feature, Meeple meeple) {
-
     }
 
     public int getScore(Feature feature, Board board) {

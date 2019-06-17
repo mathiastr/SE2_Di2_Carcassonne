@@ -317,7 +317,7 @@ public class GameBoard {
     }
 
     public void init() {
-        board.availableTiles = Deck.createDeckTilesAndStartTile();
+        board.availableTiles = Deck.createDeckTiles();
         TileActor startTile = board.getAvailableTiles().remove(0);
         board.getPlacedTiles().put(new Position(0, 0), startTile);
         stageOfBoard.addActor(startTile);
