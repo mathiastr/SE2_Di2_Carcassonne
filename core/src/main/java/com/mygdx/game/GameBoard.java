@@ -307,7 +307,7 @@ public class GameBoard {
         this.me = me;
         this.gameClient = gameClient;
         this.gameScreen = gameScreen;
-        this.board = new Board();
+        this.board = new Board(this, gameScreen);
         this.rand = new Random();
 
     }
@@ -438,7 +438,7 @@ public class GameBoard {
 
             for (com.mygdx.game.meeple.Meeple meeple: tile.getMeeples()) {
                 if (meeple.getFeature().getClass() == feature.getClass() && meeple.getSide() == side) {
-                    com.mygdx.game.Player player = getPlayer(meeple.getColor());
+                    com.mygdx.game.Player player = getPlayer(meeple.getColor(getCurrentPlayer().getColor()));
                     int meeplesNumber = owners.get(player);
                     owners.put(player, meeplesNumber + 1);
                 }

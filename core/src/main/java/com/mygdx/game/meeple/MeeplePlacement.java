@@ -18,11 +18,16 @@ public class MeeplePlacement {
     private GameBoard gb;
     private GameScreen gameScreen;
     private MeepleTextureFactory textureFactory;
+    private TileActor newestTile;
+    private int meepleCount;
     private Feature featureForMT = null;
 
+    public MeeplePlacement(GameBoard gb, GameScreen gameScreen) {
+        this.gb = gb;
+        this.gameScreen = gameScreen;
+    }
 
-    public MeeplePlacement(GameBoard gb, GameScreen gameScreen, MeepleTextureFactory textureFactory)
-    {
+    public MeeplePlacement(GameBoard gb, GameScreen gameScreen, MeepleTextureFactory textureFactory) {
         this.gb = gb;
         this.gameScreen = gameScreen;
         this.textureFactory = textureFactory;
@@ -79,7 +84,7 @@ public class MeeplePlacement {
         }
 
         meepleImg.setPosition(x, y);
-
+        //gb.setMeepleButtonOnNewestTile(meepleImg);
 
         for (int i = 0; i < gb.getPlayers().size(); i++)
         {
@@ -88,6 +93,27 @@ public class MeeplePlacement {
 
         gb.addActorToBoardStage(meepleImg);
 
-        gameScreen.createMeepleIsPlacedToast(featureForMT);
+        gameScreen.createMeepleIsPlacedToast(featureForMT);}
+
+        public void removeMeeple(TileActor tileActor) {
+        meepleCount = 0;
+        newestTile = tileActor;
+        //newestTile.updateTileFeature3(false);
+        newestTile.updateTileFeatures(false);
+
+        if (newestTile.getMeepleButton() != null) {
+
+            //TODO: only from the same feature
+
+            newestTile.getMeepleButton().setVisible(false);
+            meepleCount++;
+        }
+
+        int numberOfMeeples = getMeepleCount();
+        gb.getCurrentPlayer().addMeeples(numberOfMeeples);
+    }
+
+        public int getMeepleCount() {
+        return meepleCount;
     }
 }

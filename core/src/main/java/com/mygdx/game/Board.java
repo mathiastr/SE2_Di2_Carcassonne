@@ -17,13 +17,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.mygdx.game.meeple.MeeplePlacement;
+import com.mygdx.game.network.NetworkHelper;
+import com.mygdx.game.network.response.MeeplePlacementMessage;
+import com.mygdx.game.network.response.RemoveMeepleMessage;
+import com.mygdx.game.screen.GameScreen;
+
 public class Board {
+
+    private GameBoard gb;
+    private GameScreen gs;
+
     private List<TileActor> availableTiles = new ArrayList<>();
     public HashMap<Position, TileActor> placedTiles = new HashMap<>();
 
     public List<TileActor> getAvailableTiles() {
         return availableTiles;
 
+    }
+
+
+    public Board(GameBoard gb, GameScreen gs) {
+        this.gb = gb;
+        this.gs = gs;
     }
 
     public Map<Position, TileActor> getPlacedTiles() {
