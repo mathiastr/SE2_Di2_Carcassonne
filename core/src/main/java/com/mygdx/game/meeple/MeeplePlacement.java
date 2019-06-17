@@ -94,8 +94,8 @@ public class MeeplePlacement {
     public void removeMeeple(TileActor tileActor) {
         meepleCount = 0;
         newestTile = tileActor;
-        newestTile.updateTileFeature3(false);
-        //newestTile.updateTileFeatures(false);
+        //newestTile.updateTileFeature3(false);
+        newestTile.updateTileFeatures(false);
 
         if (newestTile.getMeepleButton() != null) {
 
