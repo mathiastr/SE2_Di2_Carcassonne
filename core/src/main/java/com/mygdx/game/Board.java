@@ -27,6 +27,7 @@ public class Board {
         return placedTiles;
     }
 
+
     // TODO maybe adjust scoring methods for the end of game partial scoring...
     /* mid game scoring */
     /* ---------------- */

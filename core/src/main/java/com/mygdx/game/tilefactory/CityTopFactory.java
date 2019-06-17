@@ -1,16 +1,20 @@
 package com.mygdx.game.tilefactory;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Side;
+import com.mygdx.game.utility.IGraphicsBackend;
 
 public class CityTopFactory extends AbstractTileFactory {
+
+    public CityTopFactory(IGraphicsBackend graphicsBackend) {
+        super(graphicsBackend);
+    }
+
     @Override
-    protected TileActor createTile() {
+    public TileActor createTile(IGraphicsBackend graphicsBackend) {
         TileActor cityTop = new TileActor();
-        cityTop.setTexture(new Texture(Gdx.files.internal("city_top_128.jpg")));
+        cityTop.setTexture(graphicsBackend.loadTexture("city_top_128.jpg"));
         cityTop.addFeature(new City(Side.TOP));
         return cityTop;
     }

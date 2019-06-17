@@ -1,18 +1,21 @@
 package com.mygdx.game.tilefactory;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Side;
+import com.mygdx.game.utility.IGraphicsBackend;
 
 import java.util.Arrays;
 
 public class DiagonalCityFactory extends AbstractTileFactory{
+    public DiagonalCityFactory(IGraphicsBackend graphicsBackend) {
+        super(graphicsBackend);
+    }
+
     @Override
-    protected TileActor createTile() {
+    public TileActor createTile(IGraphicsBackend graphicsBackend) {
         TileActor diagCity = new TileActor();
-        diagCity.setTexture(new Texture(Gdx.files.internal("diagonal_city_128.jpg")));
+        diagCity.setTexture(graphicsBackend.loadTexture("diagonal_city_128.jpg"));
         diagCity.addFeature(new City(Arrays.asList(Side.TOP, Side.RIGHT)));
         return diagCity;
     }

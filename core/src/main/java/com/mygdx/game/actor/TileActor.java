@@ -10,7 +10,6 @@ import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
-import com.mygdx.game.tile.FeatureType;
 import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
@@ -223,7 +222,12 @@ public class TileActor extends Actor {
     }
 
     public boolean isMonastery() {
-        return monastery;
+        for (Feature f: getFeatures()) {
+            if (f instanceof Monastery) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public int getScore(Feature feature, Board board) {

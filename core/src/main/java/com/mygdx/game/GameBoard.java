@@ -32,6 +32,8 @@ import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Side;
+import com.mygdx.game.utility.GraphicsBackend;
+import com.mygdx.game.utility.IGraphicsBackend;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,6 +80,12 @@ public class GameBoard {
     private List<Player> players;
     private static HashMap<Position, TileActor> usedTileHash = new HashMap<>();
     private ArrayList<TileActor> hints = new ArrayList<>();
+
+    public IGraphicsBackend getGraphicsBackend() {
+        return graphicsBackend;
+    }
+
+    private IGraphicsBackend graphicsBackend;
 
     public ArrayList<TileActor> getUsedTiles() {
         return usedTiles;
@@ -133,7 +141,7 @@ public class GameBoard {
 
     public void showCurrentTile() {
         currentTile.setSize(300);
-        currentTile.setPosition(Gdx.graphics.getWidth() - currentTile.getWidth() - 100, 100);
+        currentTile.setPosition(graphicsBackend.getWidth() - currentTile.getWidth() - 100, 100);
         currentTile.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -178,7 +186,6 @@ public class GameBoard {
 
     public void onTurnBegin(CurrentTileMessage cm) {
         currentTile = board.getAvailableTiles().get(cm.getTileNumber());
-        Gdx.app.debug("DEBUG", " " + currentTile.getName() + " " + currentTile.toString());
         showCurrentTile();
     }
 
@@ -295,11 +302,11 @@ public class GameBoard {
     public boolean isMyTurn() {
 
         // TODO check not for name but for an ID (add id to a Player class)
-        return (currentPlayer.getId() == NetworkHelper.getPlayer().getId() || gameClient == null);
+        return (gameClient == null || currentPlayer.getId() == NetworkHelper.getPlayer().getId());
     }
 
 
-    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen) {
+    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen, IGraphicsBackend graphicsBackend) {
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
         gameScreen = screen;
@@ -313,14 +320,14 @@ public class GameBoard {
         this.gameScreen = gameScreen;
         this.board = new Board();
         this.rand = new Random();
-
+        this.graphicsBackend = graphicsBackend;
     }
 
     public void init() {
-        board.availableTiles = Deck.createDeckTiles();
-        TileActor startTile = board.getAvailableTiles().remove(0);
-        board.getPlacedTiles().put(new Position(0, 0), startTile);
-        stageOfBoard.addActor(startTile);
+        Deck deck = new Deck(graphicsBackend);
+        board.availableTiles = deck.createDeckTiles();
+
+
 
         if (gameClient != null) {
 
@@ -363,10 +370,18 @@ public class GameBoard {
             if (NetworkHelper.getLastMessage() instanceof CurrentTileMessage) {
                 onTurnBegin((CurrentTileMessage) NetworkHelper.getLastMessage());
 
-                Gdx.app.debug("DEBUG", "Restore Game init error: " + NetworkHelper.getLastMessage().toString());
                 NetworkHelper.setLastMessage(null);
             }
         }
+
+
+    }
+
+    public void initGui() {
+        TileActor startTile = board.getAvailableTiles().remove(0);
+        board.getPlacedTiles().put(new Position(0, 0), startTile);
+        stageOfBoard.addActor(startTile);
+
 
         createFinishTurnButton();
 
@@ -380,27 +395,24 @@ public class GameBoard {
         for (Player player : players) {
             PlayerStatusActor playerStatusActor = new PlayerStatusActor(player);
             statuses.add(playerStatusActor);
-            playerStatusActor.setPosition((float) players.indexOf(player) * PlayerStatusActor.WIDTH, Gdx.graphics.getHeight(), Align.topLeft);
+            playerStatusActor.setPosition((float) players.indexOf(player) * PlayerStatusActor.WIDTH, graphicsBackend.getHeight(), Align.topLeft);
             playerStatusActor.addListener(new ActorGestureListener(20, 0.4f, 5f, 0.15f) {
                 private final Player playerById = findPlayerById(NetworkHelper.getPlayer().getId());
 
                 @Override
                 public boolean longPress(Actor actor, float x, float  y) {
-                    Gdx.app.debug("DEBUG","Long Press");
                     cheat(CheatType.SCORE, player, playerById);
                     return false;
                 }
 
                 @Override
                 public void tap(InputEvent event, float x, float y, int count, int button) {
-                    Gdx.app.debug("DEBUG","double tap");
                     cheat(CheatType.MEEPLE, player, playerById);
                 }
 
                 @Override
                 public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
 
-                    Gdx.app.debug("DEBUG", "Touch Down on yourself");
                 }
             });
             stageOfUI.addActor(playerStatusActor);
@@ -409,11 +421,11 @@ public class GameBoard {
     }
 
     private void createFinishTurnButton() {
-        finishTurnButton = new TextButton("Finish turn", Carcassonne.skin, "default");
+        finishTurnButton = new TextButton("Finish turn", graphicsBackend.getSkin(), "default");
 
         finishTurnButton.setWidth(300);
         finishTurnButton.getLabel().setFontScale(0.8f);
-        finishTurnButton.setPosition((float) Gdx.graphics.getWidth() - 300f - 100f, 0);
+        finishTurnButton.setPosition((float) graphicsBackend.getWidth() - 300f - 100f, 0);
         finishTurnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {

@@ -1,7 +1,5 @@
 package com.mygdx.game.actor;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.mygdx.game.GameBoard;
@@ -13,7 +11,7 @@ public class AddTileActor extends TileActor {
     public AddTileActor(Position aPosition, final GameBoard gb) {
         super(aPosition);
         gameBoard = gb;
-        setTexture(new Texture(Gdx.files.internal("addtile3.png")));
+        setTexture(gameBoard.getGraphicsBackend().loadTexture("addtile3.png"));
 
         addListener(new ClickListener() {
             @Override

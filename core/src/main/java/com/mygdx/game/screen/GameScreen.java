@@ -3,7 +3,6 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -28,6 +27,7 @@ import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Monastery;
 import com.mygdx.game.tile.Road;
+import com.mygdx.game.utility.GraphicsBackend;
 import com.mygdx.game.utility.Toast;
 
 import java.util.Iterator;
@@ -64,8 +64,10 @@ public class GameScreen extends BaseScreen {
                 m.setColor(player.getColor());
             }
         }
-        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient, this);
+        GraphicsBackend graphicsBackend = new GraphicsBackend();
+        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient, this, graphicsBackend);
         gameBoard.init();
+        gameBoard.initGui();
 
         populatePlaceMeeple();
         stageUI.addActor(placeMeeple);
