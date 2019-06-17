@@ -4,18 +4,18 @@ import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
-import com.mygdx.game.utility.GraphicsBackend;
+import com.mygdx.game.utility.IGraphicsBackend;
 
 import java.util.Arrays;
 
 public class DiagonalCityWithRoadFactory extends AbstractTileFactory {
 
-    public DiagonalCityWithRoadFactory(GraphicsBackend graphicsBackend) {
+    public DiagonalCityWithRoadFactory(IGraphicsBackend graphicsBackend) {
         super(graphicsBackend);
     }
 
     @Override
-    public TileActor createTile(GraphicsBackend graphicsBackend) {
+    public TileActor createTile(IGraphicsBackend graphicsBackend) {
         TileActor diagCityWithRoad = new TileActor();
         diagCityWithRoad.setTexture(graphicsBackend.loadTexture("diagonal_city_with_road_128.jpg"));
         diagCityWithRoad.addFeature(new City(Arrays.asList(Side.TOP, Side.LEFT)));

@@ -1,14 +1,32 @@
 package com.mygdx.game;
+
 import com.mygdx.game.actor.TileActor;
-import com.mygdx.game.tilefactory.*;
-import com.mygdx.game.utility.GraphicsBackend;
+import com.mygdx.game.tilefactory.CityLeftRightFactory;
+import com.mygdx.game.tilefactory.CityTopFactory;
+import com.mygdx.game.tilefactory.CityTopRightFactory;
+import com.mygdx.game.tilefactory.CityTopWithLeftRoadFactory;
+import com.mygdx.game.tilefactory.CityTopWithRightRoadFactory;
+import com.mygdx.game.tilefactory.CityWithTripleRoadFactory;
+import com.mygdx.game.tilefactory.DiagonalCityFactory;
+import com.mygdx.game.tilefactory.DiagonalCityWithRoadFactory;
+import com.mygdx.game.tilefactory.FullCityFactory;
+import com.mygdx.game.tilefactory.JoinedCityLeftRightFactory;
+import com.mygdx.game.tilefactory.JoinedCityLeftTopRightFactory;
+import com.mygdx.game.tilefactory.JoinedCityLeftTopRightWithRoadFactory;
+import com.mygdx.game.tilefactory.MonasteryFactory;
+import com.mygdx.game.tilefactory.MonasteryWithRoadFactory;
+import com.mygdx.game.tilefactory.StraightRoadFactory;
+import com.mygdx.game.tilefactory.StraightRoadUnderCityFactory;
+import com.mygdx.game.tilefactory.TripleRoadFactory;
+import com.mygdx.game.tilefactory.TurningRoadFactory;
+import com.mygdx.game.utility.IGraphicsBackend;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Deck {
-    public GraphicsBackend graphicsBackend;
-    public Deck(GraphicsBackend graphicsBackend) {
+    public IGraphicsBackend graphicsBackend;
+    public Deck(IGraphicsBackend graphicsBackend) {
         this.graphicsBackend = graphicsBackend;
     }
 

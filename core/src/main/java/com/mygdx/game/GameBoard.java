@@ -33,6 +33,7 @@ import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Side;
 import com.mygdx.game.utility.GraphicsBackend;
+import com.mygdx.game.utility.IGraphicsBackend;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,7 +80,7 @@ public class GameBoard {
     private List<Player> players;
     private static HashMap<Position, TileActor> usedTileHash = new HashMap<>();
     private ArrayList<TileActor> hints = new ArrayList<>();
-    private GraphicsBackend graphicsBackend;
+    private IGraphicsBackend graphicsBackend;
 
     public ArrayList<TileActor> getUsedTiles() {
         return usedTiles;
@@ -180,7 +181,6 @@ public class GameBoard {
 
     public void onTurnBegin(CurrentTileMessage cm) {
         currentTile = board.getAvailableTiles().get(cm.getTileNumber());
-        Gdx.app.debug("DEBUG", " " + currentTile.getName() + " " + currentTile.toString());
         showCurrentTile();
     }
 
@@ -297,11 +297,11 @@ public class GameBoard {
     public boolean isMyTurn() {
 
         // TODO check not for name but for an ID (add id to a Player class)
-        return (currentPlayer.getId() == NetworkHelper.getPlayer().getId() || gameClient == null);
+        return (gameClient == null || currentPlayer.getId() == NetworkHelper.getPlayer().getId());
     }
 
 
-    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen, GraphicsBackend graphicsBackend) {
+    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen, IGraphicsBackend graphicsBackend) {
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
         gameScreen = screen;
