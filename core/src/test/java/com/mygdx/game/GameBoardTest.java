@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.meeple.Meeple;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.utility.GraphicsBackend;
 import com.mygdx.game.utility.GraphicsBackendForTests;
@@ -61,6 +62,23 @@ public class GameBoardTest {
         gb.setCurrentPlayer(players.get(0));
         gb.init();
         TileActor currrent = gb.getCurrentTile();
+
+        Player currentPlayer = gb.getCurrentPlayer();
+        Assert.assertTrue(currentPlayer.getName().equals(players.get(0).getName()));
+
+        List<Player> createdPlayers = gb.getPlayers();
+        Assert.assertEquals(createdPlayers, players);
+
+        try {
+            TileActor randomTile = gb.getRandomElement(gb.getBoard().availableTiles);
+            gb.setCurrentTile(randomTile);
+
+            Meeple m = new Meeple(GameBoard.Color.BLACK);
+            gb.addMeepleOnCurrentTile(m);
+            Assert.assertTrue(gb.getCurrentTile().getMeeples().contains(m));
+        } catch (Exception e) {
+
+        }
 
         int a = 5;
     }
