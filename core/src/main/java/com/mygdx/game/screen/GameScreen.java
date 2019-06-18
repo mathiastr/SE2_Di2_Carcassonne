@@ -49,7 +49,7 @@ public class GameScreen extends BaseScreen {
     private Toast.ToastFactory meeplePlaced;
     private final List<Toast> toasts = new LinkedList<>();
 
-    private boolean show_emote = false;
+    private boolean showEmote = false;
     private EmoteManager emoteManager;
     private EmoteMessage emoteMessage;
 
@@ -80,7 +80,6 @@ public class GameScreen extends BaseScreen {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
                 return true;
-                //return false;
             }
 
             /* handle swipe camera movement */
@@ -179,7 +178,7 @@ public class GameScreen extends BaseScreen {
 
     public void showEmote(EmoteMessage em) {
         emoteMessage = em;
-        show_emote = true;
+        showEmote = true;
     }
 
     public void show() {
@@ -197,9 +196,9 @@ public class GameScreen extends BaseScreen {
         labelTilesLeft.setText("Tiles LEFT: " + gameBoard.tilesLeft());
         currentPlayerLabel.setText("Current player: " + gameBoard.getCurrentPlayer().getName());
 
-        if (show_emote) {
+        if (showEmote) {
             emoteManager.showEmoteFromPlayer(emoteMessage);
-            show_emote = false;
+            showEmote = false;
         }
 
         stageEmote.act();

@@ -16,6 +16,7 @@ import com.mygdx.game.Player;
 import com.mygdx.game.actor.PlayerStatusActor;
 import com.mygdx.game.network.response.EmoteMessage;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -57,10 +58,10 @@ public class EmoteManager {
     }
 
     private void generateEmotesForPlayers() {
-        Map<Emote, Texture> emoteTextures = new HashMap<>();
-        emoteTextures.put(Emote.cool, new Texture(Gdx.files.internal("emotes/glasses.png")));
-        emoteTextures.put(Emote.happy, new Texture(Gdx.files.internal("emotes/happy.png")));
-        emoteTextures.put(Emote.angry, new Texture(Gdx.files.internal("emotes/angry.png")));
+        Map<Emote, Texture> emoteTextures = new EnumMap<>(Emote.class);
+        emoteTextures.put(Emote.COOL, new Texture(Gdx.files.internal("emotes/glasses.png")));
+        emoteTextures.put(Emote.HAPPY, new Texture(Gdx.files.internal("emotes/happy.png")));
+        emoteTextures.put(Emote.ANGRY, new Texture(Gdx.files.internal("emotes/angry.png")));
         for (PlayerStatusActor psa : gameBoard.getStatuses()) {
             for (Map.Entry<Emote, Texture> entry2 : emoteTextures.entrySet()) {
                 Emote emote = entry2.getKey();
@@ -82,10 +83,10 @@ public class EmoteManager {
     }
 
     private void generateTinyClickEmotes() {
-        Map<Emote, Image> emotes = new HashMap<>();
-        emotes.put(Emote.cool, new Image(new Texture(Gdx.files.internal("emotes/glasses_tiny_b.png"))));
-        emotes.put(Emote.happy, new Image(new Texture(Gdx.files.internal("emotes/happy_tiny_b.png"))));
-        emotes.put(Emote.angry, new Image(new Texture(Gdx.files.internal("emotes/angry_tiny_b.png"))));
+        Map<Emote, Image> emotes = new EnumMap<>(Emote.class);
+        emotes.put(Emote.COOL, new Image(new Texture(Gdx.files.internal("emotes/glasses_tiny_b.png"))));
+        emotes.put(Emote.HAPPY, new Image(new Texture(Gdx.files.internal("emotes/happy_tiny_b.png"))));
+        emotes.put(Emote.ANGRY, new Image(new Texture(Gdx.files.internal("emotes/angry_tiny_b.png"))));
 
         Table emoteTable = new Table();
         float size = Gdx.app.getGraphics().getHeight() / 10f;
