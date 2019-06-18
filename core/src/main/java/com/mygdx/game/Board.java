@@ -1,6 +1,7 @@
 package com.mygdx.game;
 
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Monastery;
@@ -14,13 +15,24 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.mygdx.game.screen.GameScreen;
+
 public class Board {
     public List<TileActor> availableTiles = new ArrayList<>();
     public HashMap<Position, TileActor> placedTiles = new HashMap<>();
+    private GameBoard gb;
+    private GameScreen gs;
+    private MeeplePlacement mp;
+
 
     public List<TileActor> getAvailableTiles() {
         return availableTiles;
 
+    }
+
+    public Board(GameBoard gb, GameScreen gs) {
+        this.gb = gb;
+        this.gs = gs;
     }
 
     public Map<Position, TileActor> getPlacedTiles() {
@@ -137,6 +149,7 @@ public class Board {
     }
 
     public int getScore(TileActor tile, Feature feature) {
+
         return tile.getScore(feature, this);
     }
 

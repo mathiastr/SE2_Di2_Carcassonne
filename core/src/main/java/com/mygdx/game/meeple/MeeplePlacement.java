@@ -18,8 +18,11 @@ public class MeeplePlacement {
     private GameBoard gb;
     private GameScreen gameScreen;
     private MeepleTextureFactory textureFactory;
-    private Feature featureForMT = null;
 
+    public MeeplePlacement(GameBoard gb, GameScreen gameScreen) {
+        this.gb = gb;
+        this.gameScreen = gameScreen;
+    }
 
     public MeeplePlacement(GameBoard gb, GameScreen gameScreen, MeepleTextureFactory textureFactory) {
         this.gb = gb;
@@ -30,7 +33,6 @@ public class MeeplePlacement {
 
     public void placeMeeple(Side side, Feature feature, Position pos) {
         try {
-            featureForMT = feature;
             Meeple meepleForPlacement = gb.getUnusedCurrentPlayerMeeple();
             meepleForPlacement.setSide(side);
             meepleForPlacement.setFeature(feature);
@@ -71,7 +73,7 @@ public class MeeplePlacement {
         }
 
         meepleImg.setPosition(x, y);
-
+        gb.setMeepleButtonOnNewestTile(meepleImg);
 
         for (int i = 0; i < gb.getPlayers().size(); i++) {
             gb.getPlayerActor(i).updateInfo();
@@ -79,6 +81,9 @@ public class MeeplePlacement {
 
         gb.addActorToBoardStage(meepleImg);
 
-        gameScreen.createMeepleIsPlacedToast(featureForMT);
     }
+
+
+
+
 }

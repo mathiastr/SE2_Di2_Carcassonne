@@ -3,7 +3,6 @@ package com.mygdx.game.screen;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -26,6 +25,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.mygdx.game.Carcassonne;
 import com.mygdx.game.GameBoard;
 import com.mygdx.game.Player;
+import com.mygdx.game.network.FakeGameManager;
 import com.mygdx.game.network.NetworkHelper;
 
 import java.util.ArrayList;
@@ -169,6 +169,7 @@ public class CreatePlayersScreen extends BaseScreen {
                 Gdx.app.debug("touch", "start button is touched");
                 // in this case "me" doesn't matter
                 game.setScreen(new GameScreen(game, players, true, players.get(0), null));
+                NetworkHelper.setGameManager(new FakeGameManager());
             }
         });
         return startGameButton;
