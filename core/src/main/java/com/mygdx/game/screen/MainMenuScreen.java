@@ -4,8 +4,11 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -112,11 +115,23 @@ public class MainMenuScreen extends BaseScreen {
     }
 
     private Label getLabel() {
-        Label title = new Label("CARCASSONNE", Carcassonne.skin, "menu");
+        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("truetypefont/Amble-Light.ttf"));
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 150;
+        parameter.borderWidth = 1;
+        parameter.color = Color.GOLDENROD;
+        parameter.shadowOffsetX = 5;
+        parameter.shadowOffsetY = 5;
+        parameter.shadowColor = new Color(0, 0, 0f, 1);
+        BitmapFont font24 = generator.generateFont(parameter); // font size 24 pixels
+        generator.dispose();
+
+        Label.LabelStyle labelStyle = new Label.LabelStyle();
+        labelStyle.font = font24;
+        Label title = new Label("CARCASSONNE", labelStyle);
         title.setAlignment(Align.center);
-        title.setY((float) Gdx.graphics.getHeight() * 7f / 8);
+        title.setY((float) Gdx.graphics.getHeight() * 9f / 11f);
         title.setWidth(Gdx.graphics.getWidth());
-        title.setFontScale(5);
         return title;
     }
 
