@@ -48,7 +48,7 @@ public class GameBoardTest {
     @Test
     public void getRandomColorTest() {
         preparePlayers();
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         List<GameBoard.Color> except = new ArrayList<GameBoard.Color>();
         except.add(GameBoard.Color.RED);
@@ -61,7 +61,7 @@ public class GameBoardTest {
     @Test
     public void overall() {
         preparePlayers();
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackendForTests());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackendForTests());
         gb.setCurrentPlayer(players.get(0));
         gb.init();
         TileActor currrent = gb.getCurrentTile();
@@ -91,7 +91,7 @@ public class GameBoardTest {
     public void nextTurn(){
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackendForTests());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackendForTests());
         gb.setCurrentPlayer(players.get(0));
         gb.init();
         {

@@ -316,10 +316,9 @@ public class GameBoard {
     }
 
 
-    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, GameScreen gameScreen, IGraphicsBackend graphicsBackend) {
+    public GameBoard(GameScreen screen, Stage stageGame, Stage stageUI, List<Player> players, boolean isLocal, Player me, GameClient gameClient, IGraphicsBackend graphicsBackend) {
         stageOfBoard = stageGame;
         stageOfUI = stageUI;
-        gameScreen = screen;
 
         numberOfPlayers = players.size();
         this.players = players;
@@ -327,7 +326,7 @@ public class GameBoard {
         boolean isLocal1 = isLocal;
         this.me = me;
         this.gameClient = gameClient;
-        this.gameScreen = gameScreen;
+        this.gameScreen = screen;
         this.board = new Board(this, gameScreen);
         this.rand = new Random();
         this.graphicsBackend = graphicsBackend;
@@ -372,7 +371,7 @@ public class GameBoard {
             beginMyTurn();
         }
 
-        if (NetworkHelper.getLastMessage() != null && NetworkHelper.getLastMessage() instanceof CurrentTileMessage) {
+        if (NetworkHelper.getLastMessage() instanceof CurrentTileMessage) {
             onTurnBegin((CurrentTileMessage) NetworkHelper.getLastMessage());
             NetworkHelper.setLastMessage(null);
         }

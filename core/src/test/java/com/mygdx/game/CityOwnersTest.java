@@ -49,7 +49,7 @@ public class CityOwnersTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen,  new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         players = new ArrayList<>();
         Player player1 = new Player();
