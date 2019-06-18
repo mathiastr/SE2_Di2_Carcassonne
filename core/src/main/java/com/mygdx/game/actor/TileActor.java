@@ -17,6 +17,7 @@ import com.mygdx.game.tile.Side;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -26,10 +27,9 @@ public class TileActor extends Actor {
     private static final Logger LOGGER = Logger.getLogger(TileActor.class.getSimpleName());
     private int SIZE = 128;
     private Texture texture;
-    private Texture textureBig;
     private Position position;
     private ArrayList<Meeple> meeples = new ArrayList<>();
-    private HashMap<Side, Feature> featureAtSide = new HashMap<>();
+    private EnumMap<Side, Feature> featureAtSide = new EnumMap<>(Side.class);
 
     private boolean monastery = false;
     private int meepleCount;

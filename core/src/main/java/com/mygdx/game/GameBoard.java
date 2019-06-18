@@ -372,15 +372,10 @@ public class GameBoard {
             beginMyTurn();
         }
 
-        if (NetworkHelper.getLastMessage() != null) {
-            if (NetworkHelper.getLastMessage() instanceof CurrentTileMessage) {
-                onTurnBegin((CurrentTileMessage) NetworkHelper.getLastMessage());
-
-                NetworkHelper.setLastMessage(null);
-            }
+        if (NetworkHelper.getLastMessage() != null && NetworkHelper.getLastMessage() instanceof CurrentTileMessage) {
+            onTurnBegin((CurrentTileMessage) NetworkHelper.getLastMessage());
+            NetworkHelper.setLastMessage(null);
         }
-
-
     }
 
     public void initGui() {
@@ -414,11 +409,6 @@ public class GameBoard {
                 @Override
                 public void tap(InputEvent event, float x, float y, int count, int button) {
                     cheat(CheatType.MEEPLE, player, playerById);
-                }
-
-                @Override
-                public void touchDown(InputEvent event, float x, float y, int pointer, int button) {
-
                 }
             });
             stageOfUI.addActor(playerStatusActor);
@@ -577,8 +567,6 @@ public class GameBoard {
 
     public void placeCurrentTileAt(Position position) {
         if (!tileIsPlaced) {
-            DelayedRemovalArray<EventListener> listeners = currentTile.getListeners();
-
             currentTile.setSize(128);
             TileActor tileToPlace = currentTile;
             tileToPlace.remove(); // remove tile from ui view, so we can place it on the board
@@ -586,33 +574,8 @@ public class GameBoard {
             placeTileAt(currentTile, position);
             gameScreen.placeMeeple.setVisible(true);
 
-
-
-
-            /*-----------------------------/
-            // Testing the road/city scoring
-            // for every placed tile
-            /*
-            for (Feature f : tileToPlace.getFeatures()) {
-                if (f instanceof Road)
-                    Gdx.app.log("scoring [road]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (Road) f)));
-                if (f instanceof City)
-                    Gdx.app.log("scoring [city]", f.toString() + " " + Integer.toString(scoreRoadOrCity(tileToPlace, (City) f)));
-            }
-            for (Position pos : tileToPlace.getPosition().getSurroundingPositions()) {
-                if (tiles.containsKey(pos)) {
-                    TileActor t = tiles.get(pos);
-                    if (t.isMonastery()) {
-                        Gdx.app.log("scoring [monastery]", Integer.toString(scoreMonastery(t)));
-                    }
-                }
-            } */
-            /*-----------------------------*/
-
             removeOldHints();
-
         }
-
     }
 
     public boolean meepleIsPlaced() {

@@ -32,12 +32,7 @@ public class GameOverScreen extends BaseScreen implements Screen {
     @Override
     public void show() {
         stage = new Stage(new ScreenViewport());
-
-        //// TODO change.....
-        //winner = new Player(GameBoard.Color.BLACK, "Herbert");
-        //winner.setPhoto(new Texture(Gdx.files.internal("profilePhoto.png")));
-
-
+        
         FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("truetypefont/Amble-Light.ttf"));
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
         parameter.size = 150;

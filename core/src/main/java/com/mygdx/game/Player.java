@@ -72,10 +72,6 @@ public class Player {
         }
         this.name = name;
         this.timeToDetectUsedCheats = 0;
-        // default picture
-        // TODO change Texture to byte-array, otherwise Texture gets registered.
-        //FileHandle defaultPicture = Gdx.files.internal("profilePhoto.png");
-        //if (defaultPicture != null) this.photo = new Texture(defaultPicture);
     }
 
     public Player(int id, GameBoard.Color color, String name) {
