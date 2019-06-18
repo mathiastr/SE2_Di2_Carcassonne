@@ -5,7 +5,6 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,11 +20,8 @@ import com.mygdx.game.meeple.MeepleTextureFactory;
 import com.mygdx.game.network.NetworkHelper;
 import com.mygdx.game.network.response.MeeplePlacementMessage;
 import com.mygdx.game.tile.Feature;
-import com.mygdx.game.GameBoard;
-import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
-import com.mygdx.game.actor.TileActor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +53,7 @@ public class ChosenMeeplePlacementScreen extends BaseScreen {
         stage.addActor(getLabel());
 
         //newestTile.updateTileFeatures(true);
-        newestTile.updateTileFeature3(true);
+        newestTile.updateTileFeatureAgain2(true);
 
 
         for (Feature feature : newestTile.getFeatures()) {

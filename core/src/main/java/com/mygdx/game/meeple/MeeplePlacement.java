@@ -77,7 +77,7 @@ public class MeeplePlacement {
         }
 
         meepleImg.setPosition(x, y);
-        //gb.setMeepleButtonOnNewestTile(meepleImg);
+        gb.setMeepleButtonOnNewestTile(meepleImg);
 
         for (int i = 0; i < gb.getPlayers().size(); i++) {
             gb.getPlayerActor(i).updateInfo();
@@ -85,15 +85,16 @@ public class MeeplePlacement {
 
         gb.addActorToBoardStage(meepleImg);
 
-        gameScreen.createMeepleIsPlacedToast(featureForMT);}
+        //gameScreen.createMeepleIsPlacedToast(featureForMT);
+    }
 
 
 
         public void removeMeeple(TileActor tileActor) {
         meepleCount = 0;
         newestTile = tileActor;
-        //newestTile.updateTileFeature3(false);
-        newestTile.updateTileFeatures(false);
+        newestTile.updateTileFeatureAgain2(false);
+        //newestTile.updateTileFeatures(false);
 
         if (newestTile.getMeepleButton() != null) {
 

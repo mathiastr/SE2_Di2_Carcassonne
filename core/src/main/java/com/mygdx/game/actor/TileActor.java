@@ -138,7 +138,7 @@ public class TileActor extends Actor {
                         // then act like the feature of this tile has a meeple on it
                         // if the bordering feature has a meeple on it.
                         feature.setHasMeepleOnIt(varBoo);
-                        updateTileFeaturesRecursive(varBoo);
+                        updateTileFeaturesAgain(varBoo);
 
                     }
 
@@ -152,7 +152,7 @@ public class TileActor extends Actor {
 
         }
     }
-    private void updateTileFeaturesRecursive(boolean varBoo){
+    private void updateTileFeaturesAgain(boolean varBoo){
         for (Side side : Side.values()){
             TileActor borderingTile = this.getTileOnSide(side);
             Feature feature = this. getFeatureAtSide(side);
@@ -208,7 +208,7 @@ public class TileActor extends Actor {
         return false;
     }
 
-    public boolean updateTileFeature3(boolean lock){
+    public boolean updateTileFeatureAgain2(boolean lock){
         List<Side> values = Arrays.asList(Side.values());
         for (Side side : values){
             TileActor borderingTile = this.getTileOnSide(side);
