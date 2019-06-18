@@ -1,5 +1,6 @@
 package com.mygdx.game;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Files;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
@@ -32,6 +33,7 @@ public class CheatTest {
         Gdx.files = mock(Files.class);
         Gdx.gl = mock(GL20.class);
         Gdx.gl20 = mock(GL20.class);
+        Gdx.app = mock(Application.class);
         gameScreen = mock(GameScreen.class);
         Carcassonne.skin = mock(Skin.class);
     }

@@ -15,6 +15,7 @@ import com.mygdx.game.tilefactory.JoinedCityLeftTopRightFactory;
 import com.mygdx.game.tilefactory.JoinedCityLeftTopRightWithRoadFactory;
 import com.mygdx.game.tilefactory.MonasteryFactory;
 import com.mygdx.game.tilefactory.MonasteryWithRoadFactory;
+import com.mygdx.game.tilefactory.QuadRoadFactory;
 import com.mygdx.game.tilefactory.StraightRoadFactory;
 import com.mygdx.game.tilefactory.StraightRoadUnderCityFactory;
 import com.mygdx.game.tilefactory.TripleRoadFactory;
@@ -50,7 +51,7 @@ public class Deck {
         availableTiles.addAll(new MonasteryWithRoadFactory(graphicsBackend).createTiles(2));
         availableTiles.addAll(new TripleRoadFactory(graphicsBackend).createTiles(4));
         availableTiles.addAll(new TurningRoadFactory(graphicsBackend).createTiles(9));
-        availableTiles.addAll(new TurningRoadFactory(graphicsBackend).createTiles(1));
+        availableTiles.addAll(new QuadRoadFactory(graphicsBackend).createTiles(1));
         return availableTiles;
     }
 }
