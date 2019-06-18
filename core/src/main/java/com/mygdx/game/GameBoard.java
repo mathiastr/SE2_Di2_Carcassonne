@@ -371,7 +371,7 @@ public class GameBoard {
             beginMyTurn();
         }
 
-        if (NetworkHelper.getLastMessage() != null && NetworkHelper.getLastMessage() instanceof CurrentTileMessage) {
+        if (NetworkHelper.getLastMessage() instanceof CurrentTileMessage) {
             onTurnBegin((CurrentTileMessage) NetworkHelper.getLastMessage());
             NetworkHelper.setLastMessage(null);
         }

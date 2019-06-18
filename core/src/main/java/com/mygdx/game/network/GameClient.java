@@ -24,9 +24,6 @@ public class GameClient extends AbstractGameManager {
             // uni          143.205.187.139
             // other uni    192.168.43.187
             // mobile       10.74.199.188
-            l.add(InetAddress.getByName("192.168.1.2"));
-            l.add(InetAddress.getByName("10.0.0.4"));
-            l.add(InetAddress.getByName("10.0.0.13"));
             l.add(InetAddress.getByName("143.205.186.57"));
             //return l;
         } catch (Exception e) {
