@@ -585,9 +585,7 @@ public class GameBoard {
     public void clickForRotation() {
         currentTile.rotate();
         removeOldHints();
-        //if (!tileIsPlaced) {
         showHintsForTile(currentTile);
-        //}
     }
 
     /*
