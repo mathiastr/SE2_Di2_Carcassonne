@@ -6,15 +6,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.mygdx.game.Player;
 
-public class PlayerStatusActor extends Group {
-    private Image texture;
+public class PlayerStatusActor extends Actor {
+    private Texture texture;
     public static final float WIDTH = 350;
     public static final float HEIGHT = 270;
     private final BitmapFont font;
@@ -24,20 +22,13 @@ public class PlayerStatusActor extends Group {
     private Texture meeple;
     private Texture score;
     private Label.LabelStyle textStyle;
-    private Label meepleLabel;
-    private Image meepleImg;
-    private Image scoreImg;
-    private Label scoreLabel;
-    private Label nameLabel;
 
     public PlayerStatusActor(Player player) {
-        this.texture = new Image(new Texture("playerStatusBackground.jpg"));
-        this.addActor(texture);
+        this.texture = new Texture("playerStatusBackground.jpg");
         this.player = player;
         setSize(WIDTH, HEIGHT);
         font = new BitmapFont(Gdx.files.internal("font/font.fnt"));
         font.getData().setScale(3);
-
 
         //TODO get profile photo from player
         if (player.getPhoto() == null) {
@@ -52,11 +43,19 @@ public class PlayerStatusActor extends Group {
         textStyle.font = font;
         textStyle.fontColor = Color.BLACK;
 
-        createInfo();
+        updateInfo();
+
+        info.setDebug(true);
     }
 
-    public void createInfo()
-    {
+    public void updateInfo() {
+
+        Label meepleLabel;
+        Image meepleImg;
+        Image scoreImg;
+        Label scoreLabel;
+        Label nameLabel;
+        Label color;
 
         info = new Table();
 
@@ -70,15 +69,38 @@ public class PlayerStatusActor extends Group {
         scoreImg = new Image(score);
         info.add(scoreImg).width(50).height(50);
         scoreLabel = new Label("" + player.getScore(), textStyle);
-        info.add(scoreLabel)/*.width(WIDTH / 4).height(50)*/.padLeft(20);
-        info.setPosition(this.getX() + WIDTH/2, this.getY() + HEIGHT/2 - 60);
-        this.addActor(info);
+        info.add(scoreLabel).padLeft(20);
+
+        info.row();
+        color = new Label("" + player.getColor().name(), textStyle);
+        info.add(color).padBottom(60);
     }
 
-    public void updateInfo(){
-        nameLabel.setText("" + player.getName());
-        meepleLabel.setText("" + player.getNumberOfMeeples());
-        scoreLabel.setText("" + player.getScore());
+    @Override
+    public void draw(Batch batch, float parentAlpha) {
+        super.draw(batch, parentAlpha);
+        batch.draw(texture, getX(), getY(), WIDTH, HEIGHT);
+
+        int expectedProfilePhotoWidth = 150;
+        int expectedProfilePhotoHeight = 150;
+        //batch.draw(profilePhoto, getX() + (WIDTH - expectedProfilePhotoWidth) / 2f, getY() + 120, expectedProfilePhotoWidth, expectedProfilePhotoHeight);
+
+        info.draw(batch, parentAlpha);
+
+
+/*
+        batch.draw(meeple, getX() + 20, getY() + 100, 50, 50);
+        font.draw(batch, "" + player.getNumberOfMeeples(), getX() + 120, getY() + 100);
+        batch.draw(score, getX() + 20, getY() + 50, 50, 50);
+        font.draw(batch, "" + player.getScore(), getX() + 120, getY() + 50);
+*/
+    }
+
+    @Override
+    public void act(float delta) {
+        super.act(delta);
+        info.setPosition(getX() + WIDTH / 2f, getY() + 60);
+        info.act(delta);
     }
 
     @Override

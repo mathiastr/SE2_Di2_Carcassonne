@@ -177,7 +177,22 @@ public class TileActor extends Actor {
         }
     }
 
-    public boolean updateTileFeature2(boolean lock, Side actSide, Feature f){
+    public boolean updateTileFeature(boolean lock){
+        List<Side> values = Arrays.asList(Side.values());
+        for (Side side : values){
+            TileActor borderingTile = this.getTileOnSide(side);
+            Feature feature = this.getFeatureAtSide(side);
+            if (borderingTile != null){
+                boolean isLocked = borderingTile.updateTileFeaturAgain(lock, side, feature);
+                if(isLocked && feature != null){
+                    feature.setHasMeepleOnIt(isLocked);
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean updateTileFeaturAgain(boolean lock, Side actSide, Feature f){
         ArrayList<Side> values = new ArrayList<>(Arrays.asList(Side.values()));
         if( actSide != null){
             for (Iterator<Side> iter = values.listIterator(); iter.hasNext(); ) {
@@ -200,7 +215,7 @@ public class TileActor extends Actor {
                 }
                 TileActor borderingTile = this.getTileOnSide(side);
                 if(borderingTile != null) {
-                    Boolean isLocked = borderingTile.updateTileFeature2(lock, side, feature);
+                    Boolean isLocked = borderingTile.updateTileFeaturAgain(lock, side, feature);
                     if (isLocked) return true;
                 }
             }
@@ -208,20 +223,7 @@ public class TileActor extends Actor {
         return false;
     }
 
-    public boolean updateTileFeatureAgain2(boolean lock){
-        List<Side> values = Arrays.asList(Side.values());
-        for (Side side : values){
-            TileActor borderingTile = this.getTileOnSide(side);
-            Feature feature = this.getFeatureAtSide(side);
-            if (borderingTile != null){
-                boolean isLocked = borderingTile.updateTileFeature2(lock, side, feature);
-                if(isLocked && feature != null){
-                    feature.setHasMeepleOnIt(isLocked);
-                }
-            }
-        }
-        return false;
-    }
+
 
 
     public Feature getFeatureAtSide(Side side) {

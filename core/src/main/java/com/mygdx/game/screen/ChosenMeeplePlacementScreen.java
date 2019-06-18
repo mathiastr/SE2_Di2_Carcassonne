@@ -53,7 +53,7 @@ public class ChosenMeeplePlacementScreen extends BaseScreen {
         stage.addActor(getLabel());
 
         //newestTile.updateTileFeatures(true);
-        newestTile.updateTileFeatureAgain2(true);
+        newestTile.updateTileFeature(true);
 
 
         for (Feature feature : newestTile.getFeatures()) {

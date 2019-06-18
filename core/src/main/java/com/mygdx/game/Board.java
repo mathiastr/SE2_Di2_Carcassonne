@@ -1,8 +1,7 @@
 package com.mygdx.game;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
 import com.mygdx.game.actor.TileActor;
+import com.mygdx.game.meeple.MeeplePlacement;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Monastery;
@@ -10,17 +9,12 @@ import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.mygdx.game.meeple.MeeplePlacement;
-import com.mygdx.game.network.NetworkHelper;
-import com.mygdx.game.network.response.MeeplePlacementMessage;
-import com.mygdx.game.network.response.RemoveMeepleMessage;
 import com.mygdx.game.screen.GameScreen;
 
 public class Board {
@@ -28,13 +22,13 @@ public class Board {
     public HashMap<Position, TileActor> placedTiles = new HashMap<>();
     private GameBoard gb;
     private GameScreen gs;
+    private MeeplePlacement mp;
 
 
     public List<TileActor> getAvailableTiles() {
         return availableTiles;
 
     }
-
 
     public Board(GameBoard gb, GameScreen gs) {
         this.gb = gb;
@@ -155,6 +149,7 @@ public class Board {
     }
 
     public int getScore(TileActor tile, Feature feature) {
+
         return tile.getScore(feature, this);
     }
 

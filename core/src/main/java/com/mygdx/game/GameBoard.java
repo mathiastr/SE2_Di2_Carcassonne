@@ -29,13 +29,11 @@ import com.mygdx.game.network.response.EmoteMessage;
 import com.mygdx.game.network.response.ErrorMessage;
 import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.MeeplePlacementMessage;
-import com.mygdx.game.network.response.RemoveMeepleMessage;
 import com.mygdx.game.network.response.TilePlacementMessage;
 import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.tile.Feature;
 import com.mygdx.game.tile.Side;
-import com.mygdx.game.utility.GraphicsBackend;
 import com.mygdx.game.utility.IGraphicsBackend;
 
 import java.util.ArrayList;
@@ -363,9 +361,6 @@ public class GameBoard {
                     if (object instanceof EmoteMessage) {
                         onEmote((EmoteMessage) object);
                     }
-                    if (object instanceof RemoveMeepleMessage){
-                        onRemoveMeeple((RemoveMeepleMessage) object);
-                    }
                     if (object instanceof MeeplePlacementMessage)
                         onMeeplePlacement((MeeplePlacementMessage) object);
                 }
@@ -469,16 +464,6 @@ public class GameBoard {
         });
     }
 
-    private void onRemoveMeeple(RemoveMeepleMessage object) {
-        MeeplePlacement  mp = new MeeplePlacement(this, gameScreen, new MeepleTextureFactory());
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                TileActor tile = getTileOnPosition(object.getPosition());
-                mp.removeMeeple(tile);
-            }
-        });
-    }
 
     public List<Player> getFeatureOwners(TileActor tile, Feature feature) {
         HashMap<Player, Integer> owners = new HashMap<>();

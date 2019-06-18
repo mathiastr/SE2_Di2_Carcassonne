@@ -10,7 +10,6 @@ import com.mygdx.game.network.response.CheatMessage;
 import com.mygdx.game.network.response.CheatType;
 import com.mygdx.game.network.response.ErrorNumber;
 import com.mygdx.game.network.response.MeeplePlacementMessage;
-import com.mygdx.game.network.response.RemoveMeepleMessage;
 import com.mygdx.game.tile.City;
 import com.mygdx.game.tile.Field;
 import com.mygdx.game.meeple.Meeple;
@@ -64,7 +63,6 @@ public class Network {
         kryo.register(CheatType.class);
         kryo.register(MeeplePlacementMessage.class);
         kryo.register(Toast.class);
-        kryo.register(RemoveMeepleMessage.class);
         kryo.register(Position.class);
     }
 }
