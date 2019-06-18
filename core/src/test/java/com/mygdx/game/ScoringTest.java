@@ -50,7 +50,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -89,7 +89,7 @@ public class ScoringTest {
     public void scoreMonastery() {
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -158,7 +158,7 @@ public class ScoringTest {
     public void scoreNotMonastery() {
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -190,7 +190,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -214,7 +214,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -253,7 +253,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -290,7 +290,7 @@ public class ScoringTest {
 
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             TileActor t = new TileActor();
@@ -337,7 +337,7 @@ public class ScoringTest {
         players.add(player1);
         players.add(player2);
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
 
         {
@@ -387,7 +387,7 @@ public class ScoringTest {
         preparePlayers();
 
         TileActor newCurrentTile = new TileActor();
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         gb.setCurrentTile(newCurrentTile);
         Assert.assertEquals(newCurrentTile, gb.getCurrentTile());

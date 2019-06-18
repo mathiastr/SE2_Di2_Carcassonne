@@ -8,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.network.response.CheatType;
-import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.utility.GraphicsBackend;
 import com.mygdx.game.utility.GraphicsBackendForTests;
@@ -48,7 +47,7 @@ public class CheatTest {
     public void testScoreCheating() {
         preparePlayers();
 
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         gb.cheat(CheatType.SCORE, players.get(0), players.get(0)); //cheat Meeple
         assert players.get(0).getScore() == Player.CHEAT_SCORE;
@@ -68,7 +67,7 @@ public class CheatTest {
     @Test
     public void testMeepleCheating() {
         preparePlayers();
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
         gb.cheat(CheatType.MEEPLE, players.get(0), players.get(0)); //cheat Meeple
         assert players.get(0).getNumberOfMeeples() == Player.MEEPLE_COUNT + 1;
         assert players.get(1).getNumberOfMeeples() == Player.MEEPLE_COUNT;
@@ -89,7 +88,7 @@ public class CheatTest {
     public void meepleCheatingWithThreePlayers() {
         preparePlayers();
         players.add(new Player(3, GameBoard.Color.GREEN, "C"));
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             gb.cheat(CheatType.MEEPLE, players.get(0), players.get(0));
@@ -104,7 +103,7 @@ public class CheatTest {
     public void scoreCheatingWithThreePlayers() {
         preparePlayers();
         players.add(new Player(3, GameBoard.Color.GREEN, "C"));
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             gb.cheat(CheatType.SCORE, players.get(0), players.get(0));
@@ -120,7 +119,7 @@ public class CheatTest {
     public void detectMeepleCheatingWithThreePlayersRight() {
         preparePlayers();
         players.add(new Player(3, GameBoard.Color.GREEN, "C"));
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             gb.cheat(CheatType.MEEPLE, players.get(0), players.get(0));
@@ -137,7 +136,7 @@ public class CheatTest {
     public void detectMeepleCheatingWithThreePlayersWrong() {
         preparePlayers();
         players.add(new Player(3, GameBoard.Color.GREEN, "C"));
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             gb.cheat(CheatType.MEEPLE, players.get(0), players.get(0));
@@ -154,7 +153,7 @@ public class CheatTest {
     public void detectScoreCheatingWithThreePlayersRight() {
         preparePlayers();
         players.add(new Player(3, GameBoard.Color.GREEN, "C"));
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             gb.cheat(CheatType.SCORE, players.get(0), players.get(0));
@@ -171,7 +170,7 @@ public class CheatTest {
     public void detectScoreCheatingWithThreePlayersWrong() {
         preparePlayers();
         players.add(new Player(3, GameBoard.Color.GREEN, "C"));
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackend());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackend());
 
         {
             gb.cheat(CheatType.SCORE, players.get(0), players.get(0));
@@ -187,7 +186,7 @@ public class CheatTest {
     @Test
     public void detectCheatingAfterThreeTurn() {
         preparePlayers();
-        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackendForTests());
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, new GraphicsBackendForTests());
 
         gb.setCurrentPlayer(players.get(0));
         gb.init();

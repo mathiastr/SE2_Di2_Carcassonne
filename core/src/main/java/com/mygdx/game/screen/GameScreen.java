@@ -65,7 +65,7 @@ public class GameScreen extends BaseScreen {
             }
         }
         GraphicsBackend graphicsBackend = new GraphicsBackend();
-        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient, this, graphicsBackend);
+        gameBoard = new GameBoard(this, stage, stageUI, players, isLocal, me, gameClient, graphicsBackend);
         gameBoard.init();
         gameBoard.initGui();
 

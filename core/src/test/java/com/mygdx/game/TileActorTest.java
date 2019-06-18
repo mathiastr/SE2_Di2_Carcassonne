@@ -3,7 +3,11 @@ package com.mygdx.game;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.tile.Road;
 import com.mygdx.game.tile.Side;
+
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
 import java.util.Arrays;
 import static org.junit.Assert.*;
 public class TileActorTest {
@@ -32,11 +36,16 @@ public class TileActorTest {
         assertNull(tile.getFeatureAtSide(Side.RIGHT));
     }
 
-    @Test(expected=Exception.class)
+    @Rule
+    public final ExpectedException exception = ExpectedException.none();
+
+    @Test
     public void testAddFeatureException() {
         Road road1 = new Road(Arrays.asList(Side.TOP, Side.BOTTOM));
         Road road2 = new Road(Arrays.asList(Side.TOP, Side.RIGHT));
         tile.addFeature(road1);
+
+        exception.expect(IllegalArgumentException.class);
         tile.addFeature(road2);
     }
 }
