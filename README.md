@@ -1,3 +1,4 @@
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=SE2_Di2_Carcassonne&metric=coverage)](https://sonarcloud.io/dashboard?id=SE2_Di2_Carcassonne)
 # Carcassonne
 Native Android App for the board game carcassonne using [libgdx](https://libgdx.badlogicgames.com/). This game features local and network multiplayer for up to six players.
 ## Ruleset
