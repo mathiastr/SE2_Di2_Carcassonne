@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.mygdx.game.actor.TileActor;
 import com.mygdx.game.meeple.Meeple;
+import com.mygdx.game.network.response.TurnEndMessage;
 import com.mygdx.game.screen.GameScreen;
 import com.mygdx.game.utility.GraphicsBackend;
 import com.mygdx.game.utility.GraphicsBackendForTests;
@@ -81,5 +82,20 @@ public class GameBoardTest {
         }
 
         int a = 5;
+    }
+
+
+    @Test
+    public void nextTurn(){
+        preparePlayers();
+
+        GameBoard gb = new GameBoard(screenMock, stageMock, stageMock, players, true, players.get(0), null, gameScreen, new GraphicsBackendForTests());
+        gb.setCurrentPlayer(players.get(0));
+        gb.init();
+        {
+            gb.onTurnEnd(new TurnEndMessage());
+        }
+
+        Assert.assertTrue(gb.getCurrentPlayer() == players.get(1));
     }
 }
