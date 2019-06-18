@@ -39,8 +39,6 @@ public class Board {
         return placedTiles;
     }
 
-
-    // TODO maybe adjust scoring methods for the end of game partial scoring...
     /* mid game scoring */
     /* ---------------- */
     public int scoreMonastery(TileActor tile) {
@@ -109,11 +107,9 @@ public class Board {
                 // meeple placement probably needs the top feature of a Monastery to be Monastery,
                 // so this fixes the placement bug caused by it,
                 // without interfering with it.
-                if (feature1 instanceof Monastery && feature2 == null) continue;
-                if (feature2 instanceof Monastery && feature1 == null) continue;
-
-                /* check if features line up */
-                if (feature1 == null && feature2 == null) continue;
+                if ((feature1 instanceof Monastery && feature2 == null) ||
+                    (feature2 instanceof Monastery && feature1 == null) ||
+                    (feature1 == null && feature2 == null)) continue; //check if features line up
                 if (feature1 == null || feature2 == null) return false;
                 if (!feature1.getClass().equals(feature2.getClass())) return false;
             }
@@ -121,7 +117,7 @@ public class Board {
         return connected; // if the position was not connected to the current board -> return false
     }
 
-    public HashSet<Position> getValidPositionsForTile(TileActor placedTile) {
+    public Set<Position> getValidPositionsForTile(TileActor placedTile) {
         HashSet<Position> validPositions = new HashSet<>();
         for (TileActor tile : placedTiles.values()) {
             for (Position pos : tile.getPosition().getSurroundingPositions()) {

@@ -18,27 +18,26 @@ public class Carcassonne extends Game {
     }
 
 
-    static public Skin skin;
+    public static Skin skin;
     private static NativeInterface nativeInterface;
 
     public Carcassonne(NativeInterface ni) {
         nativeInterface = ni;
     }
 
+    public static void setSkin() {
+        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+    }
+
     @Override
     public void create() {
-        skin = new Skin(Gdx.files.internal("skin/glassy-ui.json"));
+        setSkin();
         NetworkHelper.setPlayer(new Player(GameBoard.Color.RED, "Player"));
         this.setScreen(new MainMenuScreen(this));
     }
 
     public static NativeInterface getNativeInterface() {
         return nativeInterface;
-    }
-
-    @Override
-    public void render() {
-        super.render();
     }
 
     @Override

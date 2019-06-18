@@ -368,13 +368,6 @@ public class GameBoard {
             });
         }
 
-        /*
-        TODO: probably best to generate a seed at the "server-player", then send out the seed and do the shuffle locally
-         */
-
-        long seed = 123456789;
-
-
         if (isMyTurn()) {
             beginMyTurn();
         }
@@ -486,7 +479,7 @@ public class GameBoard {
 
 
     public void collectOwners(TileActor tile, Feature feature, HashMap<Player, Integer> owners, HashSet<TileActor> visited, TileActor parent) {
-        if (!visited.add(tile)) return;
+        if (!visited.add(tile) || feature == null) return;
         for (Side side : feature.getSides()) {
             side = tile.getSideAfterRotation(side);
 
